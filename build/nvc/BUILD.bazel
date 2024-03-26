@@ -1,0 +1,35 @@
+load(":rules.bzl", "nvc_toolchain")
+
+toolchain_type(name = "toolchain_type")
+
+nvc_toolchain(
+    name = "nvc_linux",
+    analyzer = "@nvc//:compiler",
+    artifacts_dir = "@nvc//:nvc_repo",
+)
+
+toolchain(
+    name = "nvc_linux_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = "nvc_linux",
+    toolchain_type = ":toolchain_type",
+)
+
+sh_binary(
+    name = "nvc_wrapper",
+    srcs = ["nvc_wrapper.sh"],
+    data = [
+        "@gotopt2//cmd/gotopt2",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["@bazel_tools//tools/bash/runfiles"],
+)
+
+exports_files(["run_wave_view.sh"])

@@ -1,0 +1,82 @@
+diff --git a/config.h.in b/config.h.in
+index 9a445499..a27a8e66 100644
+--- a/config.h.in
++++ b/config.h.in
+@@ -27,9 +27,6 @@
+ /* Enable FST glitch removal */
+ #undef FST_REMOVE_DUPLICATE_VC
+ 
+-/* Target supports AVX2 instructions */
+-#undef HAVE_AVX2
+-
+ /* Have capstone for diassembly */
+ #undef HAVE_CAPSTONE
+ 
+diff --git a/configure b/configure
+index 9960d1e6..db0d2b7c 100755
+--- a/configure
++++ b/configure
+@@ -7303,47 +7303,6 @@ fi
+ 
+ 
+ 
+-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -mavx2" >&5
+-printf %s "checking whether C compiler accepts -mavx2... " >&6; }
+-if test ${ax_cv_check_cflags__Werror__mavx2+y}
+-then :
+-  printf %s "(cached) " >&6
+-else $as_nop
+-
+-  ax_check_save_flags=$CFLAGS
+-  CFLAGS="$CFLAGS -Werror -mavx2"
+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-int
+-main (void)
+-{
+-
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_compile "$LINENO"
+-then :
+-  ax_cv_check_cflags__Werror__mavx2=yes
+-else $as_nop
+-  ax_cv_check_cflags__Werror__mavx2=no
+-fi
+-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+-  CFLAGS=$ax_check_save_flags
+-fi
+-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags__Werror__mavx2" >&5
+-printf "%s\n" "$ax_cv_check_cflags__Werror__mavx2" >&6; }
+-if test "x$ax_cv_check_cflags__Werror__mavx2" = xyes
+-then :
+-
+-printf "%s\n" "#define HAVE_AVX2 1" >>confdefs.h
+-
+-else $as_nop
+-  :
+-fi
+-
+-
+ 
+ 
+ 
+diff --git a/configure.ac b/configure.ac
+index 336543fe..662d43c7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -87,11 +87,6 @@ AX_CHECK_COMPILE_FLAG([-fPIC],
+   [-Werror])
+ AC_SUBST(PIC_FLAG)
+ 
+-AX_CHECK_COMPILE_FLAG([-mavx2],
+-  [AC_DEFINE_UNQUOTED([HAVE_AVX2], [1], [Target supports AVX2 instructions])],
+-  [],
+-  [-Werror])
+-
+ AX_GCC_FUNC_ATTRIBUTE([returns_nonnull])
+ 
+ AX_PROG_FLEX([], [AC_MSG_ERROR(Flex not found)])

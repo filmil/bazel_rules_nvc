@@ -1,0 +1,13 @@
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+
+exports_files([
+    "avx.patch",
+    "nvc.BUILD.bazel",
+])
+
+build_test(
+    name = "nvc",
+    tags = ["manual"],
+    targets = ["@nvc//:nvc_repo"],
+    visibility = ["//:__pkg__"],
+)
