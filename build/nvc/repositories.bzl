@@ -65,11 +65,8 @@ def nvc_repositories():
     maybe(
         repo_rule = http_archive,
         name = "nvc",
-        build_file = "@//third_party/nvc:nvc.BUILD.bazel",
+        build_file = Label("//third_party/nvc:nvc.BUILD.bazel"),
         patch_args = ["-p1"],
-        patches = [
-            #"//third_party/nvc:avx.patch",
-        ],
         sha256 = "192fe81768d76d90ea005dcde1ad997ec5220a5b84103c763f39758f12cbb4a3",
         strip_prefix = "nvc-1.11.0",
         urls = [
