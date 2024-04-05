@@ -8,7 +8,7 @@ NVCInfo = provider(
 
 _NVC_TOOLCHAIN_TYPE = "//build/nvc:toolchain_type"
 
-_NVC_WRAPPER = Label("@//build/nvc:nvc_wrapper")
+_NVC_WRAPPER = Label("//build/nvc:nvc_wrapper")
 
 _VHDL_STANDARD = "2008"
 
@@ -298,7 +298,7 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave"):
     """
     native.sh_binary(
         name = name,
-        srcs = ["//build/nvc:run_wave_view.sh"],
+        srcs = [Label("//build/nvc:run_wave_view.sh")],
         deps = ["@bazel_tools//tools/bash/runfiles"],
         args = [
           "--viewer-binary={}".format(viewer),

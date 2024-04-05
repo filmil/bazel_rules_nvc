@@ -1,6 +1,8 @@
 load("@bazel_gazelle//:deps.bzl", "go_repository")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load(
+    "@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 
 def nvc_repositories():
@@ -59,4 +61,19 @@ def nvc_repositories():
             commit = "97d6b1b0663a976eba231cac93aefbfdca52f9d6",
             shallow_since = "1672211456 -0800",
         )
+
+    maybe(
+        repo_rule = http_archive,
+        name = "nvc",
+        build_file = "@//third_party/nvc:nvc.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = [
+            #"//third_party/nvc:avx.patch",
+        ],
+        sha256 = "192fe81768d76d90ea005dcde1ad997ec5220a5b84103c763f39758f12cbb4a3",
+        strip_prefix = "nvc-1.11.0",
+        urls = [
+            "https://github.com/nickg/nvc/releases/download/r1.11.0/nvc-1.11.0.tar.gz",
+        ],
+    )
 

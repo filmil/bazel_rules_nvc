@@ -76,31 +76,9 @@ nvc_repositories()
 
 register_toolchains("//build/nvc:nvc_linux_toolchain")
 
-maybe(
-    git_repository,
-    name = "gotopt2",
-    commit = "184f9765881f7da793135bdd64dd99eebbfe0e42",
-    remote = "https://github.com/filmil/gotopt2",
-    shallow_since = "1697848436 -0700",
-)
-
 load("@gotopt2//build:deps.bzl", "gotopt2_dependencies")
 
 gotopt2_dependencies()
-
-http_archive(
-    name = "nvc",
-    build_file = "@//third_party/nvc:nvc.BUILD.bazel",
-    patch_args = ["-p1"],
-    patches = [
-        #"//third_party/nvc:avx.patch",
-    ],
-    sha256 = "192fe81768d76d90ea005dcde1ad997ec5220a5b84103c763f39758f12cbb4a3",
-    strip_prefix = "nvc-1.11.0",
-    urls = [
-        "https://github.com/nickg/nvc/releases/download/r1.11.0/nvc-1.11.0.tar.gz",
-    ],
-)
 
 http_archive(
     name = "com_grail_bazel_toolchain",
