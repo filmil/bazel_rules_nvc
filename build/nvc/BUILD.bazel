@@ -1,4 +1,4 @@
-load(":rules.bzl", "nvc_toolchain")
+load("@bazel_rules_nvc//build/nvc:rules.bzl", "nvc_toolchain")
 
 toolchain_type(name = "toolchain_type")
 

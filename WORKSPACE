@@ -1,3 +1,5 @@
+workspace(name = "bazel_rules_nvc")
+
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -70,7 +72,7 @@ go_repository(
 
 gazelle_dependencies()
 
-load("//build/nvc:repositories.bzl", "nvc_repositories")
+load("@bazel_rules_nvc//build/nvc:repositories.bzl", "nvc_repositories")
 
 nvc_repositories()
 
