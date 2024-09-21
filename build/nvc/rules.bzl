@@ -314,12 +314,16 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave"):
 
 
 def _produce_waveform(ctx):
+    data_files = []
+    for target in ctx.attr.data:
+        for file in target.files.to_list():
+            data_files += [file]
     output_file = ctx.actions.declare_file("{}.vcd".format(ctx.attr.name))
-    runfiles = ctx.runfiles(files=[output_file])
+    runfiles = ctx.runfiles(files=[output_file] + data_files)
     sim = ctx.executable.simulation
     ctx.actions.run(
         outputs = [output_file],
-        inputs = [sim],
+        inputs = data_files,
         executable = sim.path,
         arguments = [
             output_file.path,
@@ -342,6 +346,8 @@ produce_waveform = rule(
         "simulation": attr.label(
             executable = True,
             cfg = "host",
+        ),
+        "data": attr.label_list(
         ),
     },
 )
