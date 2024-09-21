@@ -327,7 +327,7 @@ def _produce_waveform(ctx):
         executable = sim.path,
         arguments = [
             output_file.path,
-        ],
+        ] + ctx.attr.args,
         tools = [
             sim,
         ],
@@ -347,8 +347,8 @@ produce_waveform = rule(
             executable = True,
             cfg = "host",
         ),
-        "data": attr.label_list(
-        ),
+        "data": attr.label_list(),
+        "args": attr.string_list(),
     },
 )
 
