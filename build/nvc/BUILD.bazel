@@ -32,4 +32,4 @@ sh_binary(
     deps = ["@bazel_tools//tools/bash/runfiles"],
 )
 
-exports_files(["run_wave_view.sh"])
+exports_files(["run_wave_view.sh", "unittest.tpl.sh"])

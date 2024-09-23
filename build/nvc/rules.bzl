@@ -10,7 +10,7 @@ _NVC_TOOLCHAIN_TYPE = "@bazel_rules_nvc//build/nvc:toolchain_type"
 
 _NVC_WRAPPER = Label("@bazel_rules_nvc//build/nvc:nvc_wrapper")
 
-_VHDL_STANDARD = "2008"
+_VHDL_STANDARD_DEFAULT = "2019"
 
 def _nvc_toolchain_impl(ctx):
   toolchain_info = platform_common.ToolchainInfo(
@@ -35,7 +35,12 @@ nvc_toolchain = rule(
 
 VHDLLibraryProvider = provider(
     doc = "",
-    fields = ["libraries", "entities", "library_name", "library_dir"]
+    fields = [
+        "libraries",
+        "entities",
+        "library_name",
+        "library_dir"
+    ]
 )
 
 def _vhdl_library(ctx):
@@ -74,7 +79,7 @@ def _vhdl_library(ctx):
         inputs = srcs + deps_paths,
         executable =  analyzer, # how do I get its path?
         arguments = [
-          "--std={}".format(_VHDL_STANDARD),
+          "--std={}".format(ctx.attr.standard),
           "-L", "{}/nvc".format(std_lib_dir.path),
         ] + flag_libraries + [
           "--work={}:{}/{}".format(
@@ -107,6 +112,9 @@ vhdl_library = rule(
         ),
         "deps": attr.label_list(),
         "entities": attr.string_list(),
+        "standard": attr.string(
+            default = _VHDL_STANDARD_DEFAULT,
+        ),
     },
     toolchains = [
         _NVC_TOOLCHAIN_TYPE,
@@ -153,13 +161,17 @@ def _vhdl_elaborate(ctx):
             deps_paths += [path]
             seen += [name]
 
+    runfiles = ctx.runfiles(files=deps_paths + [out_dir])
+
+    runfiles.merge_all([ctx.attr.library[DefaultInfo].default_runfiles])
+
     work_library_file = get_single_file_from(ctx.attr.library)
     ctx.actions.run(
         outputs = [out_dir],
         inputs = [vhdl_provider.library_dir, std_lib_dir] + deps_paths,
         executable = ctx.executable._script.path,
         arguments = [
-            "--vhdl-standard={}".format(_VHDL_STANDARD),
+            "--vhdl-standard={}".format(ctx.attr.standard),
             "--nvc-binary-path={}".format(analyzer),
             "--library-name={}".format(library_name),
             "--library-paths={}".format(" ".join(flag_libraries)),
@@ -182,7 +194,10 @@ def _vhdl_elaborate(ctx):
             library_dir = out_dir,
         ),
         ElaborateProvider(entity=ctx.attr.name),
-        DefaultInfo(files=depset([out_dir])),
+        DefaultInfo(
+            files=depset([out_dir]),
+            runfiles=runfiles,
+        ),
     ]
 
 vhdl_elaborate = rule(
@@ -193,6 +208,9 @@ vhdl_elaborate = rule(
             default = _NVC_WRAPPER,
             executable = True,
             cfg = "host",
+        ),
+        "standard": attr.string(
+            default = _VHDL_STANDARD_DEFAULT,
         ),
     },
     toolchains = [
@@ -239,7 +257,7 @@ def _vhdl_run(ctx):
         executable = ctx.executable._script.path,
         arguments = [
             "-cmd=-r",
-            "--vhdl-standard={}".format(_VHDL_STANDARD),
+            "--vhdl-standard={}".format(ctx.attr.standard),
             "--nvc-binary-path={}".format(analyzer),
             "--library-name={}".format(vhdl_provider.library_name),
             "--library-paths={}".format(" ".join(flag_libraries)),
@@ -248,6 +266,7 @@ def _vhdl_run(ctx):
             "--library-dir-in-path={}".format(work_library_file.path),
             "--library-dir-out-path={}".format(work_library_file.path),
             "--",
+        ] + ctx.attr.args + [
             "--wave={}".format(wave_file.path),
         ],
         tools = [analyzer_x, ctx.executable._script] + artifacts,
@@ -276,6 +295,12 @@ vhdl_run = rule(
             default = _NVC_WRAPPER,
             executable = True,
             cfg = "host",
+        ),
+        "standard": attr.string(
+            default = _VHDL_STANDARD_DEFAULT,
+        ),
+        "args": attr.string_list(
+            doc = "A list of added command line args to use",
         ),
     },
     toolchains = [
@@ -370,3 +395,117 @@ extract_file = rule(
         "src" : attr.label(),
     },
 )
+
+
+def _vhdl_test(ctx):
+    """
+    Mostly copied from _vhdl_run
+    """
+    nvc_info = ctx.toolchains[_NVC_TOOLCHAIN_TYPE].nvc_info
+    analyzer_x = nvc_info.analyzer.files.to_list()[0]
+    analyzer = analyzer_x.short_path
+    library_name = ctx.attr.name
+
+    artifacts = nvc_info.artifacts_dir.files.to_list()
+    std_lib_dir = artifacts[1] # hopefully stable...
+
+    vhdl_provider = ctx.attr.entity[VHDLLibraryProvider]
+
+    all_libraries = []
+    flag_libraries = []
+    deps_paths = []
+    seen = []
+    all_libraries += vhdl_provider.libraries
+    for name, path in all_libraries:
+        if name != vhdl_provider.library_name and name not in seen:
+            flag_libraries += [
+                "--map={}:{}/{}".format(name, path.short_path, name)]
+            deps_paths += [path]
+            seen += [name]
+
+
+    work_library_file = get_single_file_from(ctx.attr.entity)
+
+    #wave_file = ctx.actions.declare_file(
+    #    "{}.gtkwave".format(ctx.attr.name))
+
+    elaborate_provider = ctx.attr.entity[ElaborateProvider]
+
+    #outputs = [wave_file]
+
+    runfiles = ctx.runfiles(
+        files=[vhdl_provider.library_dir] + ctx.attr._script.files.to_list(),
+        transitive_files=depset(artifacts + deps_paths))
+
+    runfiles = runfiles.merge_all([ctx.attr._script[DefaultInfo].default_runfiles])
+    inputs = deps_paths + [vhdl_provider.library_dir, std_lib_dir]
+    i_runfiles = ctx.runfiles(files = inputs)
+
+    tools = [analyzer_x, ctx.executable._script, ] + artifacts
+    t_runfiles = ctx.runfiles(files = tools)
+
+    runfiles.merge_all([t_runfiles, i_runfiles, ctx.attr._script[DefaultInfo].default_runfiles])
+    ctx.actions.expand_template(
+        template = ctx.file._template,
+        output = ctx.outputs.executable,
+        substitutions = {
+            "{{EXECUTABLE}}": ctx.executable._script.short_path,
+            "{{VHDL_STANDARD}}": ctx.attr.standard,
+            "{{ANALYZER}}": analyzer,
+            "{{LIBRARY_NAME}}": vhdl_provider.library_name,
+            "{{LIBRARY_PATHS}}": " ".join(flag_libraries),
+            "{{STDLIB_DIR}}": std_lib_dir.short_path,
+            "{{ENTITY}}": elaborate_provider.entity,
+            "{{LIB_DIR_IN_PATH}}": vhdl_provider.library_dir.short_path,
+            "{{LIB_DIR_OUT_PATH}}": work_library_file.short_path,
+        },
+    )
+    return [DefaultInfo(runfiles=runfiles)]
+
+
+_vhdl_internal_test = rule(
+    test = True,
+    implementation = _vhdl_test,
+    attrs = {
+        "entity": attr.label(),
+        "deps": attr.label_list(
+            default = [],
+        ),
+        "_script": attr.label(
+            default = _NVC_WRAPPER,
+            executable = True,
+            cfg = "host",
+        ),
+        "standard": attr.string(
+            default = _VHDL_STANDARD_DEFAULT,
+        ),
+        "_template": attr.label(
+            default = Label("//build/nvc:unittest.tpl.sh"),
+            allow_single_file = True,
+        ),
+    },
+    toolchains = [
+      _NVC_TOOLCHAIN_TYPE,
+    ],
+)
+
+
+def vhdl_test(name, srcs, deps, args=[], entity=None):
+    vhdl_library_name = "{}_lib".format(name)
+    vhdl_library(
+        name = vhdl_library_name,
+        srcs = srcs,
+        deps = deps,
+    )
+    e = "{}_tb".format(name)
+    if entity:
+        e = entity
+    vhdl_elaborate(
+        name = e,
+        library = ":{}".format(vhdl_library_name)
+    )
+    _vhdl_internal_test(
+        name = name,
+        entity = ":{}".format(e),
+        args = args,
+    )
