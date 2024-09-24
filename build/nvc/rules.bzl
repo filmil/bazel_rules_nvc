@@ -287,8 +287,7 @@ def _vhdl_run(ctx):
 vhdl_run = rule(
     implementation = _vhdl_run,
     attrs = {
-        "entity": attr.label(),
-        "deps": attr.label_list(
+        "entity": attr.label(), "deps": attr.label_list(
             default = [],
         ),
         "_script": attr.label(
@@ -308,7 +307,7 @@ vhdl_run = rule(
     ],
 )
 
-def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave"):
+def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None):
     """
     Generates a sh_binary viewer.
 
@@ -322,6 +321,7 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave"):
       host.
     """
     native.sh_binary(
+        testonly = testonly,
         name = name,
         srcs = [Label("//build/nvc:run_wave_view.sh")],
         deps = ["@bazel_tools//tools/bash/runfiles"],
@@ -426,12 +426,7 @@ def _vhdl_test(ctx):
 
     work_library_file = get_single_file_from(ctx.attr.entity)
 
-    #wave_file = ctx.actions.declare_file(
-    #    "{}.gtkwave".format(ctx.attr.name))
-
     elaborate_provider = ctx.attr.entity[ElaborateProvider]
-
-    #outputs = [wave_file]
 
     runfiles = ctx.runfiles(
         files=[vhdl_provider.library_dir] + ctx.attr._script.files.to_list(),
@@ -458,6 +453,7 @@ def _vhdl_test(ctx):
             "{{ENTITY}}": elaborate_provider.entity,
             "{{LIB_DIR_IN_PATH}}": vhdl_provider.library_dir.short_path,
             "{{LIB_DIR_OUT_PATH}}": work_library_file.short_path,
+            "{{WAVE_FILE}}": "{}.gtkwave".format(ctx.attr.name),
         },
     )
     return [DefaultInfo(runfiles=runfiles)]
