@@ -307,7 +307,7 @@ vhdl_run = rule(
     ],
 )
 
-def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None):
+def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None, save_file=None):
     """
     Generates a sh_binary viewer.
 
@@ -320,21 +320,26 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None)
       with the file format to view, and must be installed on the
       host.
     """
+    _args = [
+          "--viewer-binary={}".format(viewer),
+          "--wave-file=$(location {})".format(vhdl_run),
+          "--",
+    ] + args
+    _data = [
+          "@gotopt2//cmd/gotopt2:gotopt2",
+          vhdl_run,
+        ] + deps
+    if save_file:
+        _args += ["--save=$(location {})".format(save_file)]
+        _data += [save_file]
     native.sh_binary(
         testonly = testonly,
         name = name,
         srcs = [Label("//build/nvc:run_wave_view.sh")],
         deps = ["@bazel_tools//tools/bash/runfiles"],
-        args = [
-          "--viewer-binary={}".format(viewer),
-          "--wave-file=$(location {})".format(vhdl_run),
-          "--",
-        ] + args,
+        args = _args,
+        data = _data,
         visibility = ["//visibility:public"],
-        data = [
-          "@gotopt2//cmd/gotopt2:gotopt2",
-          vhdl_run,
-        ] + deps,
     )
 
 
