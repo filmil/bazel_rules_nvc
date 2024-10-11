@@ -246,7 +246,11 @@ def _vhdl_run(ctx):
     work_library_file = get_single_file_from(ctx.attr.entity)
 
     wave_file = ctx.actions.declare_file(
-        "{}.gtkwave".format(ctx.attr.name))
+        "{}.vcd".format(ctx.attr.name))
+
+    format = []
+    if ctx.attr.use_vcd:
+        format = [ "--format=vcd" ]
 
     elaborate_provider = ctx.attr.entity[ElaborateProvider]
     runfiles = ctx.runfiles(files = [wave_file])
@@ -268,7 +272,7 @@ def _vhdl_run(ctx):
             "--",
         ] + ctx.attr.args + [
             "--wave={}".format(wave_file.path),
-        ],
+        ] + format,
         tools = [analyzer_x, ctx.executable._script] + artifacts,
         # Only seems to work from bazel 6.0.0 on.
         #toolchain = _NVC_TOOLCHAIN_TYPE,
@@ -297,6 +301,9 @@ vhdl_run = rule(
         ),
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
+        ),
+        "use_vcd": attr.bool(
+            default = True,
         ),
         "args": attr.string_list(
             doc = "A list of added command line args to use",
