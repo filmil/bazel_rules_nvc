@@ -14,6 +14,6 @@ build:nvc-config \
  --crosstool_top=@bazel_tools//tools/cpp:toolchain \
  --incompatible_enable_cc_toolchain_resolution=false
 
-build \
+common \
   --registry=https://raw.githubusercontent.com/filmil/bazel-registry/main \
   --registry=https://bcr.bazel.build
