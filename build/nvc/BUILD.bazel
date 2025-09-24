@@ -26,11 +26,20 @@ sh_binary(
     name = "nvc_wrapper",
     srcs = ["nvc_wrapper.sh"],
     data = [
-        "@gotopt2//cmd/gotopt2",
+        "@gotopt2//:bin",
     ],
     visibility = ["//visibility:public"],
     deps = ["@bazel_tools//tools/bash/runfiles"],
 )
 
-exports_files(["run_wave_view.sh", "unittest.tpl.sh"])
+exports_files(["unittest.tpl.sh"])
 
+sh_binary(
+    name = "run_wave_view",
+    srcs = ["run_wave_view.sh"],
+    data = [
+        "@gotopt2//:bin",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["@bazel_tools//tools/bash/runfiles"],
+)

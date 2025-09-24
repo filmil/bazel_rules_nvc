@@ -7,6 +7,8 @@
 
 set -e
 
+readonly _gotopt2_runfiles_path="rules_multitool++multitool+multitool/tools/gotopt2/gotopt2"
+
 # This magic was copied from runfiles by consulting:
 #   https://stackoverflow.com/questions/53472993/how-do-i-make-a-bazel-sh-binary-target-depend-on-other-binary-targets
 
@@ -33,10 +35,7 @@ else
 fi
 # --- end runfiles.bash initialization ---
 
-# This is seriously weird: should I be guessing the OS and architecture to get
-# at a binary that I want to use?
-readonly _gotopt_binary="$(rlocation \
-  gotopt2/cmd/gotopt2/gotopt2_/gotopt2)"
+readonly _gotopt_binary="$(rlocation ${_gotopt2_runfiles_path})"
 
 # Exit quickly if the binary isn't found. This may happen if the binary location
 # moves internally in bazel.

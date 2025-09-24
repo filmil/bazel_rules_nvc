@@ -333,7 +333,7 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None,
           "--",
     ] + args
     _data = [
-          "@gotopt2//cmd/gotopt2:gotopt2",
+          "@gotopt2//:bin",
           vhdl_run,
         ] + deps
     if save_file:
@@ -342,7 +342,7 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None,
     native.sh_binary(
         testonly = testonly,
         name = name,
-        srcs = [Label("//build/nvc:run_wave_view.sh")],
+        srcs = [Label("//build/nvc:run_wave_view")],
         deps = ["@bazel_tools//tools/bash/runfiles"],
         args = _args,
         data = _data,

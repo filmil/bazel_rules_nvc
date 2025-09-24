@@ -12,9 +12,11 @@ jobs:
       - name: Install prerequisites
         run: "sudo apt-get install -y build-essential automake autoconf flex check llvm-dev pkg-config zlib1g-dev libdw-dev libffi-dev"
       - name: Setup bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
-          version: 5.1.0
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
       - name: Checkout
         uses: actions/checkout@v2
         with:

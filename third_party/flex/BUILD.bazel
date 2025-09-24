@@ -3,9 +3,9 @@ load("@bazel_skylib//rules:build_test.bzl", "build_test")
 package(default_visibility = ["//visibility:public"])
 
 build_test(
-    name = "nvc",
+    name = "flex",
     tags = ["manual"],
-    targets = ["@nvc//:nvc_repo"],
+    targets = ["@flex//:flex"],
     visibility = ["//:__pkg__"],
 )
 
