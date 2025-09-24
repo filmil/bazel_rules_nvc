@@ -12,13 +12,18 @@ filegroup(
 
 configure_make(
     name = "flex",
+    configure_in_place = True,
     build_data = select({
         "@platforms//os:windows": [],
         "//conditions:default": ["@m4//:m4_exe"],
     }),
     configure_options = select({
         # See https://github.com/westes/flex/issues/428#issuecomment-539277966
-        "@platforms//os:linux": ["CFLAGS='-D_GNU_SOURCE'"],
+        "@platforms//os:linux": [
+            "CFLAGS='-D_GNU_SOURCE'",
+            "LDFLAGS='-static'",
+            "--disable-libfl",
+        ],
         "//conditions:default": [],
     }),
     env = select({

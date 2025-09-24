@@ -1,3 +1,4 @@
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
 
 package(default_visibility = ["//visibility:public"])
@@ -5,7 +6,48 @@ package(default_visibility = ["//visibility:public"])
 build_test(
     name = "nvc",
     tags = ["manual"],
-    targets = ["@nvc//:nvc_repo"],
+    targets = [":nvc_repo"],
     visibility = ["//:__pkg__"],
+)
+
+configure_make(
+  name = "nvc_repo",
+  build_data = [
+    "@flex//:flex_exe",
+  ],
+  lib_source = "@nvc//:all_srcs",
+  visibility = ["//visibility:public"],
+  out_binaries = [ "nvc", ],
+  out_data_dirs = [ "lib", "libexec", "man", ],
+  configure_options = [
+    "LDFLAGS='--static'",
+    "--enable-llvm",
+    "--with-llvm=/usr/bin/llvm-config",
+  ],
+  targets = [ "install V=1", ],
+  install_prefix = "_install",
+  # We override all tools, to ensure that NVC is compiled with the local
+  # compiler, not our hermetic clang. It is next to impossible to ensure a
+  # hermetic NVC compilation, so this is the next best thing.
+  #env = {
+    #"CC": "/usr/bin/clang",
+    #"CXX": "/usr/bin/clang++",
+    #"LD": "/usr/bin/ld",
+    #"LDFLAGS": "-fuse-ld=ld",
+    #"AR": "/usr/bin/ar",
+  #},
+  env = {
+    "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
+  },
+  deps = [
+    "@zlib//:zlib",
+  ]
+)
+
+filegroup(
+  name = "compiler",
+  srcs = [":nvc_repo"],
+  output_group = "nvc",
+  visibility = ["//visibility:public"],
 )
 
