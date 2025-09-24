@@ -12,15 +12,18 @@ build_test(
 
 configure_make(
   name = "nvc_repo",
+  deps = [
+    "@zlib//:zlib",
+  ],
   build_data = [
     "@flex//:flex_exe",
+    "@zlib//:zlib_shared",
   ],
   lib_source = "@nvc//:all_srcs",
   visibility = ["//visibility:public"],
   out_binaries = [ "nvc", ],
   out_data_dirs = [ "lib", "libexec", "man", ],
   configure_options = [
-    "LDFLAGS='--static'",
     "--enable-llvm",
     "--with-llvm=/usr/bin/llvm-config",
   ],
@@ -39,9 +42,6 @@ configure_make(
   env = {
     "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
   },
-  deps = [
-    "@zlib//:zlib",
-  ]
 )
 
 filegroup(

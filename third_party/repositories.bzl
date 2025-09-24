@@ -7,6 +7,21 @@ load("@bazel_skylib//lib:modules.bzl", "modules")
 def repositories():
     maybe(
         http_archive,
+        name = "zlib",
+        build_file = Label("//third_party:BUILD.zlib.bazel"),
+        sha256 = "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23",
+        strip_prefix = "zlib-1.3.1",
+        patches = [
+            Label("//third_party:zlib.patch"),
+        ],
+        urls = [
+            "https://zlib.net/zlib-1.3.1.tar.gz",
+            "https://zlib.net/archive/zlib-1.3.1.tar.gz",
+        ],
+    )
+
+    maybe(
+        http_archive,
         name = "m4",
         build_file = Label("//third_party:m4.BUILD.bazel"),
         strip_prefix = "m4-1.4.19",
