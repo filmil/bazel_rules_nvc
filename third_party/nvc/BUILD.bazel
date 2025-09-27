@@ -16,6 +16,7 @@ configure_make(
     "@zlib//:zlib",
     "@libffi//:libffi",
     "@zstd//:zstd",
+    "@elfutils//:elfutils",
   ],
   build_data = [
     "@flex//:flex_exe",
@@ -37,6 +38,8 @@ configure_make(
     "libffi_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
     "libzstd_LIBS": "-L$$EXT_BUILD_DEPS$$/lib",
     "libzstd_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
+    "libdw_LIBS": "-L$$EXT_BUILD_DEPS$$/elfutils/lib",
+    "libdw_CFLAGS": "-I$$EXT_BUILD_DEPS$$/elfutils/include",
   },
 )
 
