@@ -4,8 +4,8 @@ toolchain_type(name = "toolchain_type")
 
 nvc_toolchain(
     name = "nvc_linux",
-    analyzer = "@nvc//:compiler",
-    artifacts_dir = "@nvc//:nvc_repo",
+    analyzer = "//third_party/nvc:compiler",
+    artifacts_dir = "//third_party/nvc:nvc_repo",
 )
 
 toolchain(
