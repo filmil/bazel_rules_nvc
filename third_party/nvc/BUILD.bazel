@@ -21,6 +21,9 @@ configure_make(
   build_data = [
     "@flex//:flex_exe",
     "@zlib//:zlib_shared",
+    "@libffi//:libffi",
+    "@zstd//:zstd",
+    "@elfutils//:elfutils",
   ],
   lib_source = "@nvc//:all_srcs",
   visibility = ["//visibility:public"],
@@ -34,12 +37,12 @@ configure_make(
   install_prefix = "_install",
   env = {
     "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
-    "libffi_LIBS": "-L$$EXT_BUILD_DEPS$$/lib",
-    "libffi_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
-    "libzstd_LIBS": "-L$$EXT_BUILD_DEPS$$/lib",
-    "libzstd_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
-    "libdw_LIBS": "-L$$EXT_BUILD_DEPS$$/elfutils/lib",
-    "libdw_CFLAGS": "-I$$EXT_BUILD_DEPS$$/elfutils/include",
+    "libffi_LIBS": "-L.",
+    "libffi_CFLAGS": "-I.",
+    "libzstd_LIBS": "-L.",
+    "libzstd_CFLAGS": "-I.",
+    "libdw_LIBS": "-L.",
+    "libdw_CFLAGS": "-I.",
   },
 )
 
