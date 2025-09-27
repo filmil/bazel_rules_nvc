@@ -14,6 +14,8 @@ configure_make(
   name = "nvc_repo",
   deps = [
     "@zlib//:zlib",
+    "@libffi//:libffi",
+    "@zstd//:zstd",
   ],
   build_data = [
     "@flex//:flex_exe",
@@ -29,18 +31,12 @@ configure_make(
   ],
   targets = [ "install V=1", ],
   install_prefix = "_install",
-  # We override all tools, to ensure that NVC is compiled with the local
-  # compiler, not our hermetic clang. It is next to impossible to ensure a
-  # hermetic NVC compilation, so this is the next best thing.
-  #env = {
-    #"CC": "/usr/bin/clang",
-    #"CXX": "/usr/bin/clang++",
-    #"LD": "/usr/bin/ld",
-    #"LDFLAGS": "-fuse-ld=ld",
-    #"AR": "/usr/bin/ar",
-  #},
   env = {
     "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
+    "libffi_LIBS": "-L$$EXT_BUILD_DEPS$$/lib",
+    "libffi_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
+    "libzstd_LIBS": "-L$$EXT_BUILD_DEPS$$/lib",
+    "libzstd_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
   },
 )
 
