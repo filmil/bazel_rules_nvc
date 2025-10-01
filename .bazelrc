@@ -17,3 +17,5 @@ build:nvc-config \
 common \
   --registry=https://raw.githubusercontent.com/filmil/bazel-registry/main \
   --registry=https://bcr.bazel.build
+
+build --experimental_ui_max_stdouterr_bytes=10485760

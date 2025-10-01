@@ -6,9 +6,9 @@ NVCInfo = provider(
     ]
 )
 
-_NVC_TOOLCHAIN_TYPE = "//build/nvc:toolchain_type"
+_NVC_TOOLCHAIN_TYPE = "@bazel_rules_nvc//build/nvc:toolchain_type"
 
-_NVC_WRAPPER = Label("//build/nvc:nvc_wrapper")
+_NVC_WRAPPER = Label("@bazel_rules_nvc//build/nvc:nvc_wrapper")
 
 _VHDL_STANDARD_DEFAULT = "2019"
 
