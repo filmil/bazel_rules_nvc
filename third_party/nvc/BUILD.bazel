@@ -23,7 +23,6 @@ configure_make(
     "@flex//:flex_exe",
     "@libffi//:libffi",
     "@zlib//:zlib",
-    "@zlib//:zlib_shared",
     "@zstd//:zstd",
   ],
   lib_source = "@nvc//:all_srcs",
@@ -37,6 +36,7 @@ configure_make(
   targets = [ "install V=1", ],
   install_prefix = "_install",
   env = {
+    "LDFLAGS": "-lz",
     "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
     "libffi_LIBS": "-L$$(echo $$EXT_BUILD_DEPS$$)/lib -lffi",
     "libffi_CFLAGS": "-I$$(echo $$EXT_BUILD_DEPS$$)/include",
