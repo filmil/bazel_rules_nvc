@@ -12,31 +12,31 @@ bazel_dep(name = "libffi", version = "3.4.7.bcr.3")
 bazel_dep(name = "zstd", version = "1.5.7")
 bazel_dep(name = "elfutils", version = "0.1.1")
 
-
-bazel_dep(name = "gcc_toolchain", version = "0.9.0", dev_dependency = True)
-gcc_toolchains = use_extension(
-    "@gcc_toolchain//toolchain:module_extensions.bzl",
-    "gcc_toolchains",
-    dev_dependency = True)
-[
-    [
-        gcc_toolchains.toolchain(
-            name = "gcc_toolchain_{}".format(arch),
-            target_arch = arch,
-        ),
-        use_repo(gcc_toolchains, "gcc_toolchain_{}".format(arch)),
-        register_toolchains(
-            "@gcc_toolchain_{}//:cc_toolchain".format(arch),
-            "@gcc_toolchain_{}//:fortran_toolchain".format(arch),
-            dev_dependency = True,
-        ),
-    ]
-    for arch in [
-        #"aarch64",
-        #"armv7",
-        "x86_64",
-    ]
-]
+bazel_dep(name = "hermetic_clang_toolchain", version = "1.0.1")
+#bazel_dep(name = "gcc_toolchain", version = "0.9.0", dev_dependency = True)
+#gcc_toolchains = use_extension(
+    #"@gcc_toolchain//toolchain:module_extensions.bzl",
+    #"gcc_toolchains",
+    #dev_dependency = True)
+#[
+    #[
+        #gcc_toolchains.toolchain(
+            #name = "gcc_toolchain_{}".format(arch),
+            #target_arch = arch,
+        #),
+        #use_repo(gcc_toolchains, "gcc_toolchain_{}".format(arch)),
+        #register_toolchains(
+            #"@gcc_toolchain_{}//:cc_toolchain".format(arch),
+            #"@gcc_toolchain_{}//:fortran_toolchain".format(arch),
+            #dev_dependency = True,
+        #),
+    #]
+    #for arch in [
+        ##"aarch64",
+        ##"armv7",
+        #"x86_64",
+    #]
+#]
 #bazel_dep(name = "hermetic_cc_toolchain", version = "3.1.0")
 #toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
 #use_repo(toolchains, "zig_sdk")
