@@ -2,7 +2,11 @@
 
 ![Build Status](https://github.com/filmil/bazel_rules_nvc/workflows/Build/badge.svg)
 
-This repository provides [Bazel][baz] build rules for the [NVC compiler and simulator][nvc]. NVC is a VHDL compiler and simulator that aims for VHDL-2019 compliance. These rules allow you to integrate NVC into your Bazel-based VHDL projects, enabling you to build, simulate, and test your VHDL code within the Bazel ecosystem.
+This repository provides [Bazel][baz] build rules for the [NVC compiler and
+simulator][nvc]. NVC is a VHDL compiler and simulator that aims for VHDL-2019
+compliance. These rules allow you to integrate NVC into your Bazel-based VHDL
+projects, enabling you to build, simulate, and test your VHDL code within the
+Bazel ecosystem.
 
 [baz]: https://bazel.build
 [nvc]: https://github.com/nickg/nvc
@@ -156,3 +160,11 @@ vhdl_test(
     entity = "my_test_tb",
 )
 ```
+
+# Bill-of-Material Notes
+
+## Hermeticity
+
+* Hermeticity in this repository is best effort.
+* At the moment I believe that the remaining non-hermetic dependency
+  is `llvm-config`.
