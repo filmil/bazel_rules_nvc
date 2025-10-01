@@ -33,7 +33,6 @@ configure_make(
     "--enable-llvm",
     "--with-llvm=/usr/bin/llvm-config",
   ],
-  targets = [ "install V=1", ],
   install_prefix = "_install",
   env = {
     "LDFLAGS": "-lz",
