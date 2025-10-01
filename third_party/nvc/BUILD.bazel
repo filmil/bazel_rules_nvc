@@ -35,7 +35,7 @@ configure_make(
   ],
   install_prefix = "_install",
   env = {
-    "LDFLAGS": "-lz",
+    "LDFLAGS": "-lz -lgcc_s",
     "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
     "libffi_LIBS": "-L$$(echo $$EXT_BUILD_DEPS$$)/lib -lffi",
     "libffi_CFLAGS": "-I$$(echo $$EXT_BUILD_DEPS$$)/include",
