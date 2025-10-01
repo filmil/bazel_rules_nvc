@@ -38,13 +38,14 @@ bazel_dep(name = "elfutils", version = "0.1.1")
         #"x86_64",
     #]
 #]
-bazel_dep(name = "hermetic_cc_toolchain", version = "3.1.0")
-toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
-use_repo(toolchains, "zig_sdk")
-register_toolchains(
-    "@zig_sdk//toolchain/...",
-    "@zig_sdk//libc_aware/toolchain/...",
-)
+#bazel_dep(name = "hermetic_cc_toolchain", version = "3.1.0")
+#toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+#use_repo(toolchains, "zig_sdk")
+#register_toolchains(
+    #"@zig_sdk//toolchain/...",
+    #"@zig_sdk//libc_aware/toolchain/...",
+#)
+bazel_dep(name = "toolchains_llvm", version = "1.5.0")
 
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")

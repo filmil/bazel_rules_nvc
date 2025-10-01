@@ -31,7 +31,7 @@ configure_make(
   out_data_dirs = [ "lib", "libexec", "man", ],
   configure_options = [
     "--enable-llvm",
-    "--with-llvm=/usr/bin/llvm-config",
+    #"--with-llvm=/usr/bin/llvm-config",
   ],
   install_prefix = "_install",
   env = {
