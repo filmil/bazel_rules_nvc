@@ -31,12 +31,10 @@ configure_make(
   out_data_dirs = [ "lib", "libexec", "man", ],
   configure_options = [
     "--enable-llvm",
-    #"--with-llvm=/usr/bin/llvm-config",
   ],
   targets = ["V=1 install"],
   install_prefix = "_install",
   env = {
-    "LDFLAGS": "-lz",
     "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
     "libffi_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lffi",
     "libffi_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
@@ -44,6 +42,8 @@ configure_make(
     "libzstd_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
     "libdw_LIBS": "-L$$EXT_BUILD_DEPS$$/elfutils/lib -ldw -lelf",
     "libdw_CFLAGS": "-I$$EXT_BUILD_DEPS$$/elfutils/include",
+    "zlib_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lz",
+    "zlib_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
   },
 )
 
