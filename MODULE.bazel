@@ -59,11 +59,10 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 http_archive(
     name = "nvc",
     build_file = "@//third_party/nvc:nvc.BUILD.bazel",
-    patch_args = ["-p1"],
-    sha256 = "192fe81768d76d90ea005dcde1ad997ec5220a5b84103c763f39758f12cbb4a3",
-    strip_prefix = "nvc-1.11.0",
+    integrity = "sha256-AsCqrFn3J38xUfndtwUpKLe36Jwfd64rHEfVWYjGRYg=",
+    strip_prefix = "nvc-1.18.0",
     urls = [
-        "https://github.com/nickg/nvc/releases/download/r1.11.0/nvc-1.11.0.tar.gz",
+        "https://github.com/nickg/nvc/releases/download/r1.18.0/nvc-1.18.0.tar.gz",
     ],
 )
 register_toolchains("//build/nvc:nvc_linux_toolchain")
