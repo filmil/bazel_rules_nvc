@@ -1,0 +1,21 @@
+# Allows temporary user settings to be placed here. From
+# https://bazel.build/configure/best-practices#bazelrc-file
+try-import %workspace%/user.bazelrc
+
+build --cxxopt "-std=c++17"
+build --host_cxxopt "-std=c++17"
+build --crosstool_top=@llvm_toolchain//:toolchain
+build \
+  --incompatible_enable_cc_toolchain_resolution
+
+# See https://github.com/filmil/cocoapuffs/issues/6
+# use as: `bazelisk build --config=nvc-config <targets>`
+build:nvc-config \
+ --crosstool_top=@bazel_tools//tools/cpp:toolchain \
+ --incompatible_enable_cc_toolchain_resolution=false
+
+common \
+  --registry=https://raw.githubusercontent.com/filmil/bazel-registry/main \
+  --registry=https://bcr.bazel.build
+
+build --experimental_ui_max_stdouterr_bytes=10485760
