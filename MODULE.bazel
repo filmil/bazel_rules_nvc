@@ -45,7 +45,7 @@ bazel_dep(name = "elfutils", version = "0.1.1")
     #"@zig_sdk//toolchain/...",
     #"@zig_sdk//libc_aware/toolchain/...",
 #)
-bazel_dep(name = "toolchains_llvm", version = "1.5.0")
+bazel_dep(name = "toolchains_llvm", version = "1.5.0", dev_dependency = True)
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
 llvm.toolchain(
     name = "llvm_toolchain",
