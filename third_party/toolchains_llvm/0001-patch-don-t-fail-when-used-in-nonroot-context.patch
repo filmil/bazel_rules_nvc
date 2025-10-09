@@ -1,0 +1,25 @@
+From 5b792fd371f23010a90367114004a37d3b44794c Mon Sep 17 00:00:00 2001
+From: Filip Filmar <filmil@gmail.com>
+Date: Thu, 9 Oct 2025 06:19:42 +0000
+Subject: [PATCH] patch: don't fail when used in nonroot context
+
+---
+ toolchain/extensions/llvm.bzl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/toolchain/extensions/llvm.bzl b/toolchain/extensions/llvm.bzl
+index 2814871..ecdd76e 100644
+--- a/toolchain/extensions/llvm.bzl
++++ b/toolchain/extensions/llvm.bzl
+@@ -51,7 +51,7 @@ def _constraint_dict(tags, name):
+ def _llvm_impl_(module_ctx):
+     for mod in module_ctx.modules:
+         if not mod.is_root:
+-            fail("Only the root module can use the 'llvm' extension")
++            print("Only the root module can use the 'llvm' extension - ignored here")
+         toolchain_names = []
+         for toolchain_attr in mod.tags.toolchain:
+             name = toolchain_attr.name
+-- 
+2.34.1
+
