@@ -26,3 +26,5 @@ jobs:
         run: "bazel build //..."
       - name: Build NVC
         run: "bazel build //build/tests/nvc-toolchain/..."
+      - name: Integration build
+        run: "cd integration && bazel build //..."
