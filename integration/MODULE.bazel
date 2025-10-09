@@ -5,14 +5,26 @@ module(
 
 
 bazel_dep(name = "bazel_rules_nvc", version = "0.0.0")
-local_path_override(
+#local_path_override(
+    #module_name = "bazel_rules_nvc",
+    #path = "../",
+#)
+git_override(
     module_name = "bazel_rules_nvc",
-    path = "../",
+    remote = "https://github.com/filmil/bazel_rules_nvc",
+    commit = "45752fbdf87e707eaa0ba5d46804c26743fd1c74",
+    patch_args = [
+        "-p1"
+    ],
+    patches = [
+        "//third_party/bazel_rules_nvc:0001.patch",
+        "//third_party/bazel_rules_nvc:0002.patch",
+    ],
 )
 
 
 bazel_dep(name = "toolchains_llvm", version = "1.5.0")
-llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
+llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
 llvm.toolchain(
     name = "llvm_toolchain",
     llvm_version = "20.1.4",
