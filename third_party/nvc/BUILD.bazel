@@ -36,6 +36,8 @@ configure_make(
   install_prefix = "_install",
   env = {
     "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
+    "CFLAGS": "-Wno-error=fuse-ld-path",
+    "CXXFLAGS": "-Wno-error=fuse-ld-path",
     "libffi_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lffi",
     "libffi_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
     "libzstd_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lzstd",

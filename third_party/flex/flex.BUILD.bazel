@@ -20,9 +20,9 @@ configure_make(
     configure_options = select({
         # See https://github.com/westes/flex/issues/428#issuecomment-539277966
         "@platforms//os:linux": [
-            "CFLAGS='-D_GNU_SOURCE'",
-            "LDFLAGS='-static'",
-            "--disable-libfl",
+            "CFLAGS='-Wno-error=fuse-ld-path'",
+            #"LDFLAGS='-static'",
+            #"--disable-libfl",
         ],
         "//conditions:default": [],
     }),
