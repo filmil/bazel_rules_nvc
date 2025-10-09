@@ -21,8 +21,9 @@ configure_make(
         # See https://github.com/westes/flex/issues/428#issuecomment-539277966
         "@platforms//os:linux": [
             "CFLAGS='-Wno-error=fuse-ld-path'",
-            #"LDFLAGS='-static'",
-            #"--disable-libfl",
+            "CXXFLAGS='-Wno-error=fuse-ld-path'",
+            "LDFLAGS='-static'",
+            "--disable-libfl",
         ],
         "//conditions:default": [],
     }),
