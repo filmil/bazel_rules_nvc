@@ -12,13 +12,15 @@ bazel_dep(name = "bazel_rules_nvc", version = "0.0.0")
 git_override(
     module_name = "bazel_rules_nvc",
     remote = "https://github.com/filmil/bazel_rules_nvc",
-    commit = "45752fbdf87e707eaa0ba5d46804c26743fd1c74",
+    commit = "171398a24f741627b42a30fe40f2867abce31d71",
     patch_args = [
         "-p1"
     ],
     patches = [
+        # Removes the declaration of `toolchains_llvm` from upstream.
+        # This seems to be the best way to proceed from here.
+        # See: https://github.com/bazel-contrib/toolchains_llvm/issues/569
         "//third_party/bazel_rules_nvc:0001.patch",
-        "//third_party/bazel_rules_nvc:0002.patch",
     ],
 )
 
