@@ -30,7 +30,7 @@ configure_make(
   out_binaries = [ "nvc", ],
   out_data_dirs = [ "lib", "libexec", "man", ],
   configure_options = [
-    "--enable-llvm",
+    "--disable-llvm",
   ],
   targets = ["V=1 install"],
   install_prefix = "_install",
