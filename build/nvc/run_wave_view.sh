@@ -7,8 +7,6 @@
 
 set -e
 
-readonly _gotopt2_runfiles_path="rules_multitool++multitool+multitool/tools/gotopt2/gotopt2"
-
 # This magic was copied from runfiles by consulting:
 #   https://stackoverflow.com/questions/53472993/how-do-i-make-a-bazel-sh-binary-target-depend-on-other-binary-targets
 
@@ -34,17 +32,30 @@ else
   exit 1
 fi
 # --- end runfiles.bash initialization ---
+set -u
 
-readonly _gotopt_binary="$(rlocation ${_gotopt2_runfiles_path})"
 
+_gotopt2_runfiles_paths=(
+  "rules_multitool++multitool+multitool/tools/gotopt2/gotopt2"
+  "rules_multitool~~multitool~multitool/tools/gotopt2/gotopt2"
+  "gotopt2/bin/gotopt2"
+)
+_gotopt_binary=""
+for binary_candidate in ${_gotopt2_runfiles_paths[@]}; do
+  _gotopt_binary="$(rlocation ${binary_candidate})"
+  if [[ -x "${_gotopt_binary}" ]]; then
+    break
+  fi
+done
 # Exit quickly if the binary isn't found. This may happen if the binary location
 # moves internally in bazel.
-if [ -x "$(command -v ${_gotopt2_binary})" ]; then
+if [[ ! -x "$(command -v ${_gotopt_binary})" ]]; then
   echo "gotopt2 binary not found"
   exit 240
 fi
 
-GOTOPT2_OUTPUT=$($_gotopt_binary "${@}" <<EOF
+
+GOTOPT2_OUTPUT=$(${_gotopt_binary} "${@}" <<EOF
 flags:
 - name: "viewer-binary"
   type: string
@@ -69,7 +80,15 @@ if [[ "${gotopt2_wave_file}" == "" ]]; then
   exit 1
 fi
 
+if [[ ! -x "$(command -v ${gotopt2_viewer_binary})" ]]; then
+  echo "could not find viewer binary: ${gotopt2_viwer_binary}"
+  exit 1
+fi
 file_to_view="${gotopt2_wave_file}"
+if [[ ! -f "${file_to_view}" ]]; then
+  echo "can not find file to view: ${file_to_view}"
+  exit 1
+fi
 
 "${gotopt2_viewer_binary}" \
   ${gotopt2_args__[@]} \
