@@ -3,7 +3,8 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None,
     """
     Generates a sh_binary viewer.
 
-    Args:
+    # Args
+
     - name: the target name.
     - vhdl_run: the target name for the `vhdl_run` target to
       use the output from.
@@ -11,6 +12,7 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None,
     - viewer: the viewer to invoke. The viewer must be compatible
       with the file format to view, and must be installed on the
       host.
+
     """
     _args = [
           "--viewer-binary={}".format(viewer),

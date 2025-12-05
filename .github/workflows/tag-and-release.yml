@@ -26,6 +26,10 @@ jobs:
         run: "bazel build //..."
       - name: Build NVC
         run: "bazel build //build/tests/nvc-toolchain/..."
+
+      - name: "Test"
+        run: "bazel test --test_output=errors //... //nvc:rules.doc_extract //build/nvc:rules.doc_extract"
+
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
@@ -43,12 +47,20 @@ jobs:
       - name: Get repo name
         id: get_repo_name
         run: echo "REPO_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
       - name: "Publish source archive"
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: 'zip'
           filename: "${{ env.REPO_NAME }}-${{ env.VERSION }}.zip"
           exclusions: '*.git* /*node_modules/* .editorconfig /bazel-*'
+
+      - name: "Prepare docs archive release artifact"
+        run: |
+          find bazel-bin/ -name "*.doc_extract.binaryproto" -print0 \
+          | tar -czvf ${{ env.REPO_NAME }}-${{ env.VERSION }}.docs.tar.gz \
+            --null -T - --transform 's/^bazel-bin\///g'
+
       - name: "Upload source archive"
         uses: ncipollo/release-action@v1
         env:
