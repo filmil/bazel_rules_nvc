@@ -1,6 +1,24 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
 package(
-    default_visibility=[
+    default_visibility = [
         "//visibility:public",
+    ],
+)
+
+bzl_library(
+    name = "rules",
+    srcs = ["rules.bzl"],
+    deps = [
+        "//internal:extract_file",
+        "//internal:macros",
+        "//internal:produce_waveform",
+        "//internal:providers",
+        "//internal:toolchain",
+        "//internal:utils",
+        "//internal:vhdl_elaborate",
+        "//internal:vhdl_library",
+        "//internal:vhdl_run",
+        "//internal:vhdl_test",
     ],
 )

@@ -8,4 +8,3 @@ build_test(
     targets = ["@flex//:flex"],
     visibility = ["//:__pkg__"],
 )
-
