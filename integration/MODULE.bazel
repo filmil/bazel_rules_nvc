@@ -9,6 +9,7 @@ bazel_dep(name = "bazel_rules_nvc", version = "0.0.0")
     #module_name = "bazel_rules_nvc",
     #path = "../",
 #)
+# See: https://github.com/filmil/bazel_rules_nvc/issues/20
 git_override(
     module_name = "bazel_rules_nvc",
     remote = "https://github.com/filmil/bazel_rules_nvc",
