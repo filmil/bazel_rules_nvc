@@ -9,12 +9,13 @@ bazel_dep(name = "bazel_rules_nvc", version = "0.0.0")
     #module_name = "bazel_rules_nvc",
     #path = "../",
 #)
+# See: https://github.com/filmil/bazel_rules_nvc/issues/20
 git_override(
     module_name = "bazel_rules_nvc",
     remote = "https://github.com/filmil/bazel_rules_nvc",
     commit = "e2db15652300c8c3de6c54125c90981cd8239b7b",
     patch_args = [
-        "-p1"
+        "-p1",
     ],
     patches = [
         # Removes the declaration of `toolchains_llvm` from upstream.
