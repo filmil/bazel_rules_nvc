@@ -7,8 +7,8 @@ load("//internal:toolchain.bzl",
     _nvc_toolchain = "nvc_toolchain")
 
 
-load("//internal:vhdl_library.bzl", _vhdl_library = "vhdl_library")
-load("//internal:vhdl_elaborate.bzl", _vhdl_elaborate = "vhdl_elaborate")
+load("//internal:vhdl_library.bzl", "vhdl_library")
+load("//internal:vhdl_elaborate.bzl", "vhdl_elaborate")
 
 
 def _vhdl_test(ctx):

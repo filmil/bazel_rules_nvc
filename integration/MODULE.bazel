@@ -12,7 +12,7 @@ bazel_dep(name = "bazel_rules_nvc", version = "0.0.0")
 git_override(
     module_name = "bazel_rules_nvc",
     remote = "https://github.com/filmil/bazel_rules_nvc",
-    commit = "c8dc1ca02668120d67cca2c84c21a39092457175",
+    commit = "a556e3057a957f5d125c67fa735c4d86524df4fd",
     patch_args = [
         "-p1"
     ],
