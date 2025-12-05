@@ -6,11 +6,14 @@ load("//internal:toolchain.bzl",
     _VHDL_STANDARD_DEFAULT = "VHDL_STANDARD_DEFAULT",
     _nvc_toolchain = "nvc_toolchain")
 
+
 load("//internal:vhdl_library.bzl", _vhdl_library = "vhdl_library")
 load("//internal:vhdl_elaborate.bzl", _vhdl_elaborate = "vhdl_elaborate")
 load("//internal:vhdl_run.bzl", _vhdl_run = "vhdl_run")
 load("//internal:macros.bzl", _wave_view = "wave_view")
 load("//internal:produce_waveform.bzl", _produce_waveform = "produce_waveform")
+load("//internal:vhdl_test.bzl", _vhdl_test = "vhdl_test")
+load("//internal:extract_file.bzl", _extract_file = "extract_file")
 
 
 nvc_toolchain = _nvc_toolchain
@@ -21,27 +24,6 @@ produce_waveform = _produce_waveform
 
 # Macros
 wave_view = _wave_view
-
-
-
-def _extract_file(ctx):
-    filter = []
-    for file in ctx.attr.src.files.to_list():
-        if ctx.attr.filter in file.path:
-            filter += [file]
-    return [
-        DefaultInfo(files=depset(filter),
-        runfiles=ctx.runfiles(files=filter)),
-    ]
-
-
-extract_file = rule(
-    implementation = _extract_file,
-    attrs = {
-        "filter": attr.string(),
-        "src" : attr.label(),
-    },
-)
 
 
 def _vhdl_test(ctx):
