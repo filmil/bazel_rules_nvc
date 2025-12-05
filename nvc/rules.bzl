@@ -23,6 +23,7 @@ vhdl_elaborate = _vhdl_elaborate
 vhdl_run = _vhdl_run
 produce_waveform = _produce_waveform
 extract_file = _extract_file
+vhdl_test = _vhdl_test
 
 
 # Macros

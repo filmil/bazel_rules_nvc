@@ -1,4 +1,5 @@
 load("@bazel_rules_nvc//build/nvc:rules.bzl", "nvc_toolchain")
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
 toolchain_type(name = "toolchain_type")
 
@@ -42,4 +43,35 @@ sh_binary(
     ],
     visibility = ["//visibility:public"],
     deps = ["@bazel_tools//tools/bash/runfiles"],
+)
+
+bzl_library(
+    name = "repositories",
+    srcs = ["repositories.bzl"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@bazel_skylib//lib:modules",
+        "@bazel_tools//tools/build_defs/repo:git.bzl",
+        "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "@bazel_tools//tools/build_defs/repo:utils.bzl",
+    ],
+)
+
+bzl_library(
+    name = "rules",
+    srcs = ["rules.bzl"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//internal:extract_file",
+        "//internal:macros",
+        "//internal:prebuilt_library",
+        "//internal:produce_waveform",
+        "//internal:providers",
+        "//internal:toolchain",
+        "//internal:utils",
+        "//internal:vhdl_elaborate",
+        "//internal:vhdl_library",
+        "//internal:vhdl_run",
+        "//internal:vhdl_test",
+    ],
 )

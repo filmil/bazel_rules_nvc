@@ -1,7 +1,99 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
 package(
-    default_visibility=[
+    default_visibility = [
         "//build/nvc:__pkg__",
         "//nvc:__pkg__",
     ],
 )
+
+bzl_library(
+    name = "extract_file",
+    srcs = ["extract_file.bzl"],
+    deps = [
+        ":providers",
+        ":toolchain",
+        ":utils",
+    ],
+)
+
+bzl_library(
+    name = "prebuilt_library",
+    srcs = ["prebuilt_library.bzl"],
+    deps = [
+        ":providers",
+        ":toolchain",
+        ":utils",
+    ],
+)
+
+bzl_library(
+    name = "produce_waveform",
+    srcs = ["produce_waveform.bzl"],
+    deps = [
+        ":providers",
+        ":toolchain",
+        ":utils",
+    ],
+)
+
+bzl_library(
+    name = "toolchain",
+    srcs = ["toolchain.bzl"],
+    deps = [":providers"],
+)
+
+bzl_library(
+    name = "vhdl_elaborate",
+    srcs = ["vhdl_elaborate.bzl"],
+    deps = [
+        ":providers",
+        ":toolchain",
+        ":utils",
+    ],
+)
+
+bzl_library(
+    name = "vhdl_library",
+    srcs = ["vhdl_library.bzl"],
+    deps = [
+        ":providers",
+        ":toolchain",
+        ":utils",
+    ],
+)
+
+bzl_library(
+    name = "vhdl_run",
+    srcs = ["vhdl_run.bzl"],
+    deps = [
+        ":providers",
+        ":toolchain",
+        ":utils",
+    ],
+)
+
+bzl_library(
+    name = "macros",
+    srcs = ["macros.bzl"],
+)
+
+bzl_library(
+    name = "providers",
+    srcs = ["providers.bzl"],
+)
+
+bzl_library(
+    name = "utils",
+    srcs = ["utils.bzl"],
+)
+
+bzl_library(
+    name = "vhdl_test",
+    srcs = ["vhdl_test.bzl"],
+    deps = [
+        ":vhdl_library",
+        ":vhdl_elaborate",
+    ],
+)
+

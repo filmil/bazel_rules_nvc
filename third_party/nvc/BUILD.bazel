@@ -1,5 +1,5 @@
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -11,48 +11,51 @@ build_test(
 )
 
 configure_make(
-  name = "nvc_repo",
-  deps = [
-    "@zlib//:zlib",
-    "@libffi//:libffi",
-    "@zstd//:zstd",
-    "@elfutils//:elfutils",
-  ],
-  build_data = [
-    "@elfutils//:elfutils",
-    "@flex//:flex_exe",
-    "@libffi//:libffi",
-    "@zlib//:zlib",
-    "@zstd//:zstd",
-  ],
-  lib_source = "@nvc//:all_srcs",
-  visibility = ["//visibility:public"],
-  out_binaries = [ "nvc", ],
-  out_data_dirs = [ "lib", "libexec", "man", ],
-  configure_options = [
-    "--disable-llvm",
-  ],
-  targets = ["V=1 install"],
-  install_prefix = "_install",
-  env = {
-    "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
-    "CFLAGS": "-Wno-error=fuse-ld-path",
-    "CXXFLAGS": "-Wno-error=fuse-ld-path",
-    "libffi_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lffi",
-    "libffi_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
-    "libzstd_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lzstd",
-    "libzstd_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
-    "libdw_LIBS": "-L$$EXT_BUILD_DEPS$$/elfutils/lib -ldw -lelf",
-    "libdw_CFLAGS": "-I$$EXT_BUILD_DEPS$$/elfutils/include",
-    "zlib_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lz",
-    "zlib_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
-  },
+    name = "nvc_repo",
+    build_data = [
+        "@elfutils//:elfutils",
+        "@flex//:flex_exe",
+        "@libffi//:libffi",
+        "@zlib//:zlib",
+        "@zstd//:zstd",
+    ],
+    configure_options = [
+        "--disable-llvm",
+    ],
+    env = {
+        "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
+        "CFLAGS": "-Wno-error=fuse-ld-path",
+        "CXXFLAGS": "-Wno-error=fuse-ld-path",
+        "libffi_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lffi",
+        "libffi_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
+        "libzstd_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lzstd",
+        "libzstd_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
+        "libdw_LIBS": "-L$$EXT_BUILD_DEPS$$/elfutils/lib -ldw -lelf",
+        "libdw_CFLAGS": "-I$$EXT_BUILD_DEPS$$/elfutils/include",
+        "zlib_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lz",
+        "zlib_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
+    },
+    install_prefix = "_install",
+    lib_source = "@nvc//:all_srcs",
+    out_binaries = ["nvc"],
+    out_data_dirs = [
+        "lib",
+        "libexec",
+        "man",
+    ],
+    targets = ["V=1 install"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@elfutils",
+        "@libffi",
+        "@zlib",
+        "@zstd",
+    ],
 )
 
 filegroup(
-  name = "compiler",
-  srcs = [":nvc_repo"],
-  output_group = "nvc",
-  visibility = ["//visibility:public"],
+    name = "compiler",
+    srcs = [":nvc_repo"],
+    output_group = "nvc",
+    visibility = ["//visibility:public"],
 )
-
