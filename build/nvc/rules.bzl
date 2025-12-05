@@ -9,6 +9,7 @@ load("//internal:toolchain.bzl",
 load("//internal:vhdl_library.bzl", _vhdl_library = "vhdl_library")
 load("//internal:vhdl_elaborate.bzl", _vhdl_elaborate = "vhdl_elaborate")
 load("//internal:vhdl_run.bzl", _vhdl_run = "vhdl_run")
+load("//internal:macros.bzl", _wave_view = "wave_view")
 
 
 nvc_toolchain = _nvc_toolchain
@@ -16,41 +17,8 @@ vhdl_library = _vhdl_library
 vhdl_elaborate = _vhdl_elaborate
 vhdl_run = _vhdl_run
 
-
-def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None, save_file=None):
-    """
-    Generates a sh_binary viewer.
-
-    Args:
-    - name: the target name.
-    - vhdl_run: the target name for the `vhdl_run` target to
-      use the output from.
-    - args: any additional arguments to add to invoke the viewer.
-    - viewer: the viewer to invoke. The viewer must be compatible
-      with the file format to view, and must be installed on the
-      host.
-    """
-    _args = [
-          "--viewer-binary={}".format(viewer),
-          "--wave-file=$(location {})".format(vhdl_run),
-          "--",
-    ] + args
-    _data = [
-          "@gotopt2//:bin",
-          vhdl_run,
-        ] + deps
-    if save_file:
-        _args += ["--save=$(location {})".format(save_file)]
-        _data += [save_file]
-    native.sh_binary(
-        testonly = testonly,
-        name = name,
-        srcs = [Label("//build/nvc:run_wave_view")],
-        deps = ["@bazel_tools//tools/bash/runfiles"],
-        args = _args,
-        data = _data,
-        visibility = ["//visibility:public"],
-    )
+# Macros
+wave_view = _wave_view
 
 
 def _produce_waveform(ctx):
