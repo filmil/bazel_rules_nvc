@@ -1,5 +1,5 @@
 load("@bazel_rules_nvc//build/nvc:rules.bzl", "nvc_toolchain")
-load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_lib//:bzl_library.bzl", "bzl_library")
 
 toolchain_type(name = "toolchain_type")
 
@@ -54,6 +54,10 @@ bzl_library(
         "@bazel_tools//tools/build_defs/repo:git.bzl",
         "@bazel_tools//tools/build_defs/repo:http.bzl",
         "@bazel_tools//tools/build_defs/repo:utils.bzl",
+
+        # Not sure why these have to be here for doc extract to work.
+        "@bazel_tools//tools/build_defs/repo:cache.bzl",
+        "@bazel_tools//tools/build_defs/repo:git_worker.bzl",
     ],
 )
 
