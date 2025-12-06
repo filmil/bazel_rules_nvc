@@ -11,9 +11,9 @@ VHDLLibraryProvider = provider(
     fields = {
         "libraries": "List[(string, File)]: a mapping from a library name to dir location, " +
         "contains both this library and deps and does not repeat keys",
-        "entities": "The entities emmphasized in this library.",
-        "library_name": "The name of the library such as `ieee`",
-        "library_dir": "The directory where the library is located.",
+        "entities": "List[string]: The entities emmphasized in this library.",
+        "library_name": "string: The name of the library such as `ieee`",
+        "library_dir": "string: The directory where the library is located.",
     },
 )
 
