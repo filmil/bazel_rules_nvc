@@ -14,7 +14,7 @@ def _impl(ctx):
 
     # Find the container directory.
     transitive_deps = []
-    library_dir = ctx.attr.library_dir
+    library_dir = ctx.file.library_dir
     libraries = [(library_name, library_dir)]
 
     seen_libraries = [library_name]
@@ -56,7 +56,7 @@ prebuilt_library = rule(
         "library_dir": attr.label(
             doc = "The library directory, used to short-circuit directory detection",
             mandatory = True,
-            allow_files = True,
+            allow_single_file = True,
         ),
         "srcs": attr.label_list(
             allow_files = True,
