@@ -34,8 +34,7 @@ def _vhdl_library(ctx):
         vhdl_provider = target[VHDLLibraryProvider]
         all_libraries += vhdl_provider.libraries
         for name, path in vhdl_provider.libraries:
-            print("name,path = ", name, path)
-            flag_libraries += ["--map={name}:{path}".format(path=path, name=name)]
+            flag_libraries += ["--map={name}:{path}/{name}".format(path=path.path, name=name)]
             seen += [name]
 
 
