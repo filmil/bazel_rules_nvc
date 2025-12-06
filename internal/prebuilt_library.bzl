@@ -14,16 +14,7 @@ def _impl(ctx):
 
     # Find the container directory.
     transitive_deps = []
-    library_dir = None
-    for target in ctx.attr.srcs:
-        transitive_deps += [target.files]
-        for file in target.files.to_list():
-            file_dir = file.dirname
-            if library_dir and file_dir != library_dir:
-                fail("a single prebuilt library must be in the same dir: {}; {}".format(
-                    library_dir, file_dir
-                ))
-            library_dir = file_dir
+    library_dir = ctx.attr.library_dir
     libraries = [(library_name, library_dir)]
 
     seen_libraries = [library_name]
@@ -34,6 +25,7 @@ def _impl(ctx):
         provider = target[VHDLLibraryProvider]
         target_libraries = provider.libraries
         for name, path in provider.libraries:
+            print(name, path)
             if name not in seen_libraries:
                 libraries += [(name, path)]
                 seen += [name]
@@ -61,6 +53,11 @@ prebuilt_library = rule(
         "library_name": attr.string(
             doc = "The official library name, in case target name is not appropriate. Target name is used if not specified.",
         ),
+        "library_dir": attr.label(
+            doc = "The library directory, used to short-circuit directory detection",
+            mandatory = True,
+            allow_files = True,
+        ),
         "srcs": attr.label_list(
             allow_files = True,
             doc = "The list of source targets that comprise this prebuilt library.",
@@ -75,7 +72,6 @@ prebuilt_library = rule(
         ),
         "standard": attr.string(
             doc = "The HDL language standard to use. For VHDL it is the standard version, such as 1993, or 2008, or 2019",
-            default = _VHDL_STANDARD_DEFAULT,
         ),
     },
 )
