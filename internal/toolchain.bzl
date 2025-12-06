@@ -2,7 +2,7 @@ load("//internal:providers.bzl", "NVCInfo")
 
 NVC_TOOLCHAIN_TYPE = "@bazel_rules_nvc//build/nvc:toolchain_type"
 NVC_WRAPPER = Label("@bazel_rules_nvc//build/nvc:nvc_wrapper")
-VHDL_STANDARD_DEFAULT = "2019"
+VHDL_STANDARD_DEFAULT = "2008"
 
 
 def _nvc_toolchain_impl(ctx):
