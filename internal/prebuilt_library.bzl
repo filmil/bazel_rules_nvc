@@ -15,7 +15,7 @@ def _impl(ctx):
     # Find the container directory.
     transitive_deps = []
     library_dir = None
-    for target in ctx.attr.targets:
+    for target in ctx.attr.srcs:
         transitive_deps += [target.files]
         for file in target.files.to_list():
             file_dir = file.dirname
