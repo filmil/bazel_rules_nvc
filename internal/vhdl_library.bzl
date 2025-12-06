@@ -26,21 +26,22 @@ def _vhdl_library(ctx):
 
     all_libraries = []
     flag_libraries = []
-    deps_paths = []
+    deps_files = []
     seen = []
-    for dep in ctx.attr.deps:
-        # dep is a Target
-        vhdl_provider = dep[VHDLLibraryProvider]
+    for target in ctx.attr.deps:
+        default_info = target[DefaultInfo]
+        deps_files += default_info.files.to_list()
+        vhdl_provider = target[VHDLLibraryProvider]
         all_libraries += vhdl_provider.libraries
         for name, path in vhdl_provider.libraries:
-            flag_libraries += ["-L", "{}".format(path.path, name)]
-            deps_paths += [path]
+            print("name,path = ", name, path)
+            flag_libraries += ["--map={name}:{path}".format(path=path, name=name)]
             seen += [name]
 
 
     ctx.actions.run(
         outputs = [container_dir],
-        inputs = srcs + deps_paths,
+        inputs = srcs + deps_files,
         executable =  analyzer, # how do I get its path?
         arguments = [
           "--std={}".format(ctx.attr.standard),
