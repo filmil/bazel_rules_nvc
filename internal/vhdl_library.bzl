@@ -11,7 +11,7 @@ def _vhdl_library(ctx):
     nvc_info = ctx.toolchains[_NVC_TOOLCHAIN_TYPE].nvc_info
     analyzer_x = nvc_info.analyzer.files.to_list()[0]
     analyzer = analyzer_x.path
-    library_name = ctx.attr.name
+    library_name = ctx.attr.library_name or ctx.attr.name
     container_dir = ctx.actions.declare_directory(
         "{}".format(library_name)
     )
@@ -71,6 +71,9 @@ def _vhdl_library(ctx):
 vhdl_library = rule(
     implementation = _vhdl_library,
     attrs = {
+        "library_name": attr.string(
+            doc = "If the target name is not appropriate as a library name, provide one here",
+        ),
         "srcs": attr.label_list(
             allow_files = [".vhdl", ".vhd"],
         ),
