@@ -24,6 +24,8 @@ jobs:
           submodules: 'true'
       - name: Build everything
         run: "bazel build //..."
+      - name: Test everything
+        run: "bazel test //..."
       - name: Build NVC
         run: "bazel build //build/tests/nvc-toolchain/..."
       - name: Integration build
