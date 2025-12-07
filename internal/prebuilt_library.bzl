@@ -14,8 +14,8 @@ def _impl(ctx):
 
     # Find the container directory.
     transitive_deps = []
-    library_dir = ctx.file.library_dir
-    libraries = [(library_name, library_dir)]
+    container_dir = ctx.file.container_dir
+    libraries = [(library_name, container_dir)]
 
     seen_libraries = [library_name]
     transitive_runfiles = []
@@ -31,7 +31,7 @@ def _impl(ctx):
                 seen += [name]
 
     # Find all depset files.
-    files = depset([], transitive=transitive_deps)
+    files = depset(ctx.files.srcs, transitive=transitive_deps)
     runfiles = runfiles.merge_all(transitive_runfiles)
     return [
         DefaultInfo(
@@ -42,7 +42,7 @@ def _impl(ctx):
             libraries=libraries,
             entities = [],
             library_name=library_name,
-            library_dir=library_dir,
+            library_dir=container_dir,
         ),
     ]
 
@@ -53,10 +53,13 @@ prebuilt_library = rule(
         "library_name": attr.string(
             doc = "The official library name, in case target name is not appropriate. Target name is used if not specified.",
         ),
-        "library_dir": attr.label(
+        "container_dir": attr.label(
             doc = "The library directory, used to short-circuit directory detection",
             mandatory = True,
             allow_single_file = True,
+        ),
+        "library_remapped_name": attr.string(
+            doc = "Usually `unisim.08` for `unisim` when used with `standard=2008`",
         ),
         "srcs": attr.label_list(
             allow_files = True,

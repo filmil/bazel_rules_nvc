@@ -4,6 +4,12 @@ NVC_TOOLCHAIN_TYPE = "@bazel_rules_nvc//build/nvc:toolchain_type"
 NVC_WRAPPER = Label("@bazel_rules_nvc//build/nvc:nvc_wrapper")
 VHDL_STANDARD_DEFAULT = "2008"
 
+STANDARD_TO_SUFFIX = {
+    "1992": "",
+    "2008": ".08",
+    "2019": ".19",
+}
+
 
 def _nvc_toolchain_impl(ctx):
   toolchain_info = platform_common.ToolchainInfo(
