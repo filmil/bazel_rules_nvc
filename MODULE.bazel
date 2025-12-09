@@ -38,6 +38,10 @@ http_archive(
     urls = [
         "https://github.com/nickg/nvc/releases/download/r1.18.2/nvc-1.18.2.tar.gz",
     ],
+    patch_strip = 1,
+    patches = [
+        "//third_party/nvc:0001.patch",
+    ],
 )
 register_toolchains("//build/nvc:nvc_linux_toolchain")
 
