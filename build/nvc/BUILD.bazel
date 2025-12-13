@@ -1,6 +1,7 @@
 load("@bazel_rules_nvc//build/nvc:rules.bzl", "nvc_toolchain")
 load("@bazel_lib//:bzl_library.bzl", "bzl_library")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+load("@rules_shell//shell:sh_library.bzl", "sh_library")
 
 toolchain_type(name = "toolchain_type")
 
@@ -36,7 +37,7 @@ sh_binary(
 
 exports_files(["unittest.tpl.sh", "run_wave_view.sh"])
 
-sh_binary(
+sh_library(
     name = "run_wave_view",
     srcs = ["run_wave_view.sh"],
     data = [

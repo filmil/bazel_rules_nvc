@@ -7,6 +7,8 @@ package(
     ],
 )
 
+exports_files(["file_shunt.bash"])
+
 bzl_library(
     name = "extract_file",
     srcs = ["extract_file.bzl"],
