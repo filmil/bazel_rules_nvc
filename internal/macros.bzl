@@ -30,7 +30,12 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None,
         testonly = testonly,
         name = name,
         srcs = [
-            "file_shunt.bash",
+            # This is necessary because run_wave_view below is multi-file, and
+            # multi-file can not be in `sh_binary` srcs.
+            # Using `Label` here so that the string "file_shunt.bash" refers
+            # to the file where macro is defined, not the file in the dir where
+            # the macro is invoked.
+            Label("file_shunt.bash"),
         ],
         deps = [
             "@bazel_tools//tools/bash/runfiles",
