@@ -29,8 +29,14 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None,
     native.sh_binary(
         testonly = testonly,
         name = name,
-        srcs = [Label("//build/nvc:run_wave_view")],
-        deps = ["@bazel_tools//tools/bash/runfiles"],
+        srcs = [
+            "file_shunt.bash",
+        ],
+        deps = [
+            "@bazel_tools//tools/bash/runfiles",
+            Label("//build/nvc:run_wave_view"),
+            "@fshlib//:log",
+        ],
         args = _args,
         data = _data,
         visibility = ["//visibility:public"],
