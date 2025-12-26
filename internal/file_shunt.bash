@@ -25,10 +25,10 @@ fi
 
 source "$(rlocation fshlib/log.bash)"
 
-_script="$(rlocation build/nvc/run_wave_view)"
+readonly _script="$(rlocation bazel_rules_nvc/build/nvc/run_wave_view.sh)"
 
 if [[ ! -x "${_script}" ]]; then
-  log::error "could not nfind the wave view script"
+  log::error "could not find the wave view script: ${_script}"
   exit 1
 fi
 
