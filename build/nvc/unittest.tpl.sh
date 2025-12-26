@@ -5,7 +5,7 @@
 # Entity:        {{ENTITY}}
 # VHDL Standard: {{VHDL_STANDARD}}
 set -eo pipefail
-export TMPDIR=\"$TEST_TMPDIR\"
+export TMPDIR="$TEST_TMPDIR"
 
 readonly wave_file="${TEST_UNDECLARED_OUTPUTS_DIR}/{{WAVE_FILE}}"
 

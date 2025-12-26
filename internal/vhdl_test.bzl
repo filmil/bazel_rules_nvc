@@ -67,7 +67,7 @@ def _vhdl_test(ctx):
             "{{ENTITY}}": elaborate_provider.entity,
             "{{LIB_DIR_IN_PATH}}": vhdl_provider.library_dir.short_path,
             "{{LIB_DIR_OUT_PATH}}": work_library_file.short_path,
-            "{{WAVE_FILE}}": "{}.gtkwave".format(ctx.attr.name),
+            "{{WAVE_FILE}}": "{}.fst".format(ctx.attr.name),
         },
     )
     return [DefaultInfo(runfiles=runfiles)]
