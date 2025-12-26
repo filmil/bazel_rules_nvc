@@ -250,6 +250,8 @@
     "https://raw.githubusercontent.com/filmil/bazel-registry/main/modules/buildozer/7.1.2/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/filmil/bazel-registry/main/modules/elfutils/0.4.4/MODULE.bazel": "98f50b91c076f25f3ecfb01d156e6e5d5205478822e3929f599f9aa0440dafa2",
     "https://raw.githubusercontent.com/filmil/bazel-registry/main/modules/elfutils/0.4.4/source.json": "c42d06ab11f70009134c7d40a3d27dfa721be5e493e7e0e7e8aedd6df74675e0",
+    "https://raw.githubusercontent.com/filmil/bazel-registry/main/modules/fshlib/0.1.5/MODULE.bazel": "21d8bcd8b35d1d5d9d031ec3da87154f7c2d75926e991596145e8d8d18015b4b",
+    "https://raw.githubusercontent.com/filmil/bazel-registry/main/modules/fshlib/0.1.5/source.json": "ff63b2cb4c6ce07733822620122e9747d174d37fd91e7c49e0efbb47a711f5c2",
     "https://raw.githubusercontent.com/filmil/bazel-registry/main/modules/gazelle/0.32.0/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/filmil/bazel-registry/main/modules/gazelle/0.33.0/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/filmil/bazel-registry/main/modules/gazelle/0.34.0/MODULE.bazel": "not found",
