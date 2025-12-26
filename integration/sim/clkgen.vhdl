@@ -1,5 +1,3 @@
--- Google proprietary.
-
 library ieee; use ieee.std_logic_1164.all;
 
 -- clkgen generates a clock with the supplied clock period.
@@ -24,7 +22,7 @@ begin
 
     gen: process is
     begin
-        clk <= '0' when rst = '1' 
+        clk <= '0' when rst = '1'
                else '0' after clock_period / 2, '1' after clock_period;
         wait for clock_period;
     end process;

@@ -100,22 +100,29 @@ _vhdl_internal_test = rule(
 )
 
 
-def vhdl_test(name, srcs, deps, args=[], entity=None):
-    vhdl_library_name = "{}_lib".format(name)
-    vhdl_library(
-        name = vhdl_library_name,
-        srcs = srcs,
-        deps = deps,
-    )
-    e = "{}_tb".format(name)
+def vhdl_test(name, srcs, deps, args=[], entity=None, entities=[]):
+    entity_list = []
     if entity:
-        e = entity
-    vhdl_elaborate(
-        name = e,
-        library = ":{}".format(vhdl_library_name)
-    )
-    _vhdl_internal_test(
-        name = name,
-        entity = ":{}".format(e),
-        args = args,
-    )
+        entity_list += [entity]
+    entity_list += entities
+
+    for entity in entity_list:
+        # Strictly speaking this is not correct, since we're compiling the same
+        # library twice.
+        vhdl_library_name = "{name}_{entity}_lib".format(name=name,entity=entity)
+        vhdl_library(
+            name = vhdl_library_name,
+            srcs = srcs,
+            deps = deps,
+        )
+        e = "{entity}".format(entity=entity)
+        vhdl_elaborate(
+            name = e,
+            library = ":{}".format(vhdl_library_name)
+        )
+        _vhdl_internal_test(
+            name = "{name}_{entity}_test".format(name=name,entity=entity),
+            entity = ":{}".format(e),
+            args = args,
+        )
+
