@@ -76,6 +76,10 @@ flags:
 - name: "library-dir-out-path"
   type: string
   help: "The path to the library directory"
+- name: "wave-format"
+  type: string
+  default: ""
+  help: "For run operations, defines the wave format: vcd|fst|''"
 EOF
 )
 if [[ "$?" == "11" ]]; then
@@ -128,6 +132,11 @@ if [[ "${gotopt2_library_dir_in_path}" \
   chmod a+rw --recursive "${gotopt2_library_dir_out_path}"
 fi
 
+_format=""
+if [[ "${gotopt2_wave_format}" != "" ]]; then
+  _format="--format=${gotopt2_wave_format}"
+fi
+
 # The NVC conventions around directory naming don't interact
 # well with bazel
 readonly _nvc_lib_path="${gotopt2_library_dir_out_path}/${gotopt2_library_name}/${gotopt2_library_name}"
@@ -137,6 +146,6 @@ readonly _nvc_lib_path="${gotopt2_library_dir_out_path}/${gotopt2_library_name}/
   -L "${gotopt2_stdlib_dir}/nvc" \
   ${gotopt2_library_paths} \
   --work="${gotopt2_library_name}:${_nvc_lib_path}" \
-  "${gotopt2_cmd}" "${gotopt2_entity}" \
+  "${gotopt2_cmd}" ${_format} "${gotopt2_entity}" \
   ${gotopt2_args__[@]}
 
