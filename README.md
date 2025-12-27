@@ -169,5 +169,6 @@ vhdl_test(
 ## Hermeticity
 
 * Hermeticity in this repository is best effort.
+* `nvc` is built from source. This may last a *long* time.
 * At the moment I believe that the remaining non-hermetic dependency
   is `llvm-config`.
