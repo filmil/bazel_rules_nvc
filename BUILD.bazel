@@ -18,7 +18,7 @@ bzl_library(
     name = "macros",
     srcs = ["macros.bzl"],
     visibility = ["//visibility:public"],
-    deps = ["@bazel_rules_nvc//build/nvc:rules"],
+    deps = ["//build/nvc:rules"],
 )
 
 sh_test(
