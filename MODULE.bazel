@@ -1,5 +1,5 @@
 module(
-    name = "bazel_rules_nvc",
+    name = "rules_nvc",
     version = "0.0.0",
 )
 

@@ -1,5 +1,5 @@
 load(
-    "@bazel_rules_nvc//build/nvc:rules.bzl",
+    "@rules_nvc//build/nvc:rules.bzl",
     "vhdl_elaborate",
     "vhdl_library",
     "vhdl_run",

@@ -1,4 +1,4 @@
-# bazel_rules_nvc
+# rules_nvc
 
 [![Build](https://github.com/filmil/bazel_rules_nvc/actions/workflows/build.yml/badge.svg)](https://github.com/filmil/bazel_rules_nvc/actions/workflows/build.yml)
 [![Publish on Bazel Central Registry](https://github.com/filmil/bazel_rules_nvc/actions/workflows/publish-bcr.yml/badge.svg)](https://github.com/filmil/bazel_rules_nvc/actions/workflows/publish-bcr.yml)

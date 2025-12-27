@@ -1,6 +1,4 @@
-load("@bazel_rules_nvc//build/nvc:rules.bzl",
-    "vhdl_run", "vhdl_elaborate", "vhdl_library",
-)
+load("//build/nvc:rules.bzl", "vhdl_run", "vhdl_elaborate", "vhdl_library")
 
 def vhdl_testbench(name, srcs, deps, entity=None, args=[]):
     vhdl_library_name = "{}_lib".format(name)

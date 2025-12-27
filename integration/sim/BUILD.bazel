@@ -1,4 +1,4 @@
-load("@bazel_rules_nvc//build/nvc:rules.bzl", "vhdl_elaborate", "vhdl_library", "vhdl_run", "vhdl_test")
+load("@rules_nvc//build/nvc:rules.bzl", "vhdl_elaborate", "vhdl_library", "vhdl_run", "vhdl_test")
 
 vhdl_library(
     name = "sim",
