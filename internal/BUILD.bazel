@@ -76,6 +76,25 @@ bzl_library(
 )
 
 bzl_library(
+    name = "vhdl_test",
+    srcs = ["vhdl_test.bzl"],
+    deps = [
+        ":vhdl_elaborate",
+        ":vhdl_library",
+    ],
+)
+
+bzl_library(
+    name = "verilog_library",
+    srcs = ["verilog_library.bzl"],
+    deps = [
+        ":providers",
+        ":toolchain",
+        ":utils",
+    ],
+)
+
+bzl_library(
     name = "macros",
     srcs = ["macros.bzl"],
 )
@@ -89,13 +108,3 @@ bzl_library(
     name = "utils",
     srcs = ["utils.bzl"],
 )
-
-bzl_library(
-    name = "vhdl_test",
-    srcs = ["vhdl_test.bzl"],
-    deps = [
-        ":vhdl_library",
-        ":vhdl_elaborate",
-    ],
-)
-

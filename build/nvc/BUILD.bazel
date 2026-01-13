@@ -1,7 +1,7 @@
-load("//build/nvc:rules.bzl", "nvc_toolchain")
 load("@bazel_lib//:bzl_library.bzl", "bzl_library")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 load("@rules_shell//shell:sh_library.bzl", "sh_library")
+load("//build/nvc:rules.bzl", "nvc_toolchain")
 
 toolchain_type(name = "toolchain_type")
 
@@ -30,12 +30,18 @@ sh_binary(
     srcs = ["nvc_wrapper.sh"],
     data = [
         "@gotopt2//:bin",
+        "//third_party/nvc:compiler",
     ],
     visibility = ["//visibility:public"],
-    deps = ["@bazel_tools//tools/bash/runfiles"],
+    deps = [
+        "@bazel_tools//tools/bash/runfiles"
+    ],
 )
 
-exports_files(["unittest.tpl.sh", "run_wave_view.sh"])
+exports_files([
+    "unittest.tpl.sh",
+    "run_wave_view.sh",
+])
 
 sh_library(
     name = "run_wave_view",
@@ -75,6 +81,7 @@ bzl_library(
         "//internal:providers",
         "//internal:toolchain",
         "//internal:utils",
+        "//internal:verilog_library",
         "//internal:vhdl_elaborate",
         "//internal:vhdl_library",
         "//internal:vhdl_run",

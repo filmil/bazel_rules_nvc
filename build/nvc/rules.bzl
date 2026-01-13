@@ -16,6 +16,8 @@ load("//internal:vhdl_library.bzl", _vhdl_library = "vhdl_library")
 load("//internal:vhdl_run.bzl", _vhdl_run = "vhdl_run")
 load("//internal:vhdl_test.bzl", _vhdl_test = "vhdl_test")
 
+load("//internal:verilog_library.bzl", _verilog_library = "verilog_library")
+
 
 # The main API
 nvc_toolchain = _nvc_toolchain
@@ -26,6 +28,8 @@ produce_waveform = _produce_waveform
 extract_file = _extract_file
 prebuilt_library = _prebuilt_library
 vhdl_test = _vhdl_test
+
+verilog_library = _verilog_library
 
 
 # Macros

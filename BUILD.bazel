@@ -23,8 +23,8 @@ bzl_library(
 
 sh_test(
     name = "test",
+    size = "small",
     srcs = [
         "test.bash",
     ],
-    size = "small",
 )
