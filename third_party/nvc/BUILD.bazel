@@ -54,8 +54,17 @@ configure_make(
 )
 
 filegroup(
-    name = "compiler",
+    name = "compiler_x",
     srcs = [":nvc_repo"],
     output_group = "nvc",
+    visibility = ["//visibility:public"],
+)
+
+genrule(
+    name = "compiler",
+    cmd = "cp $(location :compiler_x) $@",
+    executable = True,
+    outs = ["compiler.sh"],
+    srcs =[":compiler_x"],
     visibility = ["//visibility:public"],
 )
