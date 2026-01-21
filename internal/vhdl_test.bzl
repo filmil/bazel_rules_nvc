@@ -100,7 +100,7 @@ _vhdl_internal_test = rule(
 )
 
 
-def vhdl_test(name, srcs, deps, args=[], entity=None, entities=[]):
+def vhdl_test(name, srcs, deps, standard="2008", args=[], entity=None, entities=[]):
     entity_list = []
     if entity:
         entity_list += [entity]
@@ -114,15 +114,18 @@ def vhdl_test(name, srcs, deps, args=[], entity=None, entities=[]):
             name = vhdl_library_name,
             srcs = srcs,
             deps = deps,
+            standard = standard,
         )
         e = "{entity}".format(entity=entity)
         vhdl_elaborate(
             name = e,
-            library = ":{}".format(vhdl_library_name)
+            library = ":{}".format(vhdl_library_name),
+            standard = standard,
         )
         _vhdl_internal_test(
             name = "{name}_{entity}_test".format(name=name,entity=entity),
             entity = ":{}".format(e),
             args = args,
+            standard = standard,
         )
 
