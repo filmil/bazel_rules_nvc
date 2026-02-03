@@ -14,6 +14,7 @@ configure_make(
     name = "nvc_repo",
     build_data = [
         "@elfutils//:elfutils",
+        "@flex//:flex_exe",
         "@libffi//:libffi",
         "@zlib//:zlib",
         "@zstd//:zstd",
@@ -22,7 +23,7 @@ configure_make(
         "--disable-llvm",
     ],
     env = {
-        "PATH": "$$PATH",
+        "PATH": "$$(dirname $$EXT_BUILD_ROOT$$/$(location @flex//:flex_exe)):$$PATH",
         "CFLAGS": "-Wno-error=fuse-ld-path",
         "CXXFLAGS": "-Wno-error=fuse-ld-path",
         "libffi_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lffi",
@@ -33,7 +34,6 @@ configure_make(
         "libdw_CFLAGS": "-I$$EXT_BUILD_DEPS$$/elfutils/include",
         "zlib_LIBS": "-L$$EXT_BUILD_DEPS$$/lib -lz",
         "zlib_CFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
-        "FLEX": "$(FLEX)",
     },
     install_prefix = "_install",
     lib_source = "@nvc//:all_srcs",
@@ -50,9 +50,6 @@ configure_make(
         "@libffi",
         "@zlib",
         "@zstd",
-    ],
-    toolchains = [
-        "@rules_flex//flex:current_flex_toolchain",
     ],
 )
 

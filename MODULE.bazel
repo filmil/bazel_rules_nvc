@@ -7,22 +7,19 @@ module(
 bazel_dep(name = "bazel_lib", version = "3.0.0")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
 bazel_dep(name = "bazel_skylib_gazelle_plugin", version = "1.8.2")
-bazel_dep(name = "elfutils", version = "1.0.0")
-bazel_dep(name = "fshlib", version = "0.2.0")
+bazel_dep(name = "elfutils", version = "0.4.4")
+bazel_dep(name = "fshlib", version = "0.1.5")
 bazel_dep(name = "gazelle", version = "0.47.0")
 bazel_dep(name = "gotopt2", version = "2.2.2")
 bazel_dep(name = "libffi", version = "3.4.7.bcr.3")
 bazel_dep(name = "platforms", version = "1.0.0")
-bazel_dep(name = "rules_cc", version = "0.2.14")
+bazel_dep(name = "rules_cc", version = "0.2.8")
 bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
 bazel_dep(name = "rules_shell", version = "0.6.1")
 bazel_dep(name = "zlib", version = "1.3.1.bcr.7")
 bazel_dep(name = "zstd", version = "1.5.7")
-bazel_dep(name = "rules_m4", version = "0.3")
-bazel_dep(name = "rules_flex", version = "0.4")
 
 
-# Required to build NVC, since it depends on LLVM libraries.
 bazel_dep(name = "toolchains_llvm", version = "1.5.0", dev_dependency = True)
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
 llvm.toolchain(
@@ -49,4 +46,7 @@ http_archive(
 )
 register_toolchains("//build/nvc:nvc_linux_toolchain")
 
+
+third_party_ext = use_extension("//third_party:repositories.bzl", "extension")
+use_repo(third_party_ext, "flex", "m4")
 
