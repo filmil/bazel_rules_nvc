@@ -18,7 +18,7 @@ VHDLLibraryProvider = provider(
         we have to have a container dir, which contains the library instead. So the actual
         library directory would be $library_dir/$library_name. Sigh.
         """,
-        "includes": "List[string: list of directories to include for verilog",
+        "includes": "List[string]: list of directories to include for verilog",
     },
 )
 
