@@ -30,11 +30,13 @@ def _impl(ctx):
     include_dirs_only = []
     deps_files = []
     seen = []
+    deps_hdrs_depset = []
     for target in ctx.attr.deps:
         default_info = target[DefaultInfo]
         deps_files += default_info.files.to_list()
         vhdl_provider = target[VHDLLibraryProvider]
         all_libraries += vhdl_provider.libraries
+        deps_hdrs_depset += [vhdl_provider.hdrs]
         for name, path in vhdl_provider.libraries:
             flag_libraries += ["-L", "{path}".format(path=path.path)]
             seen += [name]
@@ -44,10 +46,16 @@ def _impl(ctx):
     for include_dir in ctx.attr.includes:
         include_dirs += ["-I", include_dir]
         include_dirs_only += [include_dir]
+    for hdr_file in ctx.files.hdrs:
+        hdr_dir = hdr_file.dirname
+        include_dirs += ["-I", hdr_dir]
+        include_dirs_only += [hdr_dir]
+
+    all_hdrs_files = depset([], transitive=deps_hdrs_depset).to_list()
 
     ctx.actions.run(
         outputs = [container_dir],
-        inputs = srcs + deps_files,
+        inputs = srcs + deps_files + ctx.files.hdrs + all_hdrs_files,
         executable =  analyzer, # how do I get its path?
         arguments = [
           "--std={}".format(ctx.attr.standard),
@@ -72,6 +80,7 @@ def _impl(ctx):
             library_name = library_name,
             library_dir = container_dir,
             includes = include_dirs_only,
+            hdrs = depset(ctx.files.hdrs, transitive=deps_hdrs_depset)
         ),
         DefaultInfo(files = depset([container_dir]))
     ]
@@ -84,6 +93,9 @@ verilog_library = rule(
             doc = "If the target name is not appropriate as a library name, provide one here",
         ),
         "srcs": attr.label_list(
+            allow_files = [".v", ".vh", ".sv", ".svh"],
+        ),
+        "hdrs": attr.label_list(
             allow_files = [".v", ".vh", ".sv", ".svh"],
         ),
         "deps": attr.label_list(),
