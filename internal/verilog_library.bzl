@@ -27,6 +27,7 @@ def _impl(ctx):
     all_libraries = []
     flag_libraries = []
     include_dirs = []
+    include_dirs_only = []
     deps_files = []
     seen = []
     for target in ctx.attr.deps:
@@ -39,9 +40,10 @@ def _impl(ctx):
             seen += [name]
         for include_dir in vhdl_provider.includes:
             include_dirs += ["-I", include_dir]
+            include_dirs_only += [include_dir]
     for include_dir in ctx.attr.includes:
         include_dirs += ["-I", include_dir]
-
+        include_dirs_only += [include_dir]
 
     ctx.actions.run(
         outputs = [container_dir],
@@ -69,6 +71,7 @@ def _impl(ctx):
             entities = ctx.attr.entities,
             library_name = library_name,
             library_dir = container_dir,
+            includes = include_dirs_only,
         ),
         DefaultInfo(files = depset([container_dir]))
     ]
