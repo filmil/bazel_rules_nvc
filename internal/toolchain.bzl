@@ -2,7 +2,7 @@ load("//internal:providers.bzl", "NVCInfo")
 
 NVC_TOOLCHAIN_TYPE = "@rules_nvc//build/nvc:toolchain_type"
 NVC_WRAPPER = Label("@rules_nvc//build/nvc:nvc_wrapper")
-VHDL_STANDARD_DEFAULT = "2008"
+VHDL_STANDARD_DEFAULT = "2019"
 
 STANDARD_TO_SUFFIX = {
     "1992": "",

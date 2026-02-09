@@ -100,7 +100,8 @@ _vhdl_internal_test = rule(
 )
 
 
-def vhdl_test(name, srcs, deps, standard="2008", args=[], entity=None, entities=[]):
+def vhdl_test(name, srcs, deps,
+    standard=_VHDL_STANDARD_DEFAULT, args=[], entity=None, entities=[]):
     entity_list = []
     if entity:
         entity_list += [entity]
