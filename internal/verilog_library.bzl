@@ -36,6 +36,10 @@ def _impl(ctx):
         for name, path in vhdl_provider.libraries:
             flag_libraries += ["-L", "{path}".format(path=path.path)]
             seen += [name]
+        for dir_item in vhdl_provider.includes:
+            flag_libraries += ["-I", dir_item]
+    for include_dir in ctx.attr.includes:
+        flag_libraries += ["-I", include_dir]
 
 
     ctx.actions.run(
@@ -82,6 +86,9 @@ verilog_library = rule(
         "entities": attr.string_list(),
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
+        ),
+        "includes": attr.string_list(
+            doc = "list of verilog include directories",
         ),
     },
     toolchains = [
