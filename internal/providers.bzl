@@ -19,6 +19,7 @@ VHDLLibraryProvider = provider(
         library directory would be $library_dir/$library_name. Sigh.
         """,
         "includes": "List[string]: list of directories to include for verilog",
+        "hdrs": "depset[string]: list of include files for verilog",
     },
 )
 
