@@ -1,3 +1,5 @@
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
 
 def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None, save_file=None):
     """
@@ -26,7 +28,7 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None,
     if save_file:
         _args += ["--save=$(location {})".format(save_file)]
         _data += [save_file]
-    native.sh_binary(
+    sh_binary(
         testonly = testonly,
         name = name,
         srcs = [
