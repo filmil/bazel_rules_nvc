@@ -42,3 +42,9 @@ license copied from its source distribution.
 Follow standard Bazel Central Registry (BCR) publishing procedures.
 Update the `version` parameter in the `module` statement in `MODULE.bazel` when releasing.
 Add `@bazel-io skip_check unstable_url` at the end of the PR description for BCR.
+
+# Build and test
+
+* To test, test both the "main" repo and the "integration" repo.
+  * To test main repo: `bazel build //... && bazel test //...`
+  * To test integration repo: `cd integration && bazel build //... && bazel test //...`
