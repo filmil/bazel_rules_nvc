@@ -23,12 +23,11 @@ else
 fi
 # --- end runfiles.bash initialization ---
 
-source "$(rlocation fshlib/log.bash)"
-
-readonly _script="$(rlocation rules_nvc/build/nvc/run_wave_view.sh)"
+source "$(rlocation fshlib+/log.bash)"
+readonly _script="$(rlocation rules_nvc+/build/nvc/run_wave_view.sh)"
 
 if [[ ! -x "${_script}" ]]; then
-  log::error "could not find the wave view script: ${_script}"
+  log::error "could not find the wave view script: '${_script}'"
   exit 1
 fi
 
