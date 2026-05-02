@@ -12,7 +12,9 @@ load("@rules_nvc//third_party:repositories.bzl", "repositories")
 repositories()
 </pre>
 
+Declares the external repositories required by the `rules_nvc` module.
 
+This function sets up the `http_archive` for third-party tools like `m4` and `flex`.
 
 
 

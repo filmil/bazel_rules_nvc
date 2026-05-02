@@ -12,13 +12,13 @@ load("@rules_nvc//internal:providers.bzl", "ElaborateProvider")
 ElaborateProvider(<a href="#ElaborateProvider-entity">entity</a>)
 </pre>
 
-TBD
+Provides information about an elaborated VHDL entity.
 
 **FIELDS**
 
 | Name  | Description |
 | :------------- | :------------- |
-| <a id="ElaborateProvider-entity"></a>entity |  -    |
+| <a id="ElaborateProvider-entity"></a>entity |  string: The name of the elaborated entity.    |
 
 
 <a id="NVCInfo"></a>
@@ -31,14 +31,14 @@ load("@rules_nvc//internal:providers.bzl", "NVCInfo")
 NVCInfo(<a href="#NVCInfo-analyzer">analyzer</a>, <a href="#NVCInfo-artifacts_dir">artifacts_dir</a>)
 </pre>
 
-Information on how to run NVC for VHDL analysis, elaboration and sim
+Information on how to run NVC for VHDL analysis, elaboration and simulation.
 
 **FIELDS**
 
 | Name  | Description |
 | :------------- | :------------- |
-| <a id="NVCInfo-analyzer"></a>analyzer |  -    |
-| <a id="NVCInfo-artifacts_dir"></a>artifacts_dir |  -    |
+| <a id="NVCInfo-analyzer"></a>analyzer |  The NVC analyzer executable file.    |
+| <a id="NVCInfo-artifacts_dir"></a>artifacts_dir |  The directory containing NVC standard libraries and artifacts.    |
 
 
 <a id="VHDLLibraryProvider"></a>
@@ -51,17 +51,17 @@ load("@rules_nvc//internal:providers.bzl", "VHDLLibraryProvider")
 VHDLLibraryProvider(<a href="#VHDLLibraryProvider-libraries">libraries</a>, <a href="#VHDLLibraryProvider-entities">entities</a>, <a href="#VHDLLibraryProvider-library_name">library_name</a>, <a href="#VHDLLibraryProvider-library_dir">library_dir</a>, <a href="#VHDLLibraryProvider-includes">includes</a>, <a href="#VHDLLibraryProvider-hdrs">hdrs</a>)
 </pre>
 
-Contains the information about the binary files in this library.
+Contains the information about the binary files in a compiled VHDL library.
 
 **FIELDS**
 
 | Name  | Description |
 | :------------- | :------------- |
-| <a id="VHDLLibraryProvider-libraries"></a>libraries |  List[(string, File)]: a mapping from a library name to dir location, contains both this library and deps and does not repeat keys    |
-| <a id="VHDLLibraryProvider-entities"></a>entities |  List[string]: The entities emmphasized in this library.    |
-| <a id="VHDLLibraryProvider-library_name"></a>library_name |  string: The name of the library such as `ieee`    |
-| <a id="VHDLLibraryProvider-library_dir"></a>library_dir |  string: The container directory where library is located. Due to the way nvc works - it won't create a library in a dir that already exists, we have to have a container dir, which contains the library instead. So the actual library directory would be $library_dir/$library_name. Sigh.    |
-| <a id="VHDLLibraryProvider-includes"></a>includes |  List[string]: list of directories to include for verilog    |
-| <a id="VHDLLibraryProvider-hdrs"></a>hdrs |  depset[string]: list of include files for verilog    |
+| <a id="VHDLLibraryProvider-libraries"></a>libraries |  List[(string, File)]: A mapping from a library name to its directory location. Contains both this library and its dependencies, ensuring no duplicate keys.    |
+| <a id="VHDLLibraryProvider-entities"></a>entities |  List[string]: The entities emphasized in this library.    |
+| <a id="VHDLLibraryProvider-library_name"></a>library_name |  string: The name of the library (e.g., `ieee`, `work`).    |
+| <a id="VHDLLibraryProvider-library_dir"></a>library_dir |  File: The container directory where the library is located. NVC will not create a library in an existing directory, so a container directory is used. The actual library directory is `$library_dir/$library_name`.    |
+| <a id="VHDLLibraryProvider-includes"></a>includes |  List[string]: List of directories to include for Verilog.    |
+| <a id="VHDLLibraryProvider-hdrs"></a>hdrs |  depset[File]: List of include files for Verilog.    |
 
 

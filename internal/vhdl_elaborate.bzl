@@ -72,16 +72,21 @@ def _vhdl_elaborate(ctx):
     ]
 
 vhdl_elaborate = rule(
+    doc = "Elaborates a VHDL design using NVC.",
     implementation = _vhdl_elaborate,
     attrs = {
-        "library": attr.label(),
+        "library": attr.label(
+            doc = "The `vhdl_library` target to elaborate.",
+        ),
         "_script": attr.label(
             default = _NVC_WRAPPER,
             executable = True,
             cfg = "host",
+            doc = "Wrapper script to run NVC.",
         ),
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
+            doc = "The VHDL standard to use for elaboration (e.g., '2019').",
         ),
     },
     toolchains = [

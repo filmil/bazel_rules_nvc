@@ -17,15 +17,22 @@ load("//internal:extract_file.bzl", _extract_file = "extract_file")
 
 
 # The main API
+
 nvc_toolchain = _nvc_toolchain
+
 vhdl_library = _vhdl_library
+
 vhdl_elaborate = _vhdl_elaborate
+
 vhdl_run = _vhdl_run
+
 produce_waveform = _produce_waveform
+
 extract_file = _extract_file
+
 vhdl_test = _vhdl_test
 
-
 # Macros
+
 wave_view = _wave_view
 

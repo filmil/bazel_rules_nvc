@@ -6,6 +6,11 @@ load("@bazel_skylib//lib:modules.bzl", "modules")
 
 
 def nvc_repositories():
+    """
+    Declares the external repositories required by the NVC toolchain.
+
+    This function sets up the `http_archive` for the NVC compiler source.
+    """
     maybe(
         repo_rule = http_archive,
         name = "nvc",

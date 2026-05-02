@@ -72,26 +72,32 @@ def _vhdl_test(ctx):
     )
     return [DefaultInfo(runfiles=runfiles)]
 
-
 _vhdl_internal_test = rule(
+    doc = "Internal rule to execute a VHDL test using NVC.",
     test = True,
     implementation = _vhdl_test,
     attrs = {
-        "entity": attr.label(),
+        "entity": attr.label(
+            doc = "The elaborated entity to test.",
+        ),
         "deps": attr.label_list(
             default = [],
+            doc = "Dependencies required for the test.",
         ),
         "_script": attr.label(
             default = _NVC_WRAPPER,
             executable = True,
             cfg = "host",
+            doc = "Wrapper script to run NVC.",
         ),
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
+            doc = "The VHDL standard to use (e.g., '2008', '2019').",
         ),
         "_template": attr.label(
             default = Label("//build/nvc:unittest.tpl.sh"),
             allow_single_file = True,
+            doc = "Template for the test execution script.",
         ),
     },
     toolchains = [
@@ -99,9 +105,23 @@ _vhdl_internal_test = rule(
     ],
 )
 
-
 def vhdl_test(name, srcs, deps,
     standard=_VHDL_STANDARD_DEFAULT, args=[], entity=None, entities=[]):
+    """
+    Defines a VHDL test.
+
+    This macro combines `vhdl_library`, `vhdl_elaborate`, and internal test
+    execution steps into a single logical target.
+
+    Args:
+        name: The name of the base test target.
+        srcs: A list of VHDL source files (`.vhdl` or `.vhd`).
+        deps: A list of `vhdl_library` targets that this test depends on.
+        standard: The VHDL standard to use (e.g., "2008", "2019"). Defaults to "2019".
+        args: A list of additional command-line arguments to pass to the NVC simulator.
+        entity: A single entity to test.
+        entities: A list of entities to test. If both `entity` and `entities` are provided, all are tested.
+    """
     entity_list = []
     if entity:
         entity_list += [entity]
