@@ -69,6 +69,7 @@ def _vhdl_library(ctx):
     ]
 
 vhdl_library = rule(
+    doc = "Compiles VHDL source files into a library using NVC.",
     implementation = _vhdl_library,
     attrs = {
         "library_name": attr.string(
@@ -76,11 +77,17 @@ vhdl_library = rule(
         ),
         "srcs": attr.label_list(
             allow_files = [".vhdl", ".vhd"],
+            doc = "A list of VHDL source files.",
         ),
-        "deps": attr.label_list(),
-        "entities": attr.string_list(),
+        "deps": attr.label_list(
+            doc = "A list of other `vhdl_library` targets that this library depends on.",
+        ),
+        "entities": attr.string_list(
+            doc = "A list of VHDL entities provided by this library.",
+        ),
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
+            doc = "The VHDL standard to use for compilation (e.g., '2008', '2019'). Defaults to '2019'.",
         ),
     },
     toolchains = [

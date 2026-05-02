@@ -13,7 +13,7 @@ prebuilt_library(<a href="#prebuilt_library-name">name</a>, <a href="#prebuilt_l
                  <a href="#prebuilt_library-standard">standard</a>)
 </pre>
 
-
+Defines a prebuilt VHDL library, skipping analysis.
 
 **ATTRIBUTES**
 

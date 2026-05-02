@@ -35,14 +35,20 @@ def _produce_waveform(ctx):
 
 
 produce_waveform = rule(
+    doc = "Produces a waveform file (VCD) from a VHDL simulation run.",
     implementation = _produce_waveform,
     attrs = {
         "simulation": attr.label(
             executable = True,
             cfg = "host",
+            doc = "The simulation target (`vhdl_run`) to execute.",
         ),
-        "data": attr.label_list(),
-        "args": attr.string_list(),
+        "data": attr.label_list(
+            doc = "Data files required for the simulation.",
+        ),
+        "args": attr.string_list(
+            doc = "Additional command-line arguments to pass to the simulation.",
+        ),
     },
 )
 

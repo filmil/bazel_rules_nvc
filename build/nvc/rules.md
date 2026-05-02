@@ -12,7 +12,7 @@ load("@rules_nvc//build/nvc:rules.bzl", "extract_file")
 extract_file(<a href="#extract_file-name">name</a>, <a href="#extract_file-src">src</a>, <a href="#extract_file-filter">filter</a>)
 </pre>
 
-
+Extracts specific files from a source target based on a string filter.
 
 **ATTRIBUTES**
 
@@ -20,8 +20,8 @@ extract_file(<a href="#extract_file-name">name</a>, <a href="#extract_file-src">
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="extract_file-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="extract_file-src"></a>src |  -   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
-| <a id="extract_file-filter"></a>filter |  -   | String | optional |  `""`  |
+| <a id="extract_file-src"></a>src |  The source target to extract files from.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="extract_file-filter"></a>filter |  A string used to filter the files in the source target.   | String | optional |  `""`  |
 
 
 <a id="nvc_toolchain"></a>
@@ -34,7 +34,7 @@ load("@rules_nvc//build/nvc:rules.bzl", "nvc_toolchain")
 nvc_toolchain(<a href="#nvc_toolchain-name">name</a>, <a href="#nvc_toolchain-deps">deps</a>, <a href="#nvc_toolchain-analyzer">analyzer</a>, <a href="#nvc_toolchain-artifacts_dir">artifacts_dir</a>)
 </pre>
 
-
+Defines the NVC toolchain, linking to the NVC analyzer and standard library.
 
 **ATTRIBUTES**
 
@@ -42,9 +42,9 @@ nvc_toolchain(<a href="#nvc_toolchain-name">name</a>, <a href="#nvc_toolchain-de
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="nvc_toolchain-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="nvc_toolchain-deps"></a>deps |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="nvc_toolchain-analyzer"></a>analyzer |  -   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
-| <a id="nvc_toolchain-artifacts_dir"></a>artifacts_dir |  -   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="nvc_toolchain-deps"></a>deps |  Additional toolchain dependencies.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="nvc_toolchain-analyzer"></a>analyzer |  The NVC executable wrapper script.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="nvc_toolchain-artifacts_dir"></a>artifacts_dir |  The directory containing NVC standard libraries and artifacts.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
 
 
 <a id="prebuilt_library"></a>
@@ -58,7 +58,7 @@ prebuilt_library(<a href="#prebuilt_library-name">name</a>, <a href="#prebuilt_l
                  <a href="#prebuilt_library-standard">standard</a>)
 </pre>
 
-
+Defines a prebuilt VHDL library, skipping analysis.
 
 **ATTRIBUTES**
 
@@ -85,7 +85,7 @@ load("@rules_nvc//build/nvc:rules.bzl", "produce_waveform")
 produce_waveform(<a href="#produce_waveform-name">name</a>, <a href="#produce_waveform-data">data</a>, <a href="#produce_waveform-args">args</a>, <a href="#produce_waveform-simulation">simulation</a>)
 </pre>
 
-
+Produces a waveform file (VCD) from a VHDL simulation run.
 
 **ATTRIBUTES**
 
@@ -93,9 +93,9 @@ produce_waveform(<a href="#produce_waveform-name">name</a>, <a href="#produce_wa
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="produce_waveform-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="produce_waveform-data"></a>data |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="produce_waveform-args"></a>args |  -   | List of strings | optional |  `[]`  |
-| <a id="produce_waveform-simulation"></a>simulation |  -   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="produce_waveform-data"></a>data |  Data files required for the simulation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="produce_waveform-args"></a>args |  Additional command-line arguments to pass to the simulation.   | List of strings | optional |  `[]`  |
+| <a id="produce_waveform-simulation"></a>simulation |  The simulation target (`vhdl_run`) to execute.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
 
 
 <a id="verilog_library"></a>
@@ -108,7 +108,7 @@ load("@rules_nvc//build/nvc:rules.bzl", "verilog_library")
 verilog_library(<a href="#verilog_library-name">name</a>, <a href="#verilog_library-deps">deps</a>, <a href="#verilog_library-srcs">srcs</a>, <a href="#verilog_library-hdrs">hdrs</a>, <a href="#verilog_library-entities">entities</a>, <a href="#verilog_library-includes">includes</a>, <a href="#verilog_library-library_name">library_name</a>, <a href="#verilog_library-standard">standard</a>)
 </pre>
 
-
+Compiles Verilog source files into a library using NVC.
 
 **ATTRIBUTES**
 
@@ -116,13 +116,13 @@ verilog_library(<a href="#verilog_library-name">name</a>, <a href="#verilog_libr
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="verilog_library-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="verilog_library-deps"></a>deps |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="verilog_library-srcs"></a>srcs |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="verilog_library-hdrs"></a>hdrs |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="verilog_library-entities"></a>entities |  -   | List of strings | optional |  `[]`  |
+| <a id="verilog_library-deps"></a>deps |  List of dependency libraries.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="verilog_library-srcs"></a>srcs |  List of Verilog source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="verilog_library-hdrs"></a>hdrs |  List of Verilog header files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="verilog_library-entities"></a>entities |  List of entities provided by this library.   | List of strings | optional |  `[]`  |
 | <a id="verilog_library-includes"></a>includes |  list of verilog include directories   | List of strings | optional |  `[]`  |
 | <a id="verilog_library-library_name"></a>library_name |  If the target name is not appropriate as a library name, provide one here   | String | optional |  `""`  |
-| <a id="verilog_library-standard"></a>standard |  -   | String | optional |  `"2019"`  |
+| <a id="verilog_library-standard"></a>standard |  The VHDL standard to use for compilation.   | String | optional |  `"2019"`  |
 
 
 <a id="vhdl_elaborate"></a>
@@ -135,7 +135,7 @@ load("@rules_nvc//build/nvc:rules.bzl", "vhdl_elaborate")
 vhdl_elaborate(<a href="#vhdl_elaborate-name">name</a>, <a href="#vhdl_elaborate-library">library</a>, <a href="#vhdl_elaborate-standard">standard</a>)
 </pre>
 
-
+Elaborates a VHDL design using NVC.
 
 **ATTRIBUTES**
 
@@ -143,8 +143,8 @@ vhdl_elaborate(<a href="#vhdl_elaborate-name">name</a>, <a href="#vhdl_elaborate
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="vhdl_elaborate-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="vhdl_elaborate-library"></a>library |  -   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
-| <a id="vhdl_elaborate-standard"></a>standard |  -   | String | optional |  `"2019"`  |
+| <a id="vhdl_elaborate-library"></a>library |  The `vhdl_library` target to elaborate.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="vhdl_elaborate-standard"></a>standard |  The VHDL standard to use for elaboration (e.g., '2019').   | String | optional |  `"2019"`  |
 
 
 <a id="vhdl_library"></a>
@@ -157,7 +157,7 @@ load("@rules_nvc//build/nvc:rules.bzl", "vhdl_library")
 vhdl_library(<a href="#vhdl_library-name">name</a>, <a href="#vhdl_library-deps">deps</a>, <a href="#vhdl_library-srcs">srcs</a>, <a href="#vhdl_library-entities">entities</a>, <a href="#vhdl_library-library_name">library_name</a>, <a href="#vhdl_library-standard">standard</a>)
 </pre>
 
-
+Compiles VHDL source files into a library using NVC.
 
 **ATTRIBUTES**
 
@@ -165,11 +165,11 @@ vhdl_library(<a href="#vhdl_library-name">name</a>, <a href="#vhdl_library-deps"
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="vhdl_library-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="vhdl_library-deps"></a>deps |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="vhdl_library-srcs"></a>srcs |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
-| <a id="vhdl_library-entities"></a>entities |  -   | List of strings | optional |  `[]`  |
+| <a id="vhdl_library-deps"></a>deps |  A list of other `vhdl_library` targets that this library depends on.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="vhdl_library-srcs"></a>srcs |  A list of VHDL source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="vhdl_library-entities"></a>entities |  A list of VHDL entities provided by this library.   | List of strings | optional |  `[]`  |
 | <a id="vhdl_library-library_name"></a>library_name |  If the target name is not appropriate as a library name, provide one here   | String | optional |  `""`  |
-| <a id="vhdl_library-standard"></a>standard |  -   | String | optional |  `"2019"`  |
+| <a id="vhdl_library-standard"></a>standard |  The VHDL standard to use for compilation (e.g., '2008', '2019'). Defaults to '2019'.   | String | optional |  `"2019"`  |
 
 
 <a id="vhdl_run"></a>
@@ -182,7 +182,7 @@ load("@rules_nvc//build/nvc:rules.bzl", "vhdl_run")
 vhdl_run(<a href="#vhdl_run-name">name</a>, <a href="#vhdl_run-deps">deps</a>, <a href="#vhdl_run-args">args</a>, <a href="#vhdl_run-entity">entity</a>, <a href="#vhdl_run-standard">standard</a>, <a href="#vhdl_run-use_vcd">use_vcd</a>)
 </pre>
 
-
+Simulates an elaborated VHDL design using NVC.
 
 **ATTRIBUTES**
 
@@ -190,11 +190,11 @@ vhdl_run(<a href="#vhdl_run-name">name</a>, <a href="#vhdl_run-deps">deps</a>, <
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="vhdl_run-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
-| <a id="vhdl_run-deps"></a>deps |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="vhdl_run-deps"></a>deps |  A list of other `vhdl_library` targets that this simulation depends on.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="vhdl_run-args"></a>args |  A list of added command line args to use   | List of strings | optional |  `[]`  |
-| <a id="vhdl_run-entity"></a>entity |  -   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
-| <a id="vhdl_run-standard"></a>standard |  -   | String | optional |  `"2019"`  |
-| <a id="vhdl_run-use_vcd"></a>use_vcd |  -   | Boolean | optional |  `True`  |
+| <a id="vhdl_run-entity"></a>entity |  The elaborated VHDL entity to simulate. This should be a `vhdl_elaborate` target.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="vhdl_run-standard"></a>standard |  The VHDL standard to use for simulation. Defaults to '2019'.   | String | optional |  `"2019"`  |
+| <a id="vhdl_run-use_vcd"></a>use_vcd |  A boolean indicating whether to generate a VCD (Value Change Dump) file for waveform viewing. Defaults to `True`.   | Boolean | optional |  `True`  |
 
 
 <a id="vhdl_test"></a>
@@ -207,6 +207,10 @@ load("@rules_nvc//build/nvc:rules.bzl", "vhdl_test")
 vhdl_test(<a href="#vhdl_test-name">name</a>, <a href="#vhdl_test-srcs">srcs</a>, <a href="#vhdl_test-deps">deps</a>, <a href="#vhdl_test-standard">standard</a>, <a href="#vhdl_test-args">args</a>, <a href="#vhdl_test-entity">entity</a>, <a href="#vhdl_test-entities">entities</a>)
 </pre>
 
+Defines a VHDL test.
+
+This macro combines `vhdl_library`, `vhdl_elaborate`, and internal test
+execution steps into a single logical target.
 
 
 **PARAMETERS**
@@ -214,13 +218,13 @@ vhdl_test(<a href="#vhdl_test-name">name</a>, <a href="#vhdl_test-srcs">srcs</a>
 
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
-| <a id="vhdl_test-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="vhdl_test-srcs"></a>srcs |  <p align="center"> - </p>   |  none |
-| <a id="vhdl_test-deps"></a>deps |  <p align="center"> - </p>   |  none |
-| <a id="vhdl_test-standard"></a>standard |  <p align="center"> - </p>   |  `"2019"` |
-| <a id="vhdl_test-args"></a>args |  <p align="center"> - </p>   |  `[]` |
-| <a id="vhdl_test-entity"></a>entity |  <p align="center"> - </p>   |  `None` |
-| <a id="vhdl_test-entities"></a>entities |  <p align="center"> - </p>   |  `[]` |
+| <a id="vhdl_test-name"></a>name |  The name of the base test target.   |  none |
+| <a id="vhdl_test-srcs"></a>srcs |  A list of VHDL source files (`.vhdl` or `.vhd`).   |  none |
+| <a id="vhdl_test-deps"></a>deps |  A list of `vhdl_library` targets that this test depends on.   |  none |
+| <a id="vhdl_test-standard"></a>standard |  The VHDL standard to use (e.g., "2008", "2019"). Defaults to "2019".   |  `"2019"` |
+| <a id="vhdl_test-args"></a>args |  A list of additional command-line arguments to pass to the NVC simulator.   |  `[]` |
+| <a id="vhdl_test-entity"></a>entity |  A single entity to test.   |  `None` |
+| <a id="vhdl_test-entities"></a>entities |  A list of entities to test. If both `entity` and `entities` are provided, all are tested.   |  `[]` |
 
 
 <a id="wave_view"></a>

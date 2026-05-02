@@ -12,13 +12,17 @@ load("@rules_nvc//internal:utils.bzl", "get_single_file_from")
 get_single_file_from(<a href="#get_single_file_from-target">target</a>)
 </pre>
 
-
+Retrieves the single file associated with a target.
 
 **PARAMETERS**
 
 
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
-| <a id="get_single_file_from-target"></a>target |  <p align="center"> - </p>   |  none |
+| <a id="get_single_file_from-target"></a>target |  The target from which to extract the file.   |  none |
+
+**RETURNS**
+
+The single `File` object from the target.
 
 

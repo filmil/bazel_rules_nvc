@@ -48,6 +48,7 @@ def _impl(ctx):
 
 
 prebuilt_library = rule(
+    doc = "Defines a prebuilt VHDL library, skipping analysis.",
     implementation = _impl,
     attrs = {
         "library_name": attr.string(
