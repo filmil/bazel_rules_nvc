@@ -1,0 +1,20 @@
+load("@rules_nvc//internal:cosim.bzl", "nvc_verilator_cosim")
+load("@rules_nvc//nvc:rules.bzl", "vhdl_test")
+
+nvc_verilator_cosim(
+    name = "demo_cosim_bridge",
+    srcs = [
+        "adder.sv",
+        "counter.sv",
+    ],
+    top_modules = ["adder", "counter"],
+)
+
+vhdl_test(
+    name = "demo_test",
+    srcs = ["top_tb.vhdl"],
+    deps = [
+        ":demo_cosim_bridge",
+    ],
+    entity = "top_tb",
+)

@@ -4,6 +4,8 @@ load("@gazelle//:def.bzl", "DEFAULT_LANGUAGES", "gazelle", "gazelle_binary")
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
 load("@stardoc//stardoc:stardoc.bzl", "stardoc")
 
+# gazelle:prefix github.com/filmil/bazel_rules_nvc
+
 gazelle(
     name = "gazelle",
     gazelle = ":gazelle_bin",
