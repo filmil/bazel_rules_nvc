@@ -5,6 +5,11 @@ load(
 load("@bazel_skylib//lib:modules.bzl", "modules")
 
 def repositories():
+    """
+    Declares the external repositories required by the `rules_nvc` module.
+
+    This function sets up the `http_archive` for third-party tools like `m4` and `flex`.
+    """
     #maybe(
         #http_archive,
         #name = "zlib",

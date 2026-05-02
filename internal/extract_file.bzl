@@ -19,9 +19,14 @@ def _extract_file(ctx):
 
 
 extract_file = rule(
+    doc = "Extracts specific files from a source target based on a string filter.",
     implementation = _extract_file,
     attrs = {
-        "filter": attr.string(),
-        "src" : attr.label(),
+        "filter": attr.string(
+            doc = "A string used to filter the files in the source target.",
+        ),
+        "src" : attr.label(
+            doc = "The source target to extract files from.",
+        ),
     },
 )

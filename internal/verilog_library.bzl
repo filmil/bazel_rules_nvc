@@ -87,6 +87,7 @@ def _impl(ctx):
 
 
 verilog_library = rule(
+    doc = "Compiles Verilog source files into a library using NVC.",
     implementation = _impl,
     attrs = {
         "library_name": attr.string(
@@ -94,14 +95,21 @@ verilog_library = rule(
         ),
         "srcs": attr.label_list(
             allow_files = [".v", ".vh", ".sv", ".svh"],
+            doc = "List of Verilog source files.",
         ),
         "hdrs": attr.label_list(
             allow_files = [".v", ".vh", ".sv", ".svh"],
+            doc = "List of Verilog header files.",
         ),
-        "deps": attr.label_list(),
-        "entities": attr.string_list(),
+        "deps": attr.label_list(
+            doc = "List of dependency libraries.",
+        ),
+        "entities": attr.string_list(
+            doc = "List of entities provided by this library.",
+        ),
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
+            doc = "The VHDL standard to use for compilation.",
         ),
         "includes": attr.string_list(
             doc = "list of verilog include directories",

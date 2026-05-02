@@ -77,21 +77,29 @@ def _vhdl_run(ctx):
     ]
 
 vhdl_run = rule(
+    doc = "Simulates an elaborated VHDL design using NVC.",
     implementation = _vhdl_run,
     attrs = {
-        "entity": attr.label(), "deps": attr.label_list(
+        "entity": attr.label(
+            doc = "The elaborated VHDL entity to simulate. This should be a `vhdl_elaborate` target.",
+        ),
+        "deps": attr.label_list(
             default = [],
+            doc = "A list of other `vhdl_library` targets that this simulation depends on.",
         ),
         "_script": attr.label(
             default = _NVC_WRAPPER,
             executable = True,
             cfg = "host",
+            doc = "Wrapper script to run NVC.",
         ),
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
+            doc = "The VHDL standard to use for simulation. Defaults to '2019'.",
         ),
         "use_vcd": attr.bool(
             default = True,
+            doc = "A boolean indicating whether to generate a VCD (Value Change Dump) file for waveform viewing. Defaults to `True`.",
         ),
         "args": attr.string_list(
             doc = "A list of added command line args to use",

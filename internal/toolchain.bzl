@@ -22,12 +22,20 @@ def _nvc_toolchain_impl(ctx):
 
 
 nvc_toolchain = rule(
+  doc = "Defines the NVC toolchain, linking to the NVC analyzer and standard library.",
   implementation = _nvc_toolchain_impl,
   attrs = {
-    "analyzer": attr.label(executable = True, cfg = "host"),
-    "artifacts_dir": attr.label(),
+    "analyzer": attr.label(
+        executable = True,
+        cfg = "host",
+        doc = "The NVC executable wrapper script.",
+    ),
+    "artifacts_dir": attr.label(
+        doc = "The directory containing NVC standard libraries and artifacts.",
+    ),
     "deps": attr.label_list(
         default = [],
+        doc = "Additional toolchain dependencies.",
     ),
   }
 )

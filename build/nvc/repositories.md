@@ -12,7 +12,9 @@ load("@rules_nvc//build/nvc:repositories.bzl", "nvc_repositories")
 nvc_repositories()
 </pre>
 
+Declares the external repositories required by the NVC toolchain.
 
+This function sets up the `http_archive` for the NVC compiler source.
 
 
 
