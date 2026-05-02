@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "generate_bridge",
+    embed = [":cosim_lib"],
+)
+
+exports_files(["vpi_wrapper.cpp", "vpi_user.h"])
+
+go_library(
+    name = "cosim_lib",
+    srcs = ["generate_bridge.go"],
+    importpath = "github.com/filmil/bazel_rules_nvc/internal/cosim",
+)
+
+go_test(
+    name = "generate_bridge_test",
+    srcs = ["generate_bridge_test.go"],
+    embed = [":cosim_lib"],
+)
