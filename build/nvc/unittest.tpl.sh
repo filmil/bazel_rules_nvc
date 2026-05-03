@@ -26,6 +26,7 @@ mkdir -p "${dir_out_path}/{{LIBRARY_NAME}}"
     --library-dir-out-path="${dir_in_path}" \
     -- \
     {{VPI_FLAGS}} \
+    {{EXTRA_ARGS}} \
     --wave="${wave_file}" \
     $@
 

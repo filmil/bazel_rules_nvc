@@ -94,7 +94,7 @@ void register_callbacks() {
 
 // Make sure it is exported cleanly
 extern "C" {
-PLI_DLLESPEC void (*vlog_startup_routines[])() = {
+void (*vlog_startup_routines[])(void) = {
     register_callbacks,
     nullptr
 };
