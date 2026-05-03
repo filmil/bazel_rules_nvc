@@ -1,3 +1,5 @@
+<!-- LICENSE sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4 -->
+
 # rules_nvc
 
 [![Build](https://github.com/filmil/bazel_rules_nvc/actions/workflows/build.yml/badge.svg)](https://github.com/filmil/bazel_rules_nvc/actions/workflows/build.yml)
@@ -17,6 +19,10 @@ Bazel ecosystem.
 ## Documentation
 
 An index of architectural reports and feature documentation can be found in the [Documentation Index](doc/README.md).
+
+Key documentation includes:
+- [Co-Simulation Usage Example](doc/cosim_usage_example.md)
+- [Simulation vs. Synthesis Flow](doc/simulation_vs_synthesis.md)
 
 The following table provides an overview of the documentation for the Starlark
 rules and macros provided by this repository.
