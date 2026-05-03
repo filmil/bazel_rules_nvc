@@ -28,14 +28,20 @@ def _vhdl_library(ctx):
     flag_libraries = []
     deps_files = []
     seen = []
+    vpi_plugins = []
     for target in ctx.attr.deps:
         default_info = target[DefaultInfo]
         deps_files += default_info.files.to_list()
         vhdl_provider = target[VHDLLibraryProvider]
         all_libraries += vhdl_provider.libraries
+        if hasattr(vhdl_provider, "vpi_plugins"):
+            vpi_plugins.append(vhdl_provider.vpi_plugins)
         for name, path in vhdl_provider.libraries:
             flag_libraries += ["-L", "{path}".format(path=path.path)]
             seen += [name]
+    
+    # Add VPI plugins from this target
+    vpi_plugins.append(depset(ctx.files.vpi_plugins))
 
 
     ctx.actions.run(
@@ -64,6 +70,7 @@ def _vhdl_library(ctx):
             entities = ctx.attr.entities,
             library_name = library_name,
             library_dir = container_dir,
+            vpi_plugins = depset(transitive = vpi_plugins),
         ),
         DefaultInfo(files = depset([container_dir]))
     ]
@@ -88,6 +95,10 @@ vhdl_library = rule(
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
             doc = "The VHDL standard to use for compilation (e.g., '2008', '2019'). Defaults to '2019'.",
+        ),
+        "vpi_plugins": attr.label_list(
+            allow_files = True,
+            doc = "List of VPI plugins required for simulation.",
         ),
     },
     toolchains = [

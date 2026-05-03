@@ -17,6 +17,7 @@ VHDLLibraryProvider = provider(
         The actual library directory is `$library_dir/$library_name`.""",
         "includes": "List[string]: List of directories to include for Verilog.",
         "hdrs": "depset[File]: List of include files for Verilog.",
+        "vpi_plugins": "depset[File]: List of VPI plugins required for simulation.",
     },
 )
 

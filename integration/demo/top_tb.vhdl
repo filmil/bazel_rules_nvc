@@ -60,7 +60,7 @@ begin
     b <= x"01";
     report "Testing adder inputs FF + 01";
     wait for 15 ns; -- Wait past clock edge
-    
+
     -- When C++ VPI linking is implemented, uncomment:
     -- assert sum = "100000000" report "Verification failed: sum != 100" severity error;
     -- assert count /= x"00" report "Verification failed: counter is zero" severity error;

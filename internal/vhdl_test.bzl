@@ -46,8 +46,15 @@ def _vhdl_test(ctx):
         files=[vhdl_provider.library_dir] + ctx.attr._script.files.to_list(),
         transitive_files=depset(artifacts + deps_paths))
 
+    # Collect VPI plugins
+    vpi_plugins = vhdl_provider.vpi_plugins.to_list()
+    runfiles = runfiles.merge(ctx.runfiles(files = vpi_plugins))
+
+    # Construct --load= flags for VPI plugins
+    vpi_flags = " ".join(["--load={}".format(p.short_path) for p in vpi_plugins])
+
     runfiles = runfiles.merge_all([ctx.attr._script[DefaultInfo].default_runfiles])
-    inputs = deps_paths + [vhdl_provider.library_dir, std_lib_dir]
+    inputs = deps_paths + [vhdl_provider.library_dir, std_lib_dir] + vpi_plugins
     i_runfiles = ctx.runfiles(files = inputs)
 
     tools = [analyzer_x, ctx.executable._script, ] + artifacts
@@ -68,6 +75,7 @@ def _vhdl_test(ctx):
             "{{LIB_DIR_IN_PATH}}": vhdl_provider.library_dir.short_path,
             "{{LIB_DIR_OUT_PATH}}": work_library_file.short_path,
             "{{WAVE_FILE}}": "{}.fst".format(ctx.attr.name),
+            "{{VPI_FLAGS}}": vpi_flags,
         },
     )
     return [DefaultInfo(runfiles=runfiles)]
