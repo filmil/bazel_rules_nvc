@@ -228,7 +228,8 @@ func generateHPP(modules []Module, out io.Writer) {
 	for _, stmt := range topModule.Stmtsp {
 		if stmt.Type == "VAR" && stmt.Direction == "INPUT" {
 			fmt.Fprintf(out, "    {\n")
-			fmt.Fprintf(out, "        std::string full_name = state.path_prefix + \".%s\";\n", stmt.OrigName)
+			// NVC VHDL identifiers are uppercase by default
+			fmt.Fprintf(out, "        std::string full_name = state.path_prefix + \".%s\";\n", strings.ToUpper(stmt.OrigName))
 			fmt.Fprintf(out, "        vpiHandle net_handle = vpi_handle_by_name((PLI_BYTE8*)full_name.c_str(), nullptr);\n")
 			fmt.Fprintf(out, "        if (net_handle) {\n")
 			fmt.Fprintf(out, "            s_vpi_value val;\n")
@@ -245,16 +246,16 @@ func generateHPP(modules []Module, out io.Writer) {
 	for _, stmt := range topModule.Stmtsp {
 		if stmt.Type == "VAR" && stmt.Direction == "OUTPUT" {
 			fmt.Fprintf(out, "    {\n")
-			fmt.Fprintf(out, "        std::string full_name = state.path_prefix + \".%s\";\n", stmt.OrigName)
+			fmt.Fprintf(out, "        std::string full_name = state.path_prefix + \".%s\";\n", strings.ToUpper(stmt.OrigName))
 			fmt.Fprintf(out, "        vpiHandle net_handle = vpi_handle_by_name((PLI_BYTE8*)full_name.c_str(), nullptr);\n")
 			fmt.Fprintf(out, "        if (net_handle) {\n")
 			fmt.Fprintf(out, "            s_vpi_value val;\n")
 			fmt.Fprintf(out, "            val.format = vpiIntVal;\n") // Simplified
 			fmt.Fprintf(out, "            val.value.integer = state.dut->%s;\n", stmt.OrigName)
-			fmt.Fprintf(out, "            vpi_printf((PLI_BYTE8*)\"[VPI] Output %%s = %%d\\n\", full_name.c_str(), val.value.integer);\n")
+			fmt.Fprintf(out, "            fprintf(stderr, \"[VPI] Output %%s = %%d\\n\", full_name.c_str(), val.value.integer);\n")
 			fmt.Fprintf(out, "            vpi_put_value(net_handle, &val, nullptr, vpiNoDelay);\n")
 			fmt.Fprintf(out, "        } else {\n")
-			fmt.Fprintf(out, "            vpi_printf((PLI_BYTE8*)\"[VPI] Output %%s handle NOT FOUND\\n\", full_name.c_str());\n")
+			fmt.Fprintf(out, "            fprintf(stderr, \"[VPI] Output %%s handle NOT FOUND\\n\", full_name.c_str());\n")
 			fmt.Fprintf(out, "        }\n")
 			fmt.Fprintf(out, "    }\n")
 		}
