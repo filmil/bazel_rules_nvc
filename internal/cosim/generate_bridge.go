@@ -163,8 +163,8 @@ func generateVHDL(modules []Module, typeMap map[string]DType, out io.Writer) {
 
 		fmt.Fprintf(out, "architecture proxy of %s is\n", mod.Name)
 		fmt.Fprintf(out, "  procedure step_verilator(id: integer) is\n")
-		fmt.Fprintf(out, "    attribute foreign of step_verilator : procedure is \"VPI $verilator_step_call\";\n")
-		fmt.Fprintf(out, "  begin\n  end procedure;\n")
+		fmt.Fprintf(out, "    attribute foreign of step_verilator : procedure is \"VHPIDIRECT verilator_step_call\";\n")
+		fmt.Fprintf(out, "  begin\n    report \"VHPIDIRECT binding failed! C function not called.\" severity failure;\n  end procedure;\n")
 		fmt.Fprintf(out, "begin\n")
 		fmt.Fprintf(out, "  process\n  begin\n")
 		// Find a clock port, if none exists, use wait for 1 ns
