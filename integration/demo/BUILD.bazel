@@ -4,10 +4,11 @@ load("@rules_nvc//nvc:rules.bzl", "vhdl_test")
 nvc_verilator_cosim(
     name = "demo_cosim_bridge",
     srcs = [
+        "demo_top.sv",
         "adder.sv",
         "counter.sv",
     ],
-    top_modules = ["adder", "counter"],
+    top_modules = ["demo_top"],
 )
 
 vhdl_test(
