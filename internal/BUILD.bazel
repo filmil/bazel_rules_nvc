@@ -160,6 +160,16 @@ stardoc(
 )
 
 bzl_library(
+    name = "cosim",
+    srcs = ["cosim.bzl"],
+    deps = [
+        ":vhdl_elaborate",
+        ":vhdl_library",
+        ":vhdl_test",
+    ],
+)
+
+bzl_library(
     name = "macros",
     srcs = ["macros.bzl"],
     deps = [

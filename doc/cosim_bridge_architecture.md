@@ -63,9 +63,15 @@ while the JSON/VHDL interface exposed 16-bit ports.
 `parameters = {}` dictionary downstream as `vopts = ["-G{}={}".format(k, v)]`
 to `verilator_cc_library`.
 
-## 7. IEEE VHPI Headers
-**Problem:** The `vhpi_user.h` header required for C++ compilation contains
-IEEE copyrights.
-**Solution:** Moved the file into `//third_party/ieee` and established a
-`BUILD.bazel` to export it, along with a `LICENSE` file adhering to
-open-source guidelines.
+## 8. Separate VHDL Entity and Architecture Generation
+**Problem:** In some use cases, developers may want to manually write their VHDL
+`entity` declaration for the co-simulated module. This is useful when the
+auto-generated entity has generic names, missing custom attributes, or non-ideal
+port mapping. However, the `generate_bridge` code tightly coupled both the
+`entity` and the `architecture` in a single proxy file.
+**Solution:** We added a `separate_entity_arch` parameter to the macro and a
+5th argument to the `generate_bridge.go` tool. When enabled, it outputs two
+files (one for the entity, one for the architecture) and provides an `.archonly`
+alias target for Bazel. This enables a user to write their own `entity` and
+merely link in the Verilator C++ bindings and VPI plugin using the
+`vpi_plugins` and `deps` functionality.
