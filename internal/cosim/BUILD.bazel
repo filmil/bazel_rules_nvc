@@ -12,7 +12,7 @@ go_binary(
     embed = [":cosim_lib"],
 )
 
-exports_files(["vpi_wrapper.cpp"])
+exports_files(["vpi_wrapper.cpp", "vhpi_user.h"])
 
 go_library(
     name = "cosim_lib",

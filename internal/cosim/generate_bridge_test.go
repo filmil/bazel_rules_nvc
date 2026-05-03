@@ -30,7 +30,8 @@ func TestGenerateVHDL(t *testing.T) {
 				"clk : in std_logic;",
 				"d : in std_logic;",
 				"q : out std_logic",
-				"wait until rising_edge(clk);",
+				"architecture proxy of dut is",
+				"process(clk, d)",
 				"step_verilator(INSTANCE_ID);",
 			},
 		},
@@ -52,7 +53,7 @@ func TestGenerateVHDL(t *testing.T) {
 				"a : in std_logic_vector(7 downto 0);",
 				"b : in std_logic_vector(7 downto 0);",
 				"sum : out std_logic_vector(8 downto 0)",
-				"wait for 1 ns;",
+				"process(a, b)",
 				"step_verilator(INSTANCE_ID);",
 			},
 		},
@@ -61,7 +62,7 @@ func TestGenerateVHDL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var buf bytes.Buffer
-			generateVHDL(tt.modules, nil, &buf)
+			generateVHDL(tt.modules, nil, &buf, tt.modules[0].Name)
 			output := buf.String()
 
 			for _, part := range tt.expectedParts {
@@ -82,12 +83,12 @@ func TestGenerateHPP(t *testing.T) {
 	}
 
 	var buf bytes.Buffer
-	generateHPP(modules, &buf)
+	generateHPP(modules, &buf, "dut")
 	output := buf.String()
 
 	expectedParts := []string{
 		"#pragma once",
-		"#include <vpi_user.h>",
+		"#include \"vhpi_user.h\"",
 		"struct InstanceState {",
 		"std::unique_ptr<Vdut> dut;",
 		"inline void init_bindings(int id, InstanceState& state, const std::string& path_prefix) {",

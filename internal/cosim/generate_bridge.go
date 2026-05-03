@@ -8,6 +8,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"text/template"
 )
 
 type VerilatorJSON struct {
@@ -49,13 +50,14 @@ type Stmt struct {
 var boundsRegex = regexp.MustCompile(`\[(\d+):(\d+)\]`)
 
 func main() {
-	if len(os.Args) != 4 {
-		log.Fatalf("Usage: %s <input.json> <out_proxy.vhdl> <out_bindings.hpp>", os.Args[0])
+	if len(os.Args) != 5 {
+		log.Fatalf("Usage: %s <input.json> <out_proxy.vhdl> <out_bindings.hpp> <top_module>", os.Args[0])
 	}
 
 	jsonPath := os.Args[1]
 	vhdlPath := os.Args[2]
 	hppPath := os.Args[3]
+	topModuleName := os.Args[4]
 
 	jsonFile, err := os.Open(jsonPath)
 	if err != nil {
@@ -92,14 +94,14 @@ func main() {
 		log.Fatalf("Error creating VHDL: %v", err)
 	}
 	defer vhdlOut.Close()
-	generateVHDL(vJSON.Modulesp, typeMap, vhdlOut)
+	generateVHDL(vJSON.Modulesp, typeMap, vhdlOut, topModuleName)
 
 	hppOut, err := os.Create(hppPath)
 	if err != nil {
 		log.Fatalf("Error creating HPP: %v", err)
 	}
 	defer hppOut.Close()
-	generateHPP(vJSON.Modulesp, hppOut)
+	generateHPP(vJSON.Modulesp, hppOut, topModuleName)
 }
 
 func mapVerilogToVHDLType(direction, vType string, dt *DType) string {
@@ -127,16 +129,71 @@ func mapVerilogToVHDLType(direction, vType string, dt *DType) string {
 	return fmt.Sprintf("%s std_logic", dir)
 }
 
-func generateVHDL(modules []Module, typeMap map[string]DType, out io.Writer) {
+func generateVHDL(modules []Module, typeMap map[string]DType, out io.Writer, topModuleName string) {
+	const vhdlTemplate = `library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+{{range .Modules}}
+{{if eq .Name $.TargetModule}}
+entity {{.Name}} is
+  generic (
+    INSTANCE_ID : integer
+  );
+  port (
+{{- range $i, $port := .Ports}}
+    {{$port.OrigName}} : {{$port.VhdlType}}{{if not $port.IsLast}};{{end}}
+{{- end}}
+  );
+end entity;
+
+architecture proxy of {{.Name}} is
+  procedure step_verilator(id: integer);
+  attribute foreign of step_verilator : procedure is "VHPIDIRECT verilator_step_call_{{.Name}}";
+  procedure step_verilator(id: integer) is
+  begin
+    report "VHPIDIRECT binding failed! C function not called." severity failure;
+  end procedure;
+begin
+  process({{- range $i, $port := .InputPorts}}{{$port.OrigName}}{{if not $port.IsLastInput}}, {{end}}{{end}})
+  begin
+    step_verilator(INSTANCE_ID);
+  end process;
+end architecture;
+{{end}}
+{{end}}
+`
+
+	type PortData struct {
+		OrigName  string
+		VhdlType  string
+		Direction string
+		IsLast    bool
+		IsLastInput bool
+	}
+
+	type ModuleData struct {
+		Type       string
+		Name       string
+		Ports      []PortData
+		InputPorts []PortData
+		ClkPort    string
+	}
+
+	var data struct {
+		TargetModule string
+		Modules      []ModuleData
+	}
+	data.TargetModule = topModuleName
+
 	for _, mod := range modules {
-		if mod.Type != "MODULE" {
+		if mod.Type != "MODULE" || mod.Name != topModuleName {
 			continue
 		}
 
-		fmt.Fprintf(out, "library ieee;\nuse ieee.std_logic_1164.all;\nuse ieee.numeric_std.all;\n\n")
-		fmt.Fprintf(out, "entity %s is\n", mod.Name)
-		fmt.Fprintf(out, "  generic (\n    INSTANCE_ID : integer\n  );\n")
-		fmt.Fprintf(out, "  port (\n")
+		var mData ModuleData
+		mData.Type = mod.Type
+		mData.Name = mod.Name
 
 		var ports []Stmt
 		for _, stmt := range mod.Stmtsp {
@@ -146,61 +203,157 @@ func generateVHDL(modules []Module, typeMap map[string]DType, out io.Writer) {
 		}
 
 		for i, port := range ports {
-			comma := ";"
-			if i == len(ports)-1 {
-				comma = ""
-			}
-
 			var dt *DType
 			if d, ok := typeMap[port.Dtypep]; ok {
 				dt = &d
 			}
-
 			vhdlType := mapVerilogToVHDLType(port.Direction, port.DtypeName, dt)
-			fmt.Fprintf(out, "    %s : %s%s\n", port.OrigName, vhdlType, comma)
-		}
-		fmt.Fprintf(out, "  );\nend entity;\n\n")
-
-		fmt.Fprintf(out, "architecture proxy of %s is\n", mod.Name)
-		fmt.Fprintf(out, "  procedure step_verilator(id: integer);\n")
-		fmt.Fprintf(out, "  attribute foreign of step_verilator : procedure is \"VHPIDIRECT verilator_step_call\";\n")
-		fmt.Fprintf(out, "  procedure step_verilator(id: integer) is\n")
-		fmt.Fprintf(out, "  begin\n    report \"VHPIDIRECT binding failed! C function not called.\" severity failure;\n  end procedure;\n")
-		fmt.Fprintf(out, "begin\n")
-		fmt.Fprintf(out, "  process\n  begin\n")
-		// Find a clock port, if none exists, use wait for 1 ns
-		clkPort := ""
-		for _, p := range ports {
-			if strings.Contains(strings.ToLower(p.OrigName), "clk") || strings.Contains(strings.ToLower(p.OrigName), "clock") {
-				clkPort = p.OrigName
-				break
+			
+			pData := PortData{
+				OrigName:  port.OrigName,
+				VhdlType:  vhdlType,
+				Direction: port.Direction,
+				IsLast:    i == len(ports)-1,
+			}
+			mData.Ports = append(mData.Ports, pData)
+			
+			if port.Direction == "INPUT" || port.Direction == "INOUT" {
+				mData.InputPorts = append(mData.InputPorts, pData)
 			}
 		}
 
-		if clkPort != "" {
-			fmt.Fprintf(out, "    wait until rising_edge(%s);\n", clkPort)
-		} else {
-			fmt.Fprintf(out, "    wait for 1 ns;\n")
+		for i := range mData.InputPorts {
+			mData.InputPorts[i].IsLastInput = (i == len(mData.InputPorts)-1)
 		}
-		fmt.Fprintf(out, "    wait for 1 ps; -- Delta cycle sync\n")
-		fmt.Fprintf(out, "    step_verilator(INSTANCE_ID);\n")
-		fmt.Fprintf(out, "  end process;\n")
-		fmt.Fprintf(out, "end architecture;\n\n")
+
+		data.Modules = append(data.Modules, mData)
+	}
+
+	tmpl := template.Must(template.New("vhdl").Parse(vhdlTemplate))
+	if err := tmpl.Execute(out, data); err != nil {
+		log.Fatalf("Error executing VHDL template: %v", err)
 	}
 }
 
-func generateHPP(modules []Module, out io.Writer) {
-	fmt.Fprintf(out, "#pragma once\n\n")
-	fmt.Fprintf(out, "#include <vpi_user.h>\n")
-	fmt.Fprintf(out, "#include <string>\n")
-	fmt.Fprintf(out, "#include <unordered_map>\n")
-	fmt.Fprintf(out, "#include <memory>\n")
-	fmt.Fprintf(out, "#include <iostream>\n")
+func generateHPP(modules []Module, out io.Writer, topModuleName string) {
+	const hppTemplate = `#pragma once
+
+#include "vhpi_user.h"
+#include <string>
+#include <unordered_map>
+#include <memory>
+#include <iostream>
+#include "V{{.TopModule.Name}}.h"
+
+struct InstanceState {
+    std::unique_ptr<VerilatedContext> context;
+    std::unique_ptr<V{{.TopModule.Name}}> dut;
+    std::string path_prefix;
+    std::unordered_map<std::string, vhpiHandleT> handles;
+};
+
+inline vhpiHandleT get_vhpi_handle(InstanceState& state, const std::string& name) {
+    if (state.handles.find(name) != state.handles.end()) return state.handles[name];
+    std::string full_name = state.path_prefix + ":" + name;
+    vhpiHandleT h = vhpi_handle_by_name(full_name.c_str(), nullptr);
+    if (h) {
+        state.handles[name] = h;
+        return h;
+    }
+    fprintf(stderr, "[VHPI] vhpi_handle_by_name failed for %s\n", full_name.c_str());
+    return nullptr;
+}
+
+inline void init_bindings(int id, InstanceState& state, const std::string& path_prefix) {
+    state.context = std::make_unique<VerilatedContext>();
+    state.dut = std::make_unique<V{{.TopModule.Name}}>(state.context.get());
+    state.path_prefix = path_prefix;
+}
+
+inline void sync_inputs(InstanceState& state) {
+{{- range .TopModule.Stmtsp}}
+{{- if eq .Type "VAR"}}
+{{- if eq .Direction "INPUT"}}
+    {
+        vhpiHandleT net_handle = get_vhpi_handle(state, "{{.UpperName}}");
+        if (net_handle) {
+            int size = vhpi_get(vhpiSizeP, net_handle);
+            vhpiValueT val;
+            if (size == 1) {
+                val.format = vhpiLogicVal;
+                vhpi_get_value(net_handle, &val);
+                state.dut->{{.OrigName}} = (val.value.enumv == 3) ? 1 : 0;
+                fprintf(stderr, "[VHPI] Input {{.OrigName}} = %d\n", state.dut->{{.OrigName}});
+            } else {
+                vhpiEnumT vec[64]; // Support up to 64 bits
+                val.format = vhpiLogicVecVal;
+                val.bufSize = size * sizeof(vhpiEnumT);
+                val.value.enumvs = vec;
+                vhpi_get_value(net_handle, &val);
+                uint64_t int_val = 0;
+                for (int i = 0; i < size; i++) {
+                	if (vec[i] == 3) { // 3 is vhpi1
+                		int_val |= (1ULL << (size - 1 - i));
+                	}
+                }
+                state.dut->{{.OrigName}} = int_val;
+                fprintf(stderr, "[VHPI] Input {{.OrigName}} = 0x%lx\n", int_val);
+
+            }
+        }
+    }
+{{- end}}
+{{- end}}
+{{- end}}
+}
+
+inline void sync_outputs(InstanceState& state) {
+{{- range .TopModule.Stmtsp}}
+{{- if eq .Type "VAR"}}
+{{- if eq .Direction "OUTPUT"}}
+    {
+        vhpiHandleT net_handle = get_vhpi_handle(state, "{{.UpperName}}");
+        if (net_handle) {
+            int size = vhpi_get(vhpiSizeP, net_handle);
+            vhpiValueT val;
+            uint64_t int_val = state.dut->{{.OrigName}};
+            if (size == 1) {
+                val.format = vhpiLogicVal;
+                val.value.enumv = int_val ? 3 : 2;
+                vhpi_put_value(net_handle, &val, vhpiForcePropagate);
+            } else {
+                vhpiEnumT vec[64]; // Support up to 64 bits
+                fprintf(stderr, "[VHPI] Output {{.OrigName}} = 0x%lx\n", int_val);
+                for (int i = 0; i < size; i++) {
+                    if (int_val & (1ULL << (size - 1 - i))) {
+                        vec[i] = 3; // vhpi1
+                    } else {
+                        vec[i] = 2; // vhpi0
+                    }
+                }
+                val.format = vhpiLogicVecVal;
+                val.bufSize = size * sizeof(vhpiEnumT);
+                val.value.enumvs = vec;
+                vhpi_put_value(net_handle, &val, vhpiForcePropagate);
+            }
+        } else {
+            fprintf(stderr, "[VHPI] Output %s handle NOT FOUND\n", "{{.UpperName}}");
+        }
+    }
+{{- end}}
+{{- end}}
+{{- end}}
+}
+
+inline void eval_model(InstanceState& state) {
+    state.dut->eval();
+}
+`
 
 	// We only expect one top module for now.
 	var topModule *Module
 	for _, mod := range modules {
-		if mod.Type == "MODULE" {
+		if mod.Type == "MODULE" && mod.Name == topModuleName {
 			topModule = &mod
 			break
 		}
@@ -210,59 +363,38 @@ func generateHPP(modules []Module, out io.Writer) {
 		return
 	}
 
-	fmt.Fprintf(out, "#include \"V%s.h\"\n\n", topModule.Name)
-
-	fmt.Fprintf(out, "struct InstanceState {\n")
-	fmt.Fprintf(out, "    std::unique_ptr<VerilatedContext> context;\n")
-	fmt.Fprintf(out, "    std::unique_ptr<V%s> dut;\n", topModule.Name)
-	fmt.Fprintf(out, "    std::string path_prefix;\n")
-	fmt.Fprintf(out, "};\n\n")
-
-	fmt.Fprintf(out, "inline void init_bindings(int id, InstanceState& state, const std::string& path_prefix) {\n")
-	fmt.Fprintf(out, "    state.context = std::make_unique<VerilatedContext>();\n")
-	fmt.Fprintf(out, "    state.dut = std::make_unique<V%s>(state.context.get());\n", topModule.Name)
-	fmt.Fprintf(out, "    state.path_prefix = path_prefix;\n")
-	fmt.Fprintf(out, "}\n\n")
-
-	fmt.Fprintf(out, "inline void sync_inputs(InstanceState& state) {\n")
-	for _, stmt := range topModule.Stmtsp {
-		if stmt.Type == "VAR" && stmt.Direction == "INPUT" {
-			fmt.Fprintf(out, "    {\n")
-			// NVC VHDL identifiers are uppercase by default
-			fmt.Fprintf(out, "        std::string full_name = state.path_prefix + \".%s\";\n", strings.ToUpper(stmt.OrigName))
-			fmt.Fprintf(out, "        vpiHandle net_handle = vpi_handle_by_name((PLI_BYTE8*)full_name.c_str(), nullptr);\n")
-			fmt.Fprintf(out, "        if (net_handle) {\n")
-			fmt.Fprintf(out, "            s_vpi_value val;\n")
-			fmt.Fprintf(out, "            val.format = vpiIntVal;\n") // Simplified: assumes <= 32 bits
-			fmt.Fprintf(out, "            vpi_get_value(net_handle, &val);\n")
-			fmt.Fprintf(out, "            state.dut->%s = val.value.integer;\n", stmt.OrigName)
-			fmt.Fprintf(out, "        }\n")
-			fmt.Fprintf(out, "    }\n")
-		}
+	// Create a wrapper struct for the template to include augmented data if needed
+	type TemplateStmt struct {
+		Type      string
+		OrigName  string
+		UpperName string
+		Direction string
 	}
-	fmt.Fprintf(out, "}\n\n")
 
-	fmt.Fprintf(out, "inline void sync_outputs(InstanceState& state) {\n")
-	for _, stmt := range topModule.Stmtsp {
-		if stmt.Type == "VAR" && stmt.Direction == "OUTPUT" {
-			fmt.Fprintf(out, "    {\n")
-			fmt.Fprintf(out, "        std::string full_name = state.path_prefix + \".%s\";\n", strings.ToUpper(stmt.OrigName))
-			fmt.Fprintf(out, "        vpiHandle net_handle = vpi_handle_by_name((PLI_BYTE8*)full_name.c_str(), nullptr);\n")
-			fmt.Fprintf(out, "        if (net_handle) {\n")
-			fmt.Fprintf(out, "            s_vpi_value val;\n")
-			fmt.Fprintf(out, "            val.format = vpiIntVal;\n") // Simplified
-			fmt.Fprintf(out, "            val.value.integer = state.dut->%s;\n", stmt.OrigName)
-			fmt.Fprintf(out, "            fprintf(stderr, \"[VPI] Output %%s = %%d\\n\", full_name.c_str(), val.value.integer);\n")
-			fmt.Fprintf(out, "            vpi_put_value(net_handle, &val, nullptr, vpiNoDelay);\n")
-			fmt.Fprintf(out, "        } else {\n")
-			fmt.Fprintf(out, "            fprintf(stderr, \"[VPI] Output %%s handle NOT FOUND\\n\", full_name.c_str());\n")
-			fmt.Fprintf(out, "        }\n")
-			fmt.Fprintf(out, "    }\n")
-		}
+	type TemplateModule struct {
+		Name   string
+		Stmtsp []TemplateStmt
 	}
-	fmt.Fprintf(out, "}\n\n")
 
-	fmt.Fprintf(out, "inline void eval_model(InstanceState& state) {\n")
-	fmt.Fprintf(out, "    state.dut->eval();\n")
-	fmt.Fprintf(out, "}\n")
+	var tMod TemplateModule
+	tMod.Name = topModule.Name
+	for _, s := range topModule.Stmtsp {
+		tMod.Stmtsp = append(tMod.Stmtsp, TemplateStmt{
+			Type:      s.Type,
+			OrigName:  s.OrigName,
+			UpperName: strings.ToUpper(s.OrigName),
+			Direction: s.Direction,
+		})
+	}
+
+	data := struct {
+		TopModule TemplateModule
+	}{
+		TopModule: tMod,
+	}
+
+	tmpl := template.Must(template.New("hpp").Parse(hppTemplate))
+	if err := tmpl.Execute(out, data); err != nil {
+		log.Fatalf("Error executing HPP template: %v", err)
+	}
 }

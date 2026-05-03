@@ -76,6 +76,7 @@ def _bridge_gen_impl(ctx):
             ctx.files.json_src[0].path,
             vhdl_out.path,
             hpp_out.path,
+            ctx.attr.top_module,
         ],
         progress_message = "Generating Co-Simulation Bridge for {}".format(ctx.attr.name),
     )
@@ -91,6 +92,7 @@ bridge_gen = rule(
     implementation = _bridge_gen_impl,
     attrs = {
         "json_src": attr.label(allow_files = True, mandatory = True),
+        "top_module": attr.string(mandatory = True),
         "_generator": attr.label(
             default = Label("//internal/cosim:generate_bridge"),
             executable = True,
@@ -137,6 +139,7 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}):
     bridge_gen(
         name = bridge_name,
         json_src = ":{}".format(json_name),
+        top_module = top_modules[0],
     )
 
     vhdl_name = "{}_vhdl".format(name)
@@ -162,6 +165,7 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}):
         name = verilated_lib_name,
         module = ":{}".format(vlog_lib_name),
         module_top = top_modules[0], # Support one top module for now
+        vopts = ["-G{}={}".format(k, v) for k, v in parameters.items()],
     )
 
     cc_name = "{}_vpi".format(name)
@@ -169,12 +173,15 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}):
         name = cc_name,
         srcs = [
             Label("//internal/cosim:vpi_wrapper.cpp"), 
+            Label("//internal/cosim:vhpi_user.h"), 
             ":{}".format(hpp_name)
         ],
         copts = [
             "-I$(GENDIR)/" + native.package_name(), 
             "-I$(BINDIR)/" + native.package_name(),
-            "-DVPI_BINDINGS_HEADER=\\\"{}_bridge_vpi_bindings.hpp\\\"".format(name)
+            "-Iexternal/rules_nvc+/internal/cosim",
+            "-DVPI_BINDINGS_HEADER=\\\"{}_bridge_vpi_bindings.hpp\\\"".format(name),
+            "-DVERILATOR_STEP_CALL=verilator_step_call_{}".format(top_modules[0])
         ],
         linkshared = True,
         deps = [
