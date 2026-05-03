@@ -5,3 +5,4 @@ This directory contains comprehensive reports and architectural documentation fo
 ## Feature Reports
 
 * [NVC and Verilator Co-Simulation Bridge Report](cosim_bridge_architecture.md)
+* [Co-Simulation Usage Example](cosim_usage_example.md)
