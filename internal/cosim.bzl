@@ -61,6 +61,7 @@ verilator_json = rule(
         "srcs": attr.label_list(allow_files = True, mandatory = True),
         "top_modules": attr.string_list(mandatory = True),
         "parameters": attr.string_dict(doc = "Verilog parameters (VHDL generics) to pass to the Verilator build"),
+        "path_prefix": attr.string(default = ":top_tb:dut_inst", doc = "The VHDL path prefix for VHPI handle lookup"),
     },
     toolchains = ["@rules_verilator//verilator:toolchain_type"],
 )
@@ -121,7 +122,7 @@ bridge_hpp = rule(
     },
 )
 
-def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}):
+def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}, path_prefix = ":top_tb:dut_inst"):
     """
     Macro that encapsulates NVC and Verilator co-simulation bindings generation.
     Generates the VHDL proxy and C++ bindings for the given Verilog top modules.
@@ -173,15 +174,16 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}):
         name = cc_name,
         srcs = [
             Label("//internal/cosim:vpi_wrapper.cpp"), 
-            Label("//internal/cosim:vhpi_user.h"), 
+            Label("//third_party/ieee:vhpi_user.h"), 
             ":{}".format(hpp_name)
         ],
         copts = [
             "-I$(GENDIR)/" + native.package_name(), 
             "-I$(BINDIR)/" + native.package_name(),
-            "-Iexternal/rules_nvc+/internal/cosim",
+            "-Iexternal/rules_nvc+/third_party/ieee",
             "-DVPI_BINDINGS_HEADER=\\\"{}_bridge_vpi_bindings.hpp\\\"".format(name),
-            "-DVERILATOR_STEP_CALL=verilator_step_call_{}".format(top_modules[0])
+            "-DVERILATOR_STEP_CALL=verilator_step_call_{}".format(top_modules[0]),
+            "-DPATH_PREFIX=\\\"{}\\\"".format(path_prefix)
         ],
         linkshared = True,
         deps = [

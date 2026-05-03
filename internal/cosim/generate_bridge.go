@@ -148,16 +148,16 @@ entity {{.Name}} is
 end entity;
 
 architecture proxy of {{.Name}} is
-  procedure step_verilator(id: integer);
+  procedure step_verilator(id: integer; path: string);
   attribute foreign of step_verilator : procedure is "VHPIDIRECT verilator_step_call_{{.Name}}";
-  procedure step_verilator(id: integer) is
+  procedure step_verilator(id: integer; path: string) is
   begin
     report "VHPIDIRECT binding failed! C function not called." severity failure;
   end procedure;
 begin
   process({{- range $i, $port := .InputPorts}}{{$port.OrigName}}{{if not $port.IsLastInput}}, {{end}}{{end}})
   begin
-    step_verilator(INSTANCE_ID);
+    step_verilator(INSTANCE_ID, {{.Name}}'path_name);
   end process;
 end architecture;
 {{end}}
@@ -283,7 +283,6 @@ inline void sync_inputs(InstanceState& state) {
                 val.format = vhpiLogicVal;
                 vhpi_get_value(net_handle, &val);
                 state.dut->{{.OrigName}} = (val.value.enumv == 3) ? 1 : 0;
-                fprintf(stderr, "[VHPI] Input {{.OrigName}} = %d\n", state.dut->{{.OrigName}});
             } else {
                 vhpiEnumT vec[64]; // Support up to 64 bits
                 val.format = vhpiLogicVecVal;
@@ -297,8 +296,6 @@ inline void sync_inputs(InstanceState& state) {
                 	}
                 }
                 state.dut->{{.OrigName}} = int_val;
-                fprintf(stderr, "[VHPI] Input {{.OrigName}} = 0x%lx\n", int_val);
-
             }
         }
     }
@@ -323,7 +320,6 @@ inline void sync_outputs(InstanceState& state) {
                 vhpi_put_value(net_handle, &val, vhpiForcePropagate);
             } else {
                 vhpiEnumT vec[64]; // Support up to 64 bits
-                fprintf(stderr, "[VHPI] Output {{.OrigName}} = 0x%lx\n", int_val);
                 for (int i = 0; i < size; i++) {
                     if (int_val & (1ULL << (size - 1 - i))) {
                         vec[i] = 3; // vhpi1

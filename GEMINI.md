@@ -95,6 +95,8 @@ license copied from its source distribution.
 - Large features MUST have integration tests.
 - After every feature implementation, build and run tests to verify
   functionality and prevent regressions.
+- **Feature Documentation:** Every new feature must be described in a Markdown report placed in the `//doc` directory. Additionally, the new report must be linked within the documentation index at `//doc/README.md`.
+
 
 
 ## Workspace Conventions

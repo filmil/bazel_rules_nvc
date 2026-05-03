@@ -32,7 +32,7 @@ func TestGenerateVHDL(t *testing.T) {
 				"q : out std_logic",
 				"architecture proxy of dut is",
 				"process(clk, d)",
-				"step_verilator(INSTANCE_ID);",
+				"step_verilator(INSTANCE_ID, dut'path_name);",
 			},
 		},
 		{
@@ -54,7 +54,7 @@ func TestGenerateVHDL(t *testing.T) {
 				"b : in std_logic_vector(7 downto 0);",
 				"sum : out std_logic_vector(8 downto 0)",
 				"process(a, b)",
-				"step_verilator(INSTANCE_ID);",
+				"step_verilator(INSTANCE_ID, adder'path_name);",
 			},
 		},
 	}
