@@ -37,9 +37,16 @@ def _vhdl_elaborate(ctx):
     runfiles.merge_all([ctx.attr.library[DefaultInfo].default_runfiles])
 
     work_library_file = get_single_file_from(ctx.attr.library)
+    vpi_plugins = []
+    vpi_flags = []
+    if hasattr(vhdl_provider, "vpi_plugins") and vhdl_provider.vpi_plugins:
+        vpi_plugins = vhdl_provider.vpi_plugins.to_list()
+        for p in vpi_plugins:
+            vpi_flags.append("--load=" + p.path)
+
     ctx.actions.run(
         outputs = [out_dir],
-        inputs = [vhdl_provider.library_dir, std_lib_dir] + deps_paths,
+        inputs = [vhdl_provider.library_dir, std_lib_dir] + deps_paths + vpi_plugins,
         executable = ctx.executable._script.path,
         arguments = [
             "--vhdl-standard={}".format(ctx.attr.standard),
@@ -50,7 +57,8 @@ def _vhdl_elaborate(ctx):
             "--entity={}".format(ctx.attr.name),
             "--library-dir-in-path={}".format(work_library_file.path),
             "--library-dir-out-path={}".format(out_dir.path),
-        ],
+            "--",
+        ] + vpi_flags,
         tools = [analyzer_x, ctx.executable._script] + artifacts,
         # Only seems to work from bazel 6.0.0 on.
         #toolchain = _NVC_TOOLCHAIN_TYPE,
