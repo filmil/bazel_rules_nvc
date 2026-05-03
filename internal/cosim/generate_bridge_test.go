@@ -62,7 +62,7 @@ func TestGenerateVHDL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var buf bytes.Buffer
-			generateVHDL(tt.modules, nil, &buf, tt.modules[0].Name)
+			generateVHDL(tt.modules, nil, &buf, &buf, tt.modules[0].Name)
 			output := buf.String()
 
 			for _, part := range tt.expectedParts {

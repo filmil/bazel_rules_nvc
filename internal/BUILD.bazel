@@ -159,15 +159,7 @@ stardoc(
     deps = [":verilog_library"],
 )
 
-bzl_library(
-    name = "cosim",
-    srcs = ["cosim.bzl"],
-    deps = [
-        ":vhdl_elaborate",
-        ":vhdl_library",
-        ":vhdl_test",
-    ],
-)
+# Removed bzl_library for cosim because of external dependency issues.
 
 bzl_library(
     name = "macros",
