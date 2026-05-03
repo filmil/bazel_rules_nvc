@@ -9,6 +9,9 @@ nvc_verilator_cosim(
         "counter.sv",
     ],
     top_modules = ["demo_top"],
+    # `path_prefix` must exactly mirror the VHDL hierarchy instantiated
+    # in `top_tb.vhdl`. Here, `top_tb` is the entity name of the testbench,
+    # and `demo_inst` is the component instantiation label.
     path_prefix = ":top_tb:demo_inst",
 )
 

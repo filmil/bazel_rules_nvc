@@ -127,6 +127,19 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}, path_prefix = 
     Macro that encapsulates NVC and Verilator co-simulation bindings generation.
     Generates the VHDL proxy and C++ bindings for the given Verilog top modules.
     The resulting VHDL file can be used as a dependency in a `vhdl_library`.
+    
+    Args:
+        name: Name of the generated rules.
+        srcs: Verilog source files.
+        top_modules: List of top modules to compile (currently only supports one).
+        parameters: Verilog parameters (VHDL generics) to pass to Verilator.
+        path_prefix: The exact VHDL hierarchical path where this component will
+                     be instantiated in the testbench. NVC requires this absolute
+                     string (e.g., ":top_tb:dut_inst") to natively resolve the 
+                     VHPI handles at runtime since dynamic hierarchy discovery
+                     from within VHPIDIRECT is heavily restricted. The user must 
+                     manually align this string with their VHDL architecture names 
+                     and component instantiation labels.
     """
     json_name = "{}_json".format(name)
     verilator_json(

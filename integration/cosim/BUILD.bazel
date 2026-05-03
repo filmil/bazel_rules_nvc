@@ -5,6 +5,8 @@ nvc_verilator_cosim(
     name = "cosim_bridge",
     srcs = ["dut.v"],
     top_modules = ["dut"],
+    # `path_prefix` relies on the default ":top_tb:dut_inst" mapped
+    # inside `nvc_verilator_cosim`.
 )
 
 vhdl_test(
