@@ -17,4 +17,5 @@ vhdl_test(
         ":cosim_bridge",
     ],
     entity = "top_tb",
+    args = ["--vhpi-trace", "--vhpi-debug"],
 )
