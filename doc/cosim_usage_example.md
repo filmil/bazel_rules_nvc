@@ -54,6 +54,35 @@ vhdl_test(
 )
 ```
 
+### Separate Entity and Architecture Generation
+
+If you prefer to define the VHDL `entity` manually (e.g., to add custom generics
+or modify port types), you can set `separate_entity_arch = True`. This exposes
+an `.archonly` alias target which provides only the generated architecture and
+C++ bindings.
+
+```starlark
+# 1. Generate only the architecture
+nvc_verilator_cosim(
+    name = "cosim_bridge_gen",
+    srcs = ["adder.v"],
+    top_module = "adder",
+    path_prefix = ":top_tb:dut_inst",
+    separate_entity_arch = True,
+)
+
+# 2. Combine your manual entity with the generated architecture
+vhdl_library(
+    name = "cosim_bridge",
+    srcs = [
+        "adder_entity.vhdl", # Your manually written entity
+    ],
+    deps = [
+        ":cosim_bridge_gen.archonly",
+    ],
+)
+```
+
 ## 3. VHDL Testbench (`top_tb.vhdl`)
 
 In your VHDL testbench, instantiate the generated proxy entity directly from the
