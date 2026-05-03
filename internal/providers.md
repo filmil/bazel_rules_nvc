@@ -48,7 +48,7 @@ Information on how to run NVC for VHDL analysis, elaboration and simulation.
 <pre>
 load("@rules_nvc//internal:providers.bzl", "VHDLLibraryProvider")
 
-VHDLLibraryProvider(<a href="#VHDLLibraryProvider-libraries">libraries</a>, <a href="#VHDLLibraryProvider-entities">entities</a>, <a href="#VHDLLibraryProvider-library_name">library_name</a>, <a href="#VHDLLibraryProvider-library_dir">library_dir</a>, <a href="#VHDLLibraryProvider-includes">includes</a>, <a href="#VHDLLibraryProvider-hdrs">hdrs</a>)
+VHDLLibraryProvider(<a href="#VHDLLibraryProvider-libraries">libraries</a>, <a href="#VHDLLibraryProvider-entities">entities</a>, <a href="#VHDLLibraryProvider-library_name">library_name</a>, <a href="#VHDLLibraryProvider-library_dir">library_dir</a>, <a href="#VHDLLibraryProvider-includes">includes</a>, <a href="#VHDLLibraryProvider-hdrs">hdrs</a>, <a href="#VHDLLibraryProvider-vpi_plugins">vpi_plugins</a>)
 </pre>
 
 Contains the information about the binary files in a compiled VHDL library.
@@ -63,5 +63,6 @@ Contains the information about the binary files in a compiled VHDL library.
 | <a id="VHDLLibraryProvider-library_dir"></a>library_dir |  File: The container directory where the library is located. NVC will not create a library in an existing directory, so a container directory is used. The actual library directory is `$library_dir/$library_name`.    |
 | <a id="VHDLLibraryProvider-includes"></a>includes |  List[string]: List of directories to include for Verilog.    |
 | <a id="VHDLLibraryProvider-hdrs"></a>hdrs |  depset[File]: List of include files for Verilog.    |
+| <a id="VHDLLibraryProvider-vpi_plugins"></a>vpi_plugins |  depset[File]: List of VPI plugins required for simulation.    |
 
 
