@@ -12,7 +12,12 @@ def _produce_waveform(ctx):
     for target in ctx.attr.data:
         for file in target.files.to_list():
             data_files += [file]
-    output_file = ctx.actions.declare_file("{}.vcd".format(ctx.attr.name))
+
+    ext = "vcd"
+    if ctx.attr.use_fst:
+        ext = "fst"
+
+    output_file = ctx.actions.declare_file("{}.{}".format(ctx.attr.name, ext))
     runfiles = ctx.runfiles(files=[output_file] + data_files)
     sim = ctx.executable.simulation
     ctx.actions.run(
@@ -48,6 +53,10 @@ produce_waveform = rule(
         ),
         "args": attr.string_list(
             doc = "Additional command-line arguments to pass to the simulation.",
+        ),
+        "use_fst": attr.bool(
+            default = False,
+            doc = "A boolean indicating whether to expect an FST file instead of VCD file. Defaults to `False`.",
         ),
     },
 )

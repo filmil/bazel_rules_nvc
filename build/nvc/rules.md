@@ -82,7 +82,7 @@ Defines a prebuilt VHDL library, skipping analysis.
 <pre>
 load("@rules_nvc//build/nvc:rules.bzl", "produce_waveform")
 
-produce_waveform(<a href="#produce_waveform-name">name</a>, <a href="#produce_waveform-data">data</a>, <a href="#produce_waveform-args">args</a>, <a href="#produce_waveform-simulation">simulation</a>)
+produce_waveform(<a href="#produce_waveform-name">name</a>, <a href="#produce_waveform-data">data</a>, <a href="#produce_waveform-args">args</a>, <a href="#produce_waveform-simulation">simulation</a>, <a href="#produce_waveform-use_fst">use_fst</a>)
 </pre>
 
 Produces a waveform file (VCD) from a VHDL simulation run.
@@ -96,6 +96,7 @@ Produces a waveform file (VCD) from a VHDL simulation run.
 | <a id="produce_waveform-data"></a>data |  Data files required for the simulation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="produce_waveform-args"></a>args |  Additional command-line arguments to pass to the simulation.   | List of strings | optional |  `[]`  |
 | <a id="produce_waveform-simulation"></a>simulation |  The simulation target (`vhdl_run`) to execute.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="produce_waveform-use_fst"></a>use_fst |  A boolean indicating whether to expect an FST file instead of VCD file. Defaults to `False`.   | Boolean | optional |  `False`  |
 
 
 <a id="verilog_library"></a>
@@ -180,7 +181,7 @@ Compiles VHDL source files into a library using NVC.
 <pre>
 load("@rules_nvc//build/nvc:rules.bzl", "vhdl_run")
 
-vhdl_run(<a href="#vhdl_run-name">name</a>, <a href="#vhdl_run-deps">deps</a>, <a href="#vhdl_run-args">args</a>, <a href="#vhdl_run-entity">entity</a>, <a href="#vhdl_run-standard">standard</a>, <a href="#vhdl_run-use_vcd">use_vcd</a>)
+vhdl_run(<a href="#vhdl_run-name">name</a>, <a href="#vhdl_run-deps">deps</a>, <a href="#vhdl_run-args">args</a>, <a href="#vhdl_run-entity">entity</a>, <a href="#vhdl_run-standard">standard</a>, <a href="#vhdl_run-use_vcd">use_vcd</a>, <a href="#vhdl_run-use_fst">use_fst</a>)
 </pre>
 
 Simulates an elaborated VHDL design using NVC.
@@ -196,6 +197,7 @@ Simulates an elaborated VHDL design using NVC.
 | <a id="vhdl_run-entity"></a>entity |  The elaborated VHDL entity to simulate. This should be a `vhdl_elaborate` target.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
 | <a id="vhdl_run-standard"></a>standard |  The VHDL standard to use for simulation. Defaults to '2019'.   | String | optional |  `"2019"`  |
 | <a id="vhdl_run-use_vcd"></a>use_vcd |  A boolean indicating whether to generate a VCD (Value Change Dump) file for waveform viewing. Defaults to `True`.   | Boolean | optional |  `True`  |
+| <a id="vhdl_run-use_fst"></a>use_fst |  A boolean indicating whether to generate a FST file for waveform viewing. Defaults to `False`. Takes precedence over `use_vcd`.   | Boolean | optional |  `False`  |
 
 
 <a id="vhdl_test"></a>

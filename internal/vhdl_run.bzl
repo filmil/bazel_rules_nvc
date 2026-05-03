@@ -33,11 +33,17 @@ def _vhdl_run(ctx):
 
     work_library_file = get_single_file_from(ctx.attr.entity)
 
+    ext = "vcd"
+    if ctx.attr.use_fst:
+        ext = "fst"
+
     wave_file = ctx.actions.declare_file(
-        "{}.vcd".format(ctx.attr.name))
+        "{}.{}".format(ctx.attr.name, ext))
 
     format = []
-    if ctx.attr.use_vcd:
+    if ctx.attr.use_fst:
+        format = [ "--format=fst" ]
+    elif ctx.attr.use_vcd:
         format = [ "--format=vcd" ]
 
     elaborate_provider = ctx.attr.entity[ElaborateProvider]
@@ -106,6 +112,10 @@ vhdl_run = rule(
         "use_vcd": attr.bool(
             default = True,
             doc = "A boolean indicating whether to generate a VCD (Value Change Dump) file for waveform viewing. Defaults to `True`.",
+        ),
+        "use_fst": attr.bool(
+            default = False,
+            doc = "A boolean indicating whether to generate a FST file for waveform viewing. Defaults to `False`. Takes precedence over `use_vcd`.",
         ),
         "args": attr.string_list(
             doc = "A list of added command line args to use",
