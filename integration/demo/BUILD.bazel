@@ -9,6 +9,7 @@ nvc_verilator_cosim(
         "counter.sv",
     ],
     top_modules = ["demo_top"],
+    path_prefix = ":top_tb:demo_inst",
 )
 
 vhdl_test(

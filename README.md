@@ -16,6 +16,8 @@ Bazel ecosystem.
 
 ## Documentation
 
+An index of architectural reports and feature documentation can be found in the [Documentation Index](doc/README.md).
+
 The following table provides an overview of the documentation for the Starlark
 rules and macros provided by this repository.
 
