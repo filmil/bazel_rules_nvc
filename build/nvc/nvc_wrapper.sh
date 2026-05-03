@@ -137,15 +137,27 @@ if [[ "${gotopt2_wave_format}" != "" ]]; then
   _format="--format=${gotopt2_wave_format}"
 fi
 
+# Extract --load flags from extra arguments to pass them as global options
+_load_flags=""
+_run_args=""
+for arg in "${gotopt2_args__[@]}"; do
+  if [[ "$arg" == --load=* ]]; then
+    _load_flags="$_load_flags $arg"
+  else
+    _run_args="$_run_args \"$arg\""
+  fi
+done
+
 # The NVC conventions around directory naming don't interact
 # well with bazel
 readonly _nvc_lib_path="${gotopt2_library_dir_out_path}/${gotopt2_library_name}/${gotopt2_library_name}"
 
-"${gotopt2_nvc_binary_path}" \
+eval "${gotopt2_nvc_binary_path}" \
   --std="${gotopt2_vhdl_standard}" \
   -L "${gotopt2_stdlib_dir}/nvc" \
   ${gotopt2_library_paths} \
   --work="${gotopt2_library_name}:${_nvc_lib_path}" \
+  ${_load_flags} \
   "${gotopt2_cmd}" ${_format} "${gotopt2_entity}" \
-  ${gotopt2_args__[@]}
+  ${_run_args}
 

@@ -162,8 +162,9 @@ func generateVHDL(modules []Module, typeMap map[string]DType, out io.Writer) {
 		fmt.Fprintf(out, "  );\nend entity;\n\n")
 
 		fmt.Fprintf(out, "architecture proxy of %s is\n", mod.Name)
+		fmt.Fprintf(out, "  procedure step_verilator(id: integer);\n")
+		fmt.Fprintf(out, "  attribute foreign of step_verilator : procedure is \"VHPIDIRECT verilator_step_call\";\n")
 		fmt.Fprintf(out, "  procedure step_verilator(id: integer) is\n")
-		fmt.Fprintf(out, "    attribute foreign of step_verilator : procedure is \"VHPIDIRECT verilator_step_call\";\n")
 		fmt.Fprintf(out, "  begin\n    report \"VHPIDIRECT binding failed! C function not called.\" severity failure;\n  end procedure;\n")
 		fmt.Fprintf(out, "begin\n")
 		fmt.Fprintf(out, "  process\n  begin\n")
@@ -212,12 +213,14 @@ func generateHPP(modules []Module, out io.Writer) {
 	fmt.Fprintf(out, "#include \"V%s.h\"\n\n", topModule.Name)
 
 	fmt.Fprintf(out, "struct InstanceState {\n")
+	fmt.Fprintf(out, "    std::unique_ptr<VerilatedContext> context;\n")
 	fmt.Fprintf(out, "    std::unique_ptr<V%s> dut;\n", topModule.Name)
 	fmt.Fprintf(out, "    std::string path_prefix;\n")
 	fmt.Fprintf(out, "};\n\n")
 
 	fmt.Fprintf(out, "inline void init_bindings(int id, InstanceState& state, const std::string& path_prefix) {\n")
-	fmt.Fprintf(out, "    state.dut = std::make_unique<V%s>();\n", topModule.Name)
+	fmt.Fprintf(out, "    state.context = std::make_unique<VerilatedContext>();\n")
+	fmt.Fprintf(out, "    state.dut = std::make_unique<V%s>(state.context.get());\n", topModule.Name)
 	fmt.Fprintf(out, "    state.path_prefix = path_prefix;\n")
 	fmt.Fprintf(out, "}\n\n")
 
