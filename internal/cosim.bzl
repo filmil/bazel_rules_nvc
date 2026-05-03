@@ -19,8 +19,7 @@ def _verilator_json_impl(ctx):
     args = ctx.actions.args()
     args.add("--json-only")
 
-    for mod in ctx.attr.top_modules:
-        args.add("--top-module", mod)
+    args.add("--top-module", ctx.attr.top_module)
         
     for k, v in ctx.attr.parameters.items():
         args.add("-G{}={}".format(k, v))
@@ -47,7 +46,7 @@ def _verilator_json_impl(ctx):
             cp $(find . -name "*.tree.json" | head -n 1) {out}
         """.format(
             verilator = verilator.path,
-            top = ctx.attr.top_modules[0],
+            top = ctx.attr.top_module,
             out = json_out.path,
         ),
         arguments = [args],
@@ -59,9 +58,8 @@ verilator_json = rule(
     implementation = _verilator_json_impl,
     attrs = {
         "srcs": attr.label_list(allow_files = True, mandatory = True),
-        "top_modules": attr.string_list(mandatory = True),
+        "top_module": attr.string(mandatory = True),
         "parameters": attr.string_dict(doc = "Verilog parameters (VHDL generics) to pass to the Verilator build"),
-        "path_prefix": attr.string(default = ":top_tb:dut_inst", doc = "The VHDL path prefix for VHPI handle lookup"),
     },
     toolchains = ["@rules_verilator//verilator:toolchain_type"],
 )
@@ -122,17 +120,16 @@ bridge_hpp = rule(
     },
 )
 
-def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}, path_prefix = ":top_tb:dut_inst"):
+def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}):
     """
     Macro that encapsulates NVC and Verilator co-simulation bindings generation.
-    Generates the VHDL proxy and C++ bindings for the given Verilog top modules.
+    Generates the VHDL proxy and C++ bindings for the given Verilog top module.
     The resulting VHDL file can be used as a dependency in a `vhdl_library`.
     
     Args:
         name: Name of the generated rules.
         srcs: Verilog source files.
-        top_modules: List of top modules to compile (currently only supports one).
-        parameters: Verilog parameters (VHDL generics) to pass to Verilator.
+        top_module: The top module to compile.
         path_prefix: The exact VHDL hierarchical path where this component will
                      be instantiated in the testbench. NVC requires this absolute
                      string (e.g., ":top_tb:dut_inst") to natively resolve the 
@@ -140,12 +137,13 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}, path_prefix = 
                      from within VHPIDIRECT is heavily restricted. The user must 
                      manually align this string with their VHDL architecture names 
                      and component instantiation labels.
+        parameters: Verilog parameters (VHDL generics) to pass to Verilator.
     """
     json_name = "{}_json".format(name)
     verilator_json(
         name = json_name,
         srcs = srcs,
-        top_modules = top_modules,
+        top_module = top_module,
         parameters = parameters,
     )
 
@@ -153,7 +151,7 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}, path_prefix = 
     bridge_gen(
         name = bridge_name,
         json_src = ":{}".format(json_name),
-        top_module = top_modules[0],
+        top_module = top_module,
     )
 
     vhdl_name = "{}_vhdl".format(name)
@@ -178,7 +176,7 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}, path_prefix = 
     verilator_cc_library(
         name = verilated_lib_name,
         module = ":{}".format(vlog_lib_name),
-        module_top = top_modules[0], # Support one top module for now
+        module_top = top_module,
         vopts = ["-G{}={}".format(k, v) for k, v in parameters.items()],
     )
 
@@ -195,7 +193,7 @@ def nvc_verilator_cosim(name, srcs, top_modules, parameters = {}, path_prefix = 
             "-I$(BINDIR)/" + native.package_name(),
             "-Iexternal/rules_nvc+/third_party/ieee",
             "-DVPI_BINDINGS_HEADER=\\\"{}_bridge_vpi_bindings.hpp\\\"".format(name),
-            "-DVERILATOR_STEP_CALL=verilator_step_call_{}".format(top_modules[0]),
+            "-DVERILATOR_STEP_CALL=verilator_step_call_{}".format(top_module),
             "-DPATH_PREFIX=\\\"{}\\\"".format(path_prefix)
         ],
         linkshared = True,
