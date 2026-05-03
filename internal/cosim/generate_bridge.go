@@ -1,3 +1,5 @@
+// LICENSE sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+
 package main
 
 import (
@@ -50,14 +52,19 @@ type Stmt struct {
 var boundsRegex = regexp.MustCompile(`\[(\d+):(\d+)\]`)
 
 func main() {
-	if len(os.Args) != 5 {
-		log.Fatalf("Usage: %s <input.json> <out_proxy.vhdl> <out_bindings.hpp> <top_module>", os.Args[0])
+	if len(os.Args) < 5 || len(os.Args) > 6 {
+		log.Fatalf("Usage: %s <input.json> <out_proxy.vhdl> <out_bindings.hpp> <top_module> [out_arch.vhdl]", os.Args[0])
 	}
 
 	jsonPath := os.Args[1]
 	vhdlPath := os.Args[2]
 	hppPath := os.Args[3]
 	topModuleName := os.Args[4]
+	
+	archPath := ""
+	if len(os.Args) == 6 {
+		archPath = os.Args[5]
+	}
 
 	jsonFile, err := os.Open(jsonPath)
 	if err != nil {
@@ -89,12 +96,30 @@ func main() {
 		}
 	}
 
-	vhdlOut, err := os.Create(vhdlPath)
-	if err != nil {
-		log.Fatalf("Error creating VHDL: %v", err)
+	if archPath != "" {
+		// Separate entity and architecture
+		entityOut, err := os.Create(vhdlPath)
+		if err != nil {
+			log.Fatalf("Error creating VHDL entity: %v", err)
+		}
+		defer entityOut.Close()
+
+		archOut, err := os.Create(archPath)
+		if err != nil {
+			log.Fatalf("Error creating VHDL architecture: %v", err)
+		}
+		defer archOut.Close()
+
+		generateVHDL(vJSON.Modulesp, typeMap, entityOut, archOut, topModuleName)
+	} else {
+		// Combined entity and architecture
+		vhdlOut, err := os.Create(vhdlPath)
+		if err != nil {
+			log.Fatalf("Error creating VHDL: %v", err)
+		}
+		defer vhdlOut.Close()
+		generateVHDL(vJSON.Modulesp, typeMap, vhdlOut, vhdlOut, topModuleName)
 	}
-	defer vhdlOut.Close()
-	generateVHDL(vJSON.Modulesp, typeMap, vhdlOut, topModuleName)
 
 	hppOut, err := os.Create(hppPath)
 	if err != nil {
@@ -129,8 +154,8 @@ func mapVerilogToVHDLType(direction, vType string, dt *DType) string {
 	return fmt.Sprintf("%s std_logic", dir)
 }
 
-func generateVHDL(modules []Module, typeMap map[string]DType, out io.Writer, topModuleName string) {
-	const vhdlTemplate = `library ieee;
+func generateVHDL(modules []Module, typeMap map[string]DType, entityOut, archOut io.Writer, topModuleName string) {
+	const vhdlEntityTemplate = `library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
@@ -146,29 +171,31 @@ entity {{.Name}} is
 {{- end}}
   );
 end entity;
+{{end}}
+{{end}}
+`
 
-architecture proxy of {{.Name}} is
+	const vhdlArchTemplate = `
+architecture proxy of {{.TargetModule}} is
   procedure step_verilator(id: integer; path: string);
-  attribute foreign of step_verilator : procedure is "VHPIDIRECT verilator_step_call_{{.Name}}";
+  attribute foreign of step_verilator : procedure is "VHPIDIRECT verilator_step_call_{{.TargetModule}}";
   procedure step_verilator(id: integer; path: string) is
   begin
     report "VHPIDIRECT binding failed! C function not called." severity failure;
   end procedure;
 begin
-  process({{- range $i, $port := .InputPorts}}{{$port.OrigName}}{{if not $port.IsLastInput}}, {{end}}{{end}})
+  process({{- range $i, $mod := .Modules}}{{if eq $mod.Name $.TargetModule}}{{- range $j, $port := $mod.InputPorts}}{{$port.OrigName}}{{if not $port.IsLastInput}}, {{end}}{{end}}{{end}}{{end}})
   begin
-    step_verilator(INSTANCE_ID, {{.Name}}'path_name);
+    step_verilator(INSTANCE_ID, {{.TargetModule}}'path_name);
   end process;
 end architecture;
-{{end}}
-{{end}}
 `
 
 	type PortData struct {
-		OrigName  string
-		VhdlType  string
-		Direction string
-		IsLast    bool
+		OrigName    string
+		VhdlType    string
+		Direction   string
+		IsLast      bool
 		IsLastInput bool
 	}
 
@@ -208,7 +235,7 @@ end architecture;
 				dt = &d
 			}
 			vhdlType := mapVerilogToVHDLType(port.Direction, port.DtypeName, dt)
-			
+
 			pData := PortData{
 				OrigName:  port.OrigName,
 				VhdlType:  vhdlType,
@@ -216,7 +243,7 @@ end architecture;
 				IsLast:    i == len(ports)-1,
 			}
 			mData.Ports = append(mData.Ports, pData)
-			
+
 			if port.Direction == "INPUT" || port.Direction == "INOUT" {
 				mData.InputPorts = append(mData.InputPorts, pData)
 			}
@@ -229,9 +256,14 @@ end architecture;
 		data.Modules = append(data.Modules, mData)
 	}
 
-	tmpl := template.Must(template.New("vhdl").Parse(vhdlTemplate))
-	if err := tmpl.Execute(out, data); err != nil {
-		log.Fatalf("Error executing VHDL template: %v", err)
+	entityTmpl := template.Must(template.New("vhdlEntity").Parse(vhdlEntityTemplate))
+	if err := entityTmpl.Execute(entityOut, data); err != nil {
+		log.Fatalf("Error executing VHDL entity template: %v", err)
+	}
+
+	archTmpl := template.Must(template.New("vhdlArch").Parse(vhdlArchTemplate))
+	if err := archTmpl.Execute(archOut, data); err != nil {
+		log.Fatalf("Error executing VHDL architecture template: %v", err)
 	}
 }
 
