@@ -16,11 +16,12 @@ func TestGenerateVHDL(t *testing.T) {
 			name: "Single module with clk, d, q",
 			modules: []Module{
 				{
+					Type: "MODULE",
 					Name: "dut",
-					Ports: []Port{
-						{Name: "clk", Direction: "in", Type: "logic"},
-						{Name: "d", Direction: "in", Type: "logic"},
-						{Name: "q", Direction: "out", Type: "logic"},
+					Stmtsp: []Stmt{
+						{Type: "VAR", OrigName: "clk", Direction: "INPUT", DtypeName: "logic"},
+						{Type: "VAR", OrigName: "d", Direction: "INPUT", DtypeName: "logic"},
+						{Type: "VAR", OrigName: "q", Direction: "OUTPUT", DtypeName: "logic"},
 					},
 				},
 			},
@@ -37,11 +38,12 @@ func TestGenerateVHDL(t *testing.T) {
 			name: "Adder without clock using dynamic vector bounds",
 			modules: []Module{
 				{
+					Type: "MODULE",
 					Name: "adder",
-					Ports: []Port{
-						{Name: "a", Direction: "in", Type: "logic [7:0]"},
-						{Name: "b", Direction: "in", Type: "logic [7:0]"},
-						{Name: "sum", Direction: "out", Type: "logic [8:0]"},
+					Stmtsp: []Stmt{
+						{Type: "VAR", OrigName: "a", Direction: "INPUT", DtypeName: "logic [7:0]"},
+						{Type: "VAR", OrigName: "b", Direction: "INPUT", DtypeName: "logic [7:0]"},
+						{Type: "VAR", OrigName: "sum", Direction: "OUTPUT", DtypeName: "logic [8:0]"},
 					},
 				},
 			},
@@ -59,7 +61,7 @@ func TestGenerateVHDL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var buf bytes.Buffer
-			generateVHDL(tt.modules, &buf)
+			generateVHDL(tt.modules, nil, &buf)
 			output := buf.String()
 
 			for _, part := range tt.expectedParts {
@@ -74,6 +76,7 @@ func TestGenerateVHDL(t *testing.T) {
 func TestGenerateHPP(t *testing.T) {
 	modules := []Module{
 		{
+			Type: "MODULE",
 			Name: "dut",
 		},
 	}
@@ -86,11 +89,11 @@ func TestGenerateHPP(t *testing.T) {
 		"#pragma once",
 		"#include <vpi_user.h>",
 		"struct InstanceState {",
-		"void* dut; // Pointer to verilated model",
-		"extern void init_bindings(int id, InstanceState& state, const std::string& path_prefix);",
-		"extern void sync_inputs(InstanceState& state);",
-		"extern void sync_outputs(InstanceState& state);",
-		"inline void eval_model(InstanceState& state) { /* Mock eval */ }",
+		"std::unique_ptr<Vdut> dut;",
+		"inline void init_bindings(int id, InstanceState& state, const std::string& path_prefix) {",
+		"inline void sync_inputs(InstanceState& state) {",
+		"inline void sync_outputs(InstanceState& state) {",
+		"inline void eval_model(InstanceState& state) {",
 	}
 
 	for _, part := range expectedParts {

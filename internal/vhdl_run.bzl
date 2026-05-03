@@ -41,11 +41,17 @@ def _vhdl_run(ctx):
         format = [ "--format=vcd" ]
 
     elaborate_provider = ctx.attr.entity[ElaborateProvider]
-    runfiles = ctx.runfiles(files = [wave_file])
+
+    vpi_plugins = vhdl_provider.vpi_plugins.to_list()
+    vpi_flags = []
+    for p in vpi_plugins:
+        vpi_flags += ["-m", p.path]
+
+    runfiles = ctx.runfiles(files = [wave_file] + vpi_plugins)
     ctx.actions.run(
         outputs = [wave_file],
         inputs = deps_paths + [
-            vhdl_provider.library_dir, std_lib_dir],
+            vhdl_provider.library_dir, std_lib_dir] + vpi_plugins,
         executable = ctx.executable._script.path,
         arguments = [
             "-cmd=-r",
@@ -58,7 +64,7 @@ def _vhdl_run(ctx):
             "--library-dir-in-path={}".format(work_library_file.path),
             "--library-dir-out-path={}".format(work_library_file.path),
             "--",
-        ] + ctx.attr.args + [
+        ] + vpi_flags + ctx.attr.args + [
             "--wave={}".format(wave_file.path),
         ] + format,
         tools = [analyzer_x, ctx.executable._script] + artifacts,

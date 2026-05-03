@@ -63,6 +63,7 @@ def _vhdl_elaborate(ctx):
             entities = vhdl_provider.entities,
             library_name = library_name,
             library_dir = out_dir,
+            vpi_plugins = vhdl_provider.vpi_plugins,
         ),
         ElaborateProvider(entity=ctx.attr.name),
         DefaultInfo(
