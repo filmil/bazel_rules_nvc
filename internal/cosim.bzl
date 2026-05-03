@@ -1,3 +1,5 @@
+# LICENSE sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@rules_verilator//verilator:defs.bzl", "verilator_cc_library")
 load("@rules_verilog//verilog:defs.bzl", vlog_library = "verilog_library")
@@ -66,23 +68,37 @@ verilator_json = rule(
 def _bridge_gen_impl(ctx):
     vhdl_out = ctx.actions.declare_file("{}_dut_proxy.vhdl".format(ctx.attr.name))
     hpp_out = ctx.actions.declare_file("{}_vpi_bindings.hpp".format(ctx.attr.name))
+    
+    outputs = [vhdl_out, hpp_out]
+    arguments = [
+        ctx.files.json_src[0].path,
+        vhdl_out.path,
+        hpp_out.path,
+        ctx.attr.top_module,
+    ]
+
+    vhdl_arch_out = None
+    if ctx.attr.separate_entity_arch:
+        vhdl_arch_out = ctx.actions.declare_file("{}_dut_proxy_arch.vhdl".format(ctx.attr.name))
+        outputs.append(vhdl_arch_out)
+        arguments.append(vhdl_arch_out.path)
 
     ctx.actions.run(
-        outputs = [vhdl_out, hpp_out],
+        outputs = outputs,
         inputs = ctx.files.json_src,
         executable = ctx.executable._generator,
-        arguments = [
-            ctx.files.json_src[0].path,
-            vhdl_out.path,
-            hpp_out.path,
-            ctx.attr.top_module,
-        ],
+        arguments = arguments,
         progress_message = "Generating Co-Simulation Bridge for {}".format(ctx.attr.name),
     )
+    
+    vhdl_depset = depset([vhdl_out])
+    vhdl_arch_depset = depset([vhdl_arch_out]) if vhdl_arch_out else depset()
+
     return [
-        DefaultInfo(files = depset([vhdl_out, hpp_out])),
+        DefaultInfo(files = depset(outputs)),
         OutputGroupInfo(
-            vhdl = depset([vhdl_out]),
+            vhdl = vhdl_depset,
+            vhdl_arch = vhdl_arch_depset,
             hpp = depset([hpp_out]),
         )
     ]
@@ -92,6 +108,7 @@ bridge_gen = rule(
     attrs = {
         "json_src": attr.label(allow_files = True, mandatory = True),
         "top_module": attr.string(mandatory = True),
+        "separate_entity_arch": attr.bool(default = False),
         "_generator": attr.label(
             default = Label("//internal/cosim:generate_bridge"),
             executable = True,
@@ -101,12 +118,15 @@ bridge_gen = rule(
 )
 
 def _bridge_vhdl_impl(ctx):
+    if ctx.attr.arch_only:
+        return [DefaultInfo(files = ctx.attr.bridge[OutputGroupInfo].vhdl_arch)]
     return [DefaultInfo(files = ctx.attr.bridge[OutputGroupInfo].vhdl)]
 
 bridge_vhdl = rule(
     implementation = _bridge_vhdl_impl,
     attrs = {
         "bridge": attr.label(mandatory = True),
+        "arch_only": attr.bool(default = False),
     },
 )
 
@@ -120,7 +140,7 @@ bridge_hpp = rule(
     },
 )
 
-def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}):
+def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}, separate_entity_arch = False, standard = "2019"):
     """
     Macro that encapsulates NVC and Verilator co-simulation bindings generation.
     Generates the VHDL proxy and C++ bindings for the given Verilog top module.
@@ -138,6 +158,9 @@ def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}):
                      manually align this string with their VHDL architecture names 
                      and component instantiation labels.
         parameters: Verilog parameters (VHDL generics) to pass to Verilator.
+        separate_entity_arch: If True, generate separate entity and architecture files.
+                              Creates an additional target <name>.archonly.
+        standard: The VHDL standard to use for co-simulation bridge generation.
     """
     json_name = "{}_json".format(name)
     verilator_json(
@@ -152,11 +175,12 @@ def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}):
         name = bridge_name,
         json_src = ":{}".format(json_name),
         top_module = top_module,
+        separate_entity_arch = separate_entity_arch,
     )
 
-    vhdl_name = "{}_vhdl".format(name)
+    vhdl_entity_target = "{}.vhdl".format(name)
     bridge_vhdl(
-        name = vhdl_name,
+        name = vhdl_entity_target,
         bridge = ":{}".format(bridge_name),
     )
 
@@ -180,7 +204,7 @@ def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}):
         vopts = ["-G{}={}".format(k, v) for k, v in parameters.items()],
     )
 
-    cc_name = "{}_vpi".format(name)
+    cc_name = "{}.vpi".format(name)
     cc_binary(
         name = cc_name,
         srcs = [
@@ -201,8 +225,26 @@ def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}):
             ":{}".format(verilated_lib_name),
         ], 
     )
+    
+    vhdl_srcs = [":{}".format(vhdl_entity_target)]
+    
+    if separate_entity_arch:
+        vhdl_arch_target = "{}.arch_vhdl".format(name)
+        bridge_vhdl(
+            name = vhdl_arch_target,
+            bridge = ":{}".format(bridge_name),
+            arch_only = True,
+        )
+        vhdl_srcs.append(":{}".format(vhdl_arch_target))
+        
+        native.alias(
+            name = name + ".archonly",
+            actual = vhdl_arch_target,
+        )
+
     vhdl_library(
         name = name,
-        srcs = [":{}".format(vhdl_name)],
+        srcs = vhdl_srcs,
         vpi_plugins = [":{}".format(cc_name)],
+        standard = standard,
     )
