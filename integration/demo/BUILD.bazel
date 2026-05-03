@@ -2,24 +2,25 @@ load("@rules_nvc//internal:cosim.bzl", "nvc_verilator_cosim")
 load("@rules_nvc//nvc:rules.bzl", "vhdl_test")
 
 nvc_verilator_cosim(
-    name = "demo_cosim_bridge",
-    srcs = [
-        "demo_top.sv",
-        "adder.sv",
-        "counter.sv",
-    ],
-    top_modules = ["demo_top"],
-    # `path_prefix` must exactly mirror the VHDL hierarchy instantiated
-    # in `top_tb.vhdl`. Here, `top_tb` is the entity name of the testbench,
-    # and `demo_inst` is the component instantiation label.
-    path_prefix = ":top_tb:demo_inst",
+    name = "adder_bridge",
+    srcs = ["adder.sv"],
+    top_module = "adder",
+    path_prefix = ":top_tb:adder_inst",
+)
+
+nvc_verilator_cosim(
+    name = "counter_bridge",
+    srcs = ["counter.sv"],
+    top_module = "counter",
+    path_prefix = ":top_tb:counter_inst",
 )
 
 vhdl_test(
     name = "demo_test",
     srcs = ["top_tb.vhdl"],
     deps = [
-        ":demo_cosim_bridge",
+        ":adder_bridge",
+        ":counter_bridge",
     ],
     entity = "top_tb",
 )

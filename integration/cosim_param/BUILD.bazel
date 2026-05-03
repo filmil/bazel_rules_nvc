@@ -4,7 +4,8 @@ load("@rules_nvc//nvc:rules.bzl", "vhdl_test")
 nvc_verilator_cosim(
     name = "cosim_bridge",
     srcs = ["adder.v"],
-    top_modules = ["adder"],
+    top_module = "adder",
+    path_prefix = ":top_tb:dut_inst",
     parameters = {
         "WIDTH": "16",
     },

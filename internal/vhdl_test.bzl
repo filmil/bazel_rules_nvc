@@ -51,7 +51,9 @@ def _vhdl_test(ctx):
     runfiles = runfiles.merge(ctx.runfiles(files = vpi_plugins))
 
     # Construct --load= flags for VPI plugins
-    vpi_flags = " ".join(["--load={}".format(p.short_path) for p in vpi_plugins])
+    vpi_flags = ""
+    if vpi_plugins:
+        vpi_flags = "--load={}".format(",".join([p.short_path for p in vpi_plugins]))
     
     # Add user arguments
     extra_args = " ".join(ctx.attr.args)
