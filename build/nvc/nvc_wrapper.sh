@@ -152,6 +152,13 @@ done
 # well with bazel
 readonly _nvc_lib_path="${gotopt2_library_dir_out_path}/${gotopt2_library_name}/${gotopt2_library_name}"
 
+# Allow NVC to find its shared libraries by setting LD_LIBRARY_PATH based on nvc_binary_path
+_nvc_bin_dir=$(dirname "${gotopt2_nvc_binary_path}")
+# Assuming the path is .../usr/bin, the lib dir is .../usr/lib/x86_64-linux-gnu
+_nvc_ld_lib_path="${_nvc_bin_dir}/../lib/x86_64-linux-gnu"
+
+export LD_LIBRARY_PATH="${_nvc_ld_lib_path}:${LD_LIBRARY_PATH}"
+
 eval "${gotopt2_nvc_binary_path}" \
   --std="${gotopt2_vhdl_standard}" \
   -L "${gotopt2_stdlib_dir}/nvc" \

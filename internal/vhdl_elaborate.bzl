@@ -17,7 +17,22 @@ def _vhdl_elaborate(ctx):
     out_dir = ctx.actions.declare_directory("{}_out".format(library_name))
 
     artifacts = nvc_info.artifacts_dir.files.to_list()
-    std_lib_dir = artifacts[1] # hopefully stable...
+    std_lib_dir = None
+    for artifact in artifacts:
+        if artifact.path.endswith("usr/lib/x86_64-linux-gnu/nvc"):
+            std_lib_dir = artifact
+            break
+            
+    if not std_lib_dir:
+        for artifact in artifacts:
+             if artifact.path.endswith("usr/lib/x86_64-linux-gnu/nvc/std/STD.STANDARD"):
+                 std_lib_dir = artifact.dirname
+                 break
+                 
+    analyzer_dir = analyzer_x.dirname
+    base_dir = analyzer_dir[:-4] if analyzer_dir.endswith("/bin") else analyzer_dir
+    nvc_lib_path = base_dir + "/lib/x86_64-linux-gnu/nvc"
+
 
     all_libraries = []
     flag_libraries = []
@@ -46,14 +61,17 @@ def _vhdl_elaborate(ctx):
 
     ctx.actions.run(
         outputs = [out_dir],
-        inputs = [vhdl_provider.library_dir, std_lib_dir] + deps_paths + vpi_plugins,
+        inputs = depset(direct = [vhdl_provider.library_dir] + ([std_lib_dir] if hasattr(std_lib_dir, "path") else []) + artifacts + deps_paths + vpi_plugins).to_list(),
         executable = ctx.executable._script.path,
+        env = {
+            "LD_LIBRARY_PATH": base_dir + "/lib/x86_64-linux-gnu:" + ctx.configuration.default_shell_env.get("LD_LIBRARY_PATH", ""),
+        },
         arguments = [
             "--vhdl-standard={}".format(ctx.attr.standard),
             "--nvc-binary-path={}".format(analyzer),
             "--library-name={}".format(library_name),
-            "--library-paths={}".format(" ".join(flag_libraries)),
-            "--stdlib-dir={}".format(std_lib_dir.path),
+            "--library-paths={}".format(" ".join(flag_libraries + ["-L", nvc_lib_path])),
+            "--stdlib-dir={}".format(nvc_lib_path[:-4]), # /nvc is appended in wrapper
             "--entity={}".format(ctx.attr.name),
             "--library-dir-in-path={}".format(work_library_file.path),
             "--library-dir-out-path={}".format(out_dir.path),

@@ -17,7 +17,29 @@ def _vhdl_library(ctx):
     )
 
     artifacts = nvc_info.artifacts_dir.files.to_list()
-    std_lib_dir = artifacts[1] # hopefully stable...
+    std_lib_dir = None
+    for artifact in artifacts:
+        if artifact.path.endswith("usr/lib/x86_64-linux-gnu/nvc"):
+            std_lib_dir = artifact
+            break
+            
+    if not std_lib_dir:
+        # Fallback if specific directory match fails, try to find a known file
+        for artifact in artifacts:
+             if artifact.path.endswith("usr/lib/x86_64-linux-gnu/nvc/std/STD.STANDARD"):
+                 std_lib_dir = artifact.dirname
+                 # dirname of std/STD.STANDARD is std, we need the parent 'nvc'
+                 # We'll just construct the path directly below
+                 break
+                 
+    # Construct the path to the nvc library directory based on the analyzer path
+    # Analyzer is at external/nvc_deb/usr/bin/nvc
+    # Library is at external/nvc_deb/usr/lib/x86_64-linux-gnu/nvc
+    analyzer_dir = analyzer_x.dirname
+    # Assuming path is .../usr/bin
+    base_dir = analyzer_dir[:-4] if analyzer_dir.endswith("/bin") else analyzer_dir
+    nvc_lib_path = base_dir + "/lib/x86_64-linux-gnu/nvc"
+
     targets = ctx.attr.srcs
     srcs = []
     for target in targets:
@@ -48,9 +70,12 @@ def _vhdl_library(ctx):
         outputs = [container_dir],
         inputs = srcs + deps_files,
         executable =  analyzer, # how do I get its path?
+        env = {
+            "LD_LIBRARY_PATH": base_dir + "/lib/x86_64-linux-gnu:" + ctx.configuration.default_shell_env.get("LD_LIBRARY_PATH", ""),
+        },
         arguments = [
           "--std={}".format(ctx.attr.standard),
-          "-L", "{}/nvc".format(std_lib_dir.path),
+          "-L", nvc_lib_path,
         ] + flag_libraries + [
           "--work={}:{}/{}".format(
             library_name,
