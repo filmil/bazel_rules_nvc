@@ -8,19 +8,19 @@ def _deb_extract_impl(rctx):
     res = rctx.execute(["ar", "x", "package.deb"])
     if res.return_code != 0:
         fail("Failed to extract .deb: " + res.stderr)
-    
+
     # Identify the data archive. It could be data.tar.xz, data.tar.gz, or data.tar.zst
     data_archive = None
     for f in ["data.tar.zst", "data.tar.xz", "data.tar.gz"]:
         if rctx.path(f).exists:
             data_archive = f
             break
-    
+
     if not data_archive:
         fail("Could not find data archive in .deb")
-    
+
     rctx.extract(data_archive)
-    
+
     if rctx.attr.build_file:
         rctx.symlink(rctx.attr.build_file, "BUILD.bazel")
     elif rctx.attr.build_file_content:

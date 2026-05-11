@@ -26,7 +26,13 @@ register_toolchains("//build/nvc:nvc_linux_toolchain")
 deb_extract = use_repo_rule("//internal:deb_extract.bzl", "deb_extract")
 
 deb_extract(
-    name = "nvc_deb",
+    name = "nvc_deb_22_04",
     integrity = "sha256-+lrK9P7xSifskXHCgs0BuHBatiRWs4jYyefxOj6qaVA=",
     urls = ["https://github.com/nickg/nvc/releases/download/r1.20.1/nvc_1.20.1-1_amd64_ubuntu-22.04.deb"],
+)
+
+deb_extract(
+    name = "nvc_deb_24_04",
+    integrity = "sha256-rh08AlQ9rITN3nlITX4BisvMjZtvBoAnk7QU0aJwwxo=",
+    urls = ["https://github.com/nickg/nvc/releases/download/r1.20.1/nvc_1.20.1-1_amd64_ubuntu-24.04.deb"],
 )

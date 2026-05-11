@@ -81,16 +81,31 @@ def _vhdl_test(ctx):
     t_runfiles = ctx.runfiles(files = tools)
 
     runfiles.merge_all([t_runfiles, i_runfiles, ctx.attr._script[DefaultInfo].default_runfiles])
+    
+    # Calculate the runfiles prefix path
+    # If the workspace is not _main (e.g. we are an external repo), we need to prefix the paths
+    nvc_lib_path_for_wrapper = nvc_lib_path
+    if nvc_lib_path.startswith("external/"):
+        nvc_lib_path_for_wrapper = "../" + nvc_lib_path[9:]
+
+    analyzer_for_wrapper = analyzer
+    if analyzer.startswith("external/"):
+        analyzer_for_wrapper = "../" + analyzer[9:]
+
+    base_dir_for_wrapper = base_dir
+    if base_dir.startswith("external/"):
+        base_dir_for_wrapper = "../" + base_dir[9:]
+
     ctx.actions.expand_template(
         template = ctx.file._template,
         output = ctx.outputs.executable,
         substitutions = {
-            "{{EXECUTABLE}}": "LD_LIBRARY_PATH=\"" + base_dir + "/lib/x86_64-linux-gnu\" " + ctx.executable._script.short_path,
+            "{{EXECUTABLE}}": "LD_LIBRARY_PATH=\"" + base_dir_for_wrapper + "/lib/x86_64-linux-gnu\" " + ctx.executable._script.short_path,
             "{{VHDL_STANDARD}}": ctx.attr.standard,
-            "{{ANALYZER}}": analyzer,
+            "{{ANALYZER}}": analyzer_for_wrapper,
             "{{LIBRARY_NAME}}": vhdl_provider.library_name,
-            "{{LIBRARY_PATHS}}": " ".join(flag_libraries + ["-L", nvc_lib_path]),
-            "{{STDLIB_DIR}}": nvc_lib_path[:-4],
+            "{{LIBRARY_PATHS}}": " ".join(flag_libraries + ["-L", nvc_lib_path_for_wrapper]),
+            "{{STDLIB_DIR}}": nvc_lib_path_for_wrapper[:-4],
             "{{ENTITY}}": elaborate_provider.entity,
             "{{LIB_DIR_IN_PATH}}": vhdl_provider.library_dir.short_path,
             "{{LIB_DIR_OUT_PATH}}": work_library_file.short_path,
