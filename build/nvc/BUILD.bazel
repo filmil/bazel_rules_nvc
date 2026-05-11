@@ -11,6 +11,7 @@ nvc_toolchain(
     name = "nvc_linux",
     analyzer = "//third_party/nvc:compiler",
     artifacts_dir = "//third_party/nvc:nvc_repo",
+    deps = ["//third_party/nvc:deps"],
 )
 
 toolchain(
@@ -32,6 +33,7 @@ sh_binary(
     srcs = ["nvc_wrapper.sh"],
     data = [
         "//third_party/nvc:compiler",
+        "//third_party/nvc:deps",
         "@gotopt2//:bin",
     ],
     visibility = ["//visibility:public"],

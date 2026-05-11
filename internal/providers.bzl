@@ -3,6 +3,7 @@ NVCInfo = provider(
     fields = {
       "analyzer": "The NVC analyzer executable file.",
       "artifacts_dir": "The directory containing NVC standard libraries and artifacts.",
+      "deps": "List[File]: Additional toolchain dependencies (e.g. shared libraries).",
     }
 )
 

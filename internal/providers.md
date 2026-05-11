@@ -28,7 +28,7 @@ Provides information about an elaborated VHDL entity.
 <pre>
 load("@rules_nvc//internal:providers.bzl", "NVCInfo")
 
-NVCInfo(<a href="#NVCInfo-analyzer">analyzer</a>, <a href="#NVCInfo-artifacts_dir">artifacts_dir</a>)
+NVCInfo(<a href="#NVCInfo-analyzer">analyzer</a>, <a href="#NVCInfo-artifacts_dir">artifacts_dir</a>, <a href="#NVCInfo-deps">deps</a>)
 </pre>
 
 Information on how to run NVC for VHDL analysis, elaboration and simulation.
@@ -39,6 +39,7 @@ Information on how to run NVC for VHDL analysis, elaboration and simulation.
 | :------------- | :------------- |
 | <a id="NVCInfo-analyzer"></a>analyzer |  The NVC analyzer executable file.    |
 | <a id="NVCInfo-artifacts_dir"></a>artifacts_dir |  The directory containing NVC standard libraries and artifacts.    |
+| <a id="NVCInfo-deps"></a>deps |  List[File]: Additional toolchain dependencies (e.g. shared libraries).    |
 
 
 <a id="VHDLLibraryProvider"></a>

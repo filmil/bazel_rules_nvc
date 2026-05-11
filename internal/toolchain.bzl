@@ -16,6 +16,7 @@ def _nvc_toolchain_impl(ctx):
     nvc_info = NVCInfo(
       analyzer = ctx.attr.analyzer,
       artifacts_dir = ctx.attr.artifacts_dir,
+      deps = ctx.files.deps,
     ),
   )
   return [toolchain_info]

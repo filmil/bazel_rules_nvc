@@ -1,4 +1,4 @@
-load("//internal:utils.bzl", "get_single_file_from")
+load("//internal:utils.bzl", "get_single_file_from", "get_nvc_deps", "get_nvc_ld_library_path")
 load("//internal:providers.bzl", "NVCInfo", "VHDLLibraryProvider", "ElaborateProvider")
 load("//internal:toolchain.bzl",
      _NVC_TOOLCHAIN_TYPE = "NVC_TOOLCHAIN_TYPE",
@@ -9,6 +9,7 @@ load("//internal:toolchain.bzl",
 
 def _vhdl_library(ctx):
     nvc_info = ctx.toolchains[_NVC_TOOLCHAIN_TYPE].nvc_info
+    nvc_deps = get_nvc_deps(nvc_info)
     analyzer_x = nvc_info.analyzer.files.to_list()[0]
     analyzer = analyzer_x.path
     library_name = ctx.attr.library_name or ctx.attr.name
@@ -68,10 +69,10 @@ def _vhdl_library(ctx):
 
     ctx.actions.run(
         outputs = [container_dir],
-        inputs = srcs + deps_files,
+        inputs = srcs + deps_files + nvc_deps,
         executable =  analyzer, # how do I get its path?
         env = {
-            "LD_LIBRARY_PATH": base_dir + "/lib/x86_64-linux-gnu:" + ctx.configuration.default_shell_env.get("LD_LIBRARY_PATH", ""),
+            "LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
         },
         arguments = [
           "--std={}".format(ctx.attr.standard),
