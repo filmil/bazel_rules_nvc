@@ -1,4 +1,4 @@
-load("//internal:utils.bzl", "get_single_file_from")
+load("//internal:utils.bzl", "get_single_file_from", "get_nvc_deps", "get_nvc_ld_library_path")
 load("//internal:providers.bzl", "NVCInfo", "VHDLLibraryProvider", "ElaborateProvider")
 load("//internal:toolchain.bzl",
      _NVC_TOOLCHAIN_TYPE = "NVC_TOOLCHAIN_TYPE",
@@ -9,6 +9,7 @@ load("//internal:toolchain.bzl",
 
 def _vhdl_elaborate(ctx):
     nvc_info = ctx.toolchains[_NVC_TOOLCHAIN_TYPE].nvc_info
+    nvc_deps = get_nvc_deps(nvc_info)
     analyzer_x = nvc_info.analyzer.files.to_list()[0]
     analyzer = analyzer_x.path
 
@@ -61,10 +62,10 @@ def _vhdl_elaborate(ctx):
 
     ctx.actions.run(
         outputs = [out_dir],
-        inputs = depset(direct = [vhdl_provider.library_dir] + ([std_lib_dir] if hasattr(std_lib_dir, "path") else []) + artifacts + deps_paths + vpi_plugins).to_list(),
+        inputs = depset(direct = [vhdl_provider.library_dir] + ([std_lib_dir] if hasattr(std_lib_dir, "path") else []) + artifacts + nvc_deps + deps_paths + vpi_plugins).to_list(),
         executable = ctx.executable._script.path,
         env = {
-            "LD_LIBRARY_PATH": base_dir + "/lib/x86_64-linux-gnu:" + ctx.configuration.default_shell_env.get("LD_LIBRARY_PATH", ""),
+            "LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
         },
         arguments = [
             "--vhdl-standard={}".format(ctx.attr.standard),

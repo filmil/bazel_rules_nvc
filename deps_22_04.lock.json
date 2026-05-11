@@ -1,0 +1,160 @@
+{
+	"input_data": {
+		"architectures": [
+			"amd64"
+		],
+		"packages": [
+			"libelf1",
+			"libzstd1",
+			"zlib1g"
+		],
+		"sources": [
+			{
+				"architectures": [
+					"amd64"
+				],
+				"components": [
+					"main"
+				],
+				"suites": [
+					"jammy"
+				],
+				"uri": "https://snapshot.ubuntu.com/ubuntu/20250219T154000Z"
+			}
+		]
+	},
+	"packages": [
+		{
+			"arch": "amd64",
+			"dependencies": [],
+			"key": "gcc-12-base_12-20220319-1ubuntu1_amd64",
+			"name": "gcc-12-base",
+			"sha256": "37990a768ecb1b40ce87c12fb7c7994877bb1256bde286c8e9bf5d4b51a17ca9",
+			"url": "https://snapshot.ubuntu.com/ubuntu/20250219T154000Z/pool/main/g/gcc-12/gcc-12-base_12-20220319-1ubuntu1_amd64.deb",
+			"version": "12-20220319-1ubuntu1"
+		},
+		{
+			"arch": "amd64",
+			"dependencies": [],
+			"key": "libc6_2.35-0ubuntu3_amd64",
+			"name": "libc6",
+			"sha256": "ea9a27e0ebdd0cfc9c750d94f8074f3a35d1f97dcc77ae04c370fb498a6b6db2",
+			"url": "https://snapshot.ubuntu.com/ubuntu/20250219T154000Z/pool/main/g/glibc/libc6_2.35-0ubuntu3_amd64.deb",
+			"version": "2.35-0ubuntu3"
+		},
+		{
+			"arch": "amd64",
+			"dependencies": [],
+			"key": "libcrypt1_1-4.4.27-1_amd64",
+			"name": "libcrypt1",
+			"sha256": "3fa566e9f861a08736cbc5a97562d9d6e4f0c00450fbeafcb6d7583423b04a98",
+			"url": "https://snapshot.ubuntu.com/ubuntu/20250219T154000Z/pool/main/libx/libxcrypt/libcrypt1_4.4.27-1_amd64.deb",
+			"version": "1:4.4.27-1"
+		},
+		{
+			"arch": "amd64",
+			"dependencies": [
+				{
+					"key": "gcc-12-base_12-20220319-1ubuntu1_amd64",
+					"name": "gcc-12-base",
+					"version": "12-20220319-1ubuntu1"
+				},
+				{
+					"key": "libc6_2.35-0ubuntu3_amd64",
+					"name": "libc6",
+					"version": "2.35-0ubuntu3"
+				},
+				{
+					"key": "libcrypt1_1-4.4.27-1_amd64",
+					"name": "libcrypt1",
+					"version": "1:4.4.27-1"
+				},
+				{
+					"key": "libgcc-s1_12-20220319-1ubuntu1_amd64",
+					"name": "libgcc-s1",
+					"version": "12-20220319-1ubuntu1"
+				},
+				{
+					"key": "zlib1g_1-1.2.11.dfsg-2ubuntu9_amd64",
+					"name": "zlib1g",
+					"version": "1:1.2.11.dfsg-2ubuntu9"
+				}
+			],
+			"key": "libelf1_0.186-1build1_amd64",
+			"name": "libelf1",
+			"sha256": "8effc4d7a0cc341bcf6cb11af0134f3defa6292376ecfdfc697a9b228606345c",
+			"url": "https://snapshot.ubuntu.com/ubuntu/20250219T154000Z/pool/main/e/elfutils/libelf1_0.186-1build1_amd64.deb",
+			"version": "0.186-1build1"
+		},
+		{
+			"arch": "amd64",
+			"dependencies": [],
+			"key": "libgcc-s1_12-20220319-1ubuntu1_amd64",
+			"name": "libgcc-s1",
+			"sha256": "c9a93721431be07557c810d7e1b24c3b3c51f398334ded104362a68a415b9e61",
+			"url": "https://snapshot.ubuntu.com/ubuntu/20250219T154000Z/pool/main/g/gcc-12/libgcc-s1_12-20220319-1ubuntu1_amd64.deb",
+			"version": "12-20220319-1ubuntu1"
+		},
+		{
+			"arch": "amd64",
+			"dependencies": [
+				{
+					"key": "gcc-12-base_12-20220319-1ubuntu1_amd64",
+					"name": "gcc-12-base",
+					"version": "12-20220319-1ubuntu1"
+				},
+				{
+					"key": "libc6_2.35-0ubuntu3_amd64",
+					"name": "libc6",
+					"version": "2.35-0ubuntu3"
+				},
+				{
+					"key": "libcrypt1_1-4.4.27-1_amd64",
+					"name": "libcrypt1",
+					"version": "1:4.4.27-1"
+				},
+				{
+					"key": "libgcc-s1_12-20220319-1ubuntu1_amd64",
+					"name": "libgcc-s1",
+					"version": "12-20220319-1ubuntu1"
+				}
+			],
+			"key": "libzstd1_1.4.8-p-dfsg-3build1_amd64",
+			"name": "libzstd1",
+			"sha256": "ae7db00ce8b093e50c994518b90203544e063b4bc574836a048bb142b950b2c9",
+			"url": "https://snapshot.ubuntu.com/ubuntu/20250219T154000Z/pool/main/libz/libzstd/libzstd1_1.4.8+dfsg-3build1_amd64.deb",
+			"version": "1.4.8+dfsg-3build1"
+		},
+		{
+			"arch": "amd64",
+			"dependencies": [
+				{
+					"key": "gcc-12-base_12-20220319-1ubuntu1_amd64",
+					"name": "gcc-12-base",
+					"version": "12-20220319-1ubuntu1"
+				},
+				{
+					"key": "libc6_2.35-0ubuntu3_amd64",
+					"name": "libc6",
+					"version": "2.35-0ubuntu3"
+				},
+				{
+					"key": "libcrypt1_1-4.4.27-1_amd64",
+					"name": "libcrypt1",
+					"version": "1:4.4.27-1"
+				},
+				{
+					"key": "libgcc-s1_12-20220319-1ubuntu1_amd64",
+					"name": "libgcc-s1",
+					"version": "12-20220319-1ubuntu1"
+				}
+			],
+			"key": "zlib1g_1-1.2.11.dfsg-2ubuntu9_amd64",
+			"name": "zlib1g",
+			"sha256": "52449467942cc943d651fd16867014e9339f3657935fc09b75b3347aa5a78066",
+			"url": "https://snapshot.ubuntu.com/ubuntu/20250219T154000Z/pool/main/z/zlib/zlib1g_1.2.11.dfsg-2ubuntu9_amd64.deb",
+			"version": "1:1.2.11.dfsg-2ubuntu9"
+		}
+	],
+	"version": 2
+}
