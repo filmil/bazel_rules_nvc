@@ -5,8 +5,10 @@ module(
 
 bazel_dep(name = "fshlib", version = "0.2.0")
 bazel_dep(name = "gotopt2", version = "2.2.2")
-
-bazel_dep(name = "rules_shell", version = "0.3.0")
+bazel_dep(name = "protobuf", version = "34.1")
+# If not mentioned here, build will fail on github actions. :/
+bazel_dep(name = "rules_android", version = "0.7.2")
+bazel_dep(name = "rules_shell", version = "0.8.0")
 
 
 bazel_dep(name = "rules_nvc", version = "0.0.0")
