@@ -4,11 +4,11 @@
 			"amd64"
 		],
 		"packages": [
-			"libdw1t64",
-			"libelf1t64",
+			"libdw1",
+			"libelf1",
 			"libffi8",
 			"libllvm18",
-			"libreadline8t64",
+			"libreadline8",
 			"libtcl8.6",
 			"libzstd1",
 			"zlib1g"

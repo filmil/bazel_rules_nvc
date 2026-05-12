@@ -2,32 +2,19 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "nvc_repo",
-    srcs = select({
-        "//internal/config:ubuntu_24_04": ["@nvc_deb_24_04//:all_files"],
-        "//conditions:default": ["@nvc_deb_22_04//:all_files"],
-    }),
+    srcs = ["@nvc_deb_24_04//:all_files"],
     visibility = ["//visibility:public"],
 )
 
 filegroup(
     name = "compiler",
-    srcs = select({
-        "//internal/config:ubuntu_24_04": ["@nvc_deb_24_04//:usr/bin/nvc"],
-        "//conditions:default": ["@nvc_deb_22_04//:usr/bin/nvc"],
-    }),
+    srcs = ["@nvc_deb_24_04//:usr/bin/nvc"],
     visibility = ["//visibility:public"],
 )
 
 filegroup(
     name = "deps",
-    srcs = select({
-        "//internal/config:ubuntu_24_04": [
-            "@deps_24_04//:files",
-        ],
-        "//conditions:default": [
-            "@deps_22_04//:files",
-        ],
-    }),
+    srcs = ["@deps_24_04//:files"],
     visibility = ["//visibility:public"],
 )
 
