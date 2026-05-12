@@ -23,7 +23,7 @@ def _vhdl_library(ctx):
         if artifact.path.endswith("usr/lib/x86_64-linux-gnu/nvc"):
             std_lib_dir = artifact
             break
-            
+
     if not std_lib_dir:
         # Fallback if specific directory match fails, try to find a known file
         for artifact in artifacts:
@@ -32,7 +32,7 @@ def _vhdl_library(ctx):
                  # dirname of std/STD.STANDARD is std, we need the parent 'nvc'
                  # We'll just construct the path directly below
                  break
-                 
+
     # Construct the path to the nvc library directory based on the analyzer path
     # Analyzer is at external/nvc_deb/usr/bin/nvc
     # Library is at external/nvc_deb/usr/lib/x86_64-linux-gnu/nvc
@@ -62,7 +62,7 @@ def _vhdl_library(ctx):
         for name, path in vhdl_provider.libraries:
             flag_libraries += ["-L", "{path}".format(path=path.path)]
             seen += [name]
-    
+
     # Add VPI plugins from this target
     vpi_plugins.append(depset(ctx.files.vpi_plugins))
 
@@ -72,7 +72,7 @@ def _vhdl_library(ctx):
         inputs = srcs + deps_files + nvc_deps,
         executable =  analyzer, # how do I get its path?
         env = {
-            "LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
+            "NVC_LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
         },
         arguments = [
           "--std={}".format(ctx.attr.standard),

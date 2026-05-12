@@ -157,9 +157,24 @@ _nvc_bin_dir=$(dirname "${gotopt2_nvc_binary_path}")
 # Assuming the path is .../usr/bin, the lib dir is .../usr/lib/x86_64-linux-gnu
 _nvc_ld_lib_path="${_nvc_bin_dir}/../lib/x86_64-linux-gnu"
 
-export LD_LIBRARY_PATH="${_nvc_ld_lib_path}:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${_nvc_ld_lib_path}:${NVC_LD_LIBRARY_PATH:-$LD_LIBRARY_PATH}"
 
-eval "${gotopt2_nvc_binary_path}" \
+_ld_so=""
+# When running with a specific Ubuntu version's dependencies (like 24.04), we may
+# have a different glibc (libc.so.6) in our NVC_LD_LIBRARY_PATH than the host system.
+# Executing the binary directly can cause a crash if the host's dynamic linker (ld.so)
+# tries to load the newer/incompatible libc.so.6 provided by the apt dependencies.
+# To prevent this, we look for the dynamic linker within the apt dependencies and
+# execute the nvc binary through it.
+IFS=':' read -ra LD_DIRS <<< "${NVC_LD_LIBRARY_PATH:-}"
+for _dir in "${LD_DIRS[@]}"; do
+  if [[ -x "$_dir/ld-linux-x86-64.so.2" ]]; then
+    _ld_so="$_dir/ld-linux-x86-64.so.2"
+    break
+  fi
+done
+
+eval ${_ld_so:+"$_ld_so"} "${gotopt2_nvc_binary_path}" \
   --std="${gotopt2_vhdl_standard}" \
   -L "${gotopt2_stdlib_dir}/nvc" \
   ${gotopt2_library_paths} \

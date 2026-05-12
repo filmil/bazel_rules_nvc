@@ -65,7 +65,7 @@ def _vhdl_elaborate(ctx):
         inputs = depset(direct = [vhdl_provider.library_dir] + ([std_lib_dir] if hasattr(std_lib_dir, "path") else []) + artifacts + nvc_deps + deps_paths + vpi_plugins).to_list(),
         executable = ctx.executable._script.path,
         env = {
-            "LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
+            "NVC_LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
         },
         arguments = [
             "--vhdl-standard={}".format(ctx.attr.standard),
