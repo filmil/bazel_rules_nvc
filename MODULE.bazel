@@ -87,3 +87,10 @@ deb_extract(
     integrity = "sha256-rh08AlQ9rITN3nlITX4BisvMjZtvBoAnk7QU0aJwwxo=",
     urls = ["https://github.com/nickg/nvc/releases/download/r1.20.1/nvc_1.20.1-1_amd64_ubuntu-24.04.deb"],
 )
+
+
+bazel_dep(name = "portable_cc_toolchain", version = "2025.12.16")
+toolchain = use_extension("@portable_cc_toolchain//:extensions.bzl", "toolchain")
+use_repo(toolchain, "toolchains")
+register_toolchains("@toolchains//:toolchainlinux_x86_64linux_x86_64")
+
