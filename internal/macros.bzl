@@ -1,7 +1,7 @@
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 
-def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None, save_file=None):
+def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=True, save_file=None):
     """
     Generates a sh_binary viewer.
 
