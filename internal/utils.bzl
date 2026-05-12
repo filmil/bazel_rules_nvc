@@ -28,6 +28,7 @@ def get_nvc_ld_library_path(nvc_info, base_dir, default_env):
             if ".so" in dep.basename:
                 paths[dep.dirname] = True
     ld_path = ":".join(paths.keys())
+    print("LD_PATH IS:", ld_path)
     if default_env.get("LD_LIBRARY_PATH", ""):
         ld_path += ":" + default_env.get("LD_LIBRARY_PATH", "")
     return ld_path

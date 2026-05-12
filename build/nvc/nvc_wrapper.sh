@@ -174,6 +174,10 @@ for _dir in "${LD_DIRS[@]}"; do
   fi
 done
 
+echo "LD_SO is $_ld_so" >&2
+echo "NVC_LD_LIBRARY_PATH is $NVC_LD_LIBRARY_PATH" >&2
+echo "LD_LIBRARY_PATH is $LD_LIBRARY_PATH" >&2
+
 eval ${_ld_so:+"$_ld_so"} "${gotopt2_nvc_binary_path}" \
   --std="${gotopt2_vhdl_standard}" \
   -L "${gotopt2_stdlib_dir}/nvc" \

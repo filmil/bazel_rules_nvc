@@ -101,6 +101,10 @@ def _vhdl_run(ctx):
         base_dir_for_wrapper = "../" + base_dir[9:]
 
     nvc_ld_library_path = get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env)
+    nvc_ld_library_path_for_wrapper = ":".join([
+        ("../" + p[9:]) if p.startswith("external/") else p
+        for p in nvc_ld_library_path.split(":")
+    ])
     
     # Prefix external paths for NVC_LD_LIBRARY_PATH if needed
     # (Just passing the literal value for now, we can adapt the NVC wrapper or base_dir if needed)
@@ -109,7 +113,7 @@ def _vhdl_run(ctx):
         template = ctx.file._template,
         output = ctx.outputs.executable,
         substitutions = {
-            "{{EXECUTABLE}}": "NVC_LD_LIBRARY_PATH=\"" + nvc_ld_library_path + "\" LD_LIBRARY_PATH=\"" + base_dir_for_wrapper + "/lib/x86_64-linux-gnu\" " + ctx.executable._script.short_path,
+            "{{EXECUTABLE}}": "NVC_LD_LIBRARY_PATH=\"" + nvc_ld_library_path_for_wrapper + "\" LD_LIBRARY_PATH=\"" + base_dir_for_wrapper + "/lib/x86_64-linux-gnu\" " + ctx.executable._script.short_path,
             "{{VHDL_STANDARD}}": ctx.attr.standard,
             "{{ANALYZER}}": analyzer_for_wrapper,
             "{{LIBRARY_NAME}}": vhdl_provider.library_name,

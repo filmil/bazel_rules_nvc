@@ -1,4 +1,4 @@
-load("//internal:utils.bzl", "get_single_file_from")
+load("//internal:utils.bzl", "get_single_file_from", "get_nvc_ld_library_path")
 load("//internal:providers.bzl", "NVCInfo", "VHDLLibraryProvider", "ElaborateProvider")
 load("//internal:toolchain.bzl",
      _NVC_TOOLCHAIN_TYPE = "NVC_TOOLCHAIN_TYPE",
@@ -96,11 +96,17 @@ def _vhdl_test(ctx):
     if base_dir.startswith("external/"):
         base_dir_for_wrapper = "../" + base_dir[9:]
 
+    nvc_ld_library_path = get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env)
+    nvc_ld_library_path_for_wrapper = ":".join([
+        ("../" + p[9:]) if p.startswith("external/") else p
+        for p in nvc_ld_library_path.split(":")
+    ])
+
     ctx.actions.expand_template(
         template = ctx.file._template,
         output = ctx.outputs.executable,
         substitutions = {
-            "{{EXECUTABLE}}": "LD_LIBRARY_PATH=\"" + base_dir_for_wrapper + "/lib/x86_64-linux-gnu\" " + ctx.executable._script.short_path,
+            "{{EXECUTABLE}}": "NVC_LD_LIBRARY_PATH=\"" + nvc_ld_library_path_for_wrapper + "\" LD_LIBRARY_PATH=\"" + base_dir_for_wrapper + "/lib/x86_64-linux-gnu\" " + ctx.executable._script.short_path,
             "{{VHDL_STANDARD}}": ctx.attr.standard,
             "{{ANALYZER}}": analyzer_for_wrapper,
             "{{LIBRARY_NAME}}": vhdl_provider.library_name,
