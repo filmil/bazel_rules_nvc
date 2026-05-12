@@ -5,12 +5,12 @@ module(
 
 bazel_dep(name = "bazel_lib", version = "3.1.0")
 bazel_dep(name = "bazel_linux_packages", version = "0.3.1")
-
 single_version_override(
     module_name = "bazel_linux_packages",
     patch_strip = 1,
     patches = ["//third_party:bazel_linux_packages_rules_shell.patch"],
 )
+
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "bazel_skylib_gazelle_plugin", version = "1.8.2")
 bazel_dep(name = "gazelle", version = "0.47.0")
@@ -28,45 +28,24 @@ bazel_dep(name = "rules_verilog", version = "1.1.1")
 bazel_dep(name = "stardoc", version = "0.8.1")
 
 apt = use_extension("@bazel_linux_packages//apt:extensions.bzl", "apt")
-
-# Dependencies for nvc on Ubuntu 22.04 (jammy)
-apt.ubuntu(
-    name = "deps_22_04",
-    architectures = ["amd64"],
-    lockfile = "//:deps_22_04.lock.json",
-    packages = [
-        "libelf1",
-        "libdw1",
-        "libffi8",
-        "libllvm14",
-        "libzstd1",
-        "zlib1g",
-        "libtcl8.6",
-        "libreadline8",
-    ],
-    suites = ["jammy"],
-)
-
-# Dependencies for nvc on Ubuntu 24.04 (noble)
 apt.ubuntu(
     name = "deps_24_04",
     architectures = ["amd64"],
     lockfile = "//:deps_24_04.lock.json",
     packages = [
-        "libelf1t64",
-        "libdw1t64",
+        "libdw1",
+        "libelf1",
         "libffi8",
         "libllvm18",
+        "libreadline8",
+        "libtcl8.6",
         "libzstd1",
         "zlib1g",
-        "libtcl8.6",
-        "libreadline8t64",
     ],
     suites = ["noble"],
 )
 use_repo(
     apt,
-    "deps_22_04",
     "deps_24_04",
 )
 
@@ -77,20 +56,14 @@ register_toolchains("//build/nvc:nvc_linux_toolchain")
 deb_extract = use_repo_rule("//internal:deb_extract.bzl", "deb_extract")
 
 deb_extract(
-    name = "nvc_deb_22_04",
-    integrity = "sha256-+lrK9P7xSifskXHCgs0BuHBatiRWs4jYyefxOj6qaVA=",
-    urls = ["https://github.com/nickg/nvc/releases/download/r1.20.1/nvc_1.20.1-1_amd64_ubuntu-22.04.deb"],
-)
-
-deb_extract(
     name = "nvc_deb_24_04",
     integrity = "sha256-rh08AlQ9rITN3nlITX4BisvMjZtvBoAnk7QU0aJwwxo=",
     urls = ["https://github.com/nickg/nvc/releases/download/r1.20.1/nvc_1.20.1-1_amd64_ubuntu-24.04.deb"],
 )
 
-
 bazel_dep(name = "portable_cc_toolchain", version = "2025.12.16")
+
 toolchain = use_extension("@portable_cc_toolchain//:extensions.bzl", "toolchain")
 use_repo(toolchain, "toolchains")
-register_toolchains("@toolchains//:toolchainlinux_x86_64linux_x86_64")
 
+register_toolchains("@toolchains//:toolchainlinux_x86_64linux_x86_64")
