@@ -29,6 +29,12 @@ toolchain(
 )
 
 sh_binary(
+    name = "nvc_direct_wrapper",
+    srcs = ["nvc_direct_wrapper.sh"],
+    visibility = ["//visibility:public"],
+)
+
+sh_binary(
     name = "nvc_wrapper",
     srcs = ["nvc_wrapper.sh"],
     data = [

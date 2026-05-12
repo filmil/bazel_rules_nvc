@@ -3,6 +3,7 @@ load("//internal:providers.bzl", "NVCInfo", "VHDLLibraryProvider", "ElaboratePro
 load("//internal:toolchain.bzl",
      _NVC_TOOLCHAIN_TYPE = "NVC_TOOLCHAIN_TYPE",
      _NVC_WRAPPER = "NVC_WRAPPER",
+     _NVC_DIRECT_WRAPPER = "NVC_DIRECT_WRAPPER",
     _VHDL_STANDARD_DEFAULT = "VHDL_STANDARD_DEFAULT",
     _nvc_toolchain = "nvc_toolchain")
 
@@ -70,11 +71,12 @@ def _vhdl_library(ctx):
     ctx.actions.run(
         outputs = [container_dir],
         inputs = srcs + deps_files + nvc_deps,
-        executable =  analyzer, # how do I get its path?
+        executable = ctx.executable._direct_wrapper,
         env = {
             "NVC_LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
         },
         arguments = [
+          analyzer,
           "--std={}".format(ctx.attr.standard),
           "-L", nvc_lib_path,
         ] + flag_libraries + [
@@ -125,6 +127,11 @@ vhdl_library = rule(
         "vpi_plugins": attr.label_list(
             allow_files = True,
             doc = "List of VPI plugins required for simulation.",
+        ),
+        "_direct_wrapper": attr.label(
+            default = _NVC_DIRECT_WRAPPER,
+            executable = True,
+            cfg = "host",
         ),
     },
     toolchains = [

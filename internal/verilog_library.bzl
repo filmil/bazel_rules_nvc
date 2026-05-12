@@ -1,14 +1,16 @@
-load("//internal:utils.bzl", "get_single_file_from")
+load("//internal:utils.bzl", "get_single_file_from", "get_nvc_deps", "get_nvc_ld_library_path")
 load("//internal:providers.bzl", "NVCInfo", "VHDLLibraryProvider", "ElaborateProvider")
 load("//internal:toolchain.bzl",
      _NVC_TOOLCHAIN_TYPE = "NVC_TOOLCHAIN_TYPE",
      _NVC_WRAPPER = "NVC_WRAPPER",
+     _NVC_DIRECT_WRAPPER = "NVC_DIRECT_WRAPPER",
     _VHDL_STANDARD_DEFAULT = "VHDL_STANDARD_DEFAULT",
     _nvc_toolchain = "nvc_toolchain")
 
 
 def _impl(ctx):
     nvc_info = ctx.toolchains[_NVC_TOOLCHAIN_TYPE].nvc_info
+    nvc_deps = get_nvc_deps(nvc_info)
     analyzer_x = nvc_info.analyzer.files.to_list()[0]
     analyzer = analyzer_x.path
     library_name = ctx.attr.library_name or ctx.attr.name
@@ -18,6 +20,10 @@ def _impl(ctx):
 
     artifacts = nvc_info.artifacts_dir.files.to_list()
     std_lib_dir = artifacts[1] # hopefully stable...
+    
+    analyzer_dir = analyzer_x.dirname
+    base_dir = analyzer_dir[:-4] if analyzer_dir.endswith("/bin") else analyzer_dir
+
     targets = ctx.attr.srcs
     srcs = []
     for target in targets:
@@ -55,9 +61,13 @@ def _impl(ctx):
 
     ctx.actions.run(
         outputs = [container_dir],
-        inputs = srcs + deps_files + ctx.files.hdrs + all_hdrs_files,
-        executable =  analyzer, # how do I get its path?
+        inputs = srcs + deps_files + ctx.files.hdrs + all_hdrs_files + nvc_deps,
+        executable = ctx.executable._direct_wrapper,
+        env = {
+            "NVC_LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
+        },
         arguments = [
+          analyzer,
           "--std={}".format(ctx.attr.standard),
           "-L", "{}/nvc".format(std_lib_dir.path),
         ] + flag_libraries + [
@@ -114,9 +124,13 @@ verilog_library = rule(
         "includes": attr.string_list(
             doc = "list of verilog include directories",
         ),
+        "_direct_wrapper": attr.label(
+            default = _NVC_DIRECT_WRAPPER,
+            executable = True,
+            cfg = "host",
+        ),
     },
     toolchains = [
         _NVC_TOOLCHAIN_TYPE,
     ],
 )
-
