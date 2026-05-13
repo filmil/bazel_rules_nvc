@@ -34,7 +34,7 @@ Generates a sh_binary viewer.
 | <a id="wave_view-args"></a>args |  <p align="center"> - </p>   |  `[]` |
 | <a id="wave_view-deps"></a>deps |  <p align="center"> - </p>   |  `[]` |
 | <a id="wave_view-viewer"></a>viewer |  <p align="center"> - </p>   |  `"gtkwave"` |
-| <a id="wave_view-testonly"></a>testonly |  <p align="center"> - </p>   |  `True` |
+| <a id="wave_view-testonly"></a>testonly |  <p align="center"> - </p>   |  `None` |
 | <a id="wave_view-save_file"></a>save_file |  <p align="center"> - </p>   |  `None` |
 
 
