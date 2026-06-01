@@ -14,7 +14,7 @@ single_version_override(
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "bazel_skylib_gazelle_plugin", version = "1.9.0")
 bazel_dep(name = "gazelle", version = "0.51.0")
-bazel_dep(name = "gotopt2", version = "2.5.1")
+bazel_dep(name = "gotopt2", version = "2.7.1")
 bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "protobuf", version = "35.0")
 
@@ -24,7 +24,7 @@ bazel_dep(name = "rules_cc", version = "0.2.18")
 bazel_dep(name = "rules_go", version = "0.60.0")
 bazel_dep(name = "rules_shell", version = "0.8.0")
 bazel_dep(name = "rules_verilator", version = "1.0.0")
-bazel_dep(name = "rules_verilog", version = "1.1.0")
+bazel_dep(name = "rules_verilog", version = "1.1.1")
 bazel_dep(name = "stardoc", version = "0.8.1")
 
 apt = use_extension("@bazel_linux_packages//apt:extensions.bzl", "apt")
@@ -62,6 +62,11 @@ deb_extract(
 )
 
 bazel_dep(name = "portable_cc_toolchain", version = "2025.12.16", dev_dependency = True)
+
 toolchain = use_extension("@portable_cc_toolchain//:extensions.bzl", "toolchain", dev_dependency = True)
 use_repo(toolchain, "toolchains")
-register_toolchains("@toolchains//:toolchainlinux_x86_64linux_x86_64", dev_dependency = True)
+
+register_toolchains(
+    "@toolchains//:toolchainlinux_x86_64linux_x86_64",
+    dev_dependency = True,
+)
