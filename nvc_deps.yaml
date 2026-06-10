@@ -9,7 +9,6 @@ sources:
 archs:
   - "amd64"
 packages:
-  - "libdw1"
   - "libffi8"
   - "libllvm14"
   - "libzstd1"
