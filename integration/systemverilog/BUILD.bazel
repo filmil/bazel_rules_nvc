@@ -1,8 +1,8 @@
-load("@rules_nvc//build/nvc:rules.bzl", "verilog_library")
+load("@rules_nvc//build/nvc:rules.bzl", "nvc_verilog_library")
 
 package(default_visibility = ["//visibility:public"])
 
-verilog_library(
+nvc_verilog_library(
     name = "nvc_verilog",
     srcs = [
         "counter.sv",
@@ -12,7 +12,7 @@ verilog_library(
     ],
 )
 
-verilog_library(
+nvc_verilog_library(
     name = "counter2",
     srcs = [
         "counter2.sv",

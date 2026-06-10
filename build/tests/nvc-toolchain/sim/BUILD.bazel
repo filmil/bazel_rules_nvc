@@ -1,6 +1,6 @@
-load("//build/nvc:rules.bzl", "vhdl_elaborate", "vhdl_library", "vhdl_run")
+load("//build/nvc:rules.bzl", "nvc_vhdl_elaborate", "nvc_vhdl_library", "nvc_vhdl_run")
 
-vhdl_library(
+nvc_vhdl_library(
     name = "sim",
     srcs = [
         "clkgen.vhdl",
@@ -8,7 +8,7 @@ vhdl_library(
     ],
 )
 
-vhdl_library(
+nvc_vhdl_library(
     name = "test",
     srcs = [
         "clkgen_test.vhdl",
@@ -16,12 +16,12 @@ vhdl_library(
     deps = [":sim"],
 )
 
-vhdl_elaborate(
+nvc_vhdl_elaborate(
     name = "tb",
     library = ":test",
 )
 
-vhdl_run(
+nvc_vhdl_run(
     name = "run",
     entity = ":tb",
 )

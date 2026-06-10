@@ -2,14 +2,14 @@
 
 
 
-<a id="vhdl_testbench"></a>
+<a id="nvc_vhdl_testbench"></a>
 
-## vhdl_testbench
+## nvc_vhdl_testbench
 
 <pre>
-load("@rules_nvc//:macros.bzl", "vhdl_testbench")
+load("@rules_nvc//:macros.bzl", "nvc_vhdl_testbench")
 
-vhdl_testbench(<a href="#vhdl_testbench-name">name</a>, <a href="#vhdl_testbench-srcs">srcs</a>, <a href="#vhdl_testbench-deps">deps</a>, <a href="#vhdl_testbench-entity">entity</a>, <a href="#vhdl_testbench-args">args</a>)
+nvc_vhdl_testbench(<a href="#nvc_vhdl_testbench-name">name</a>, <a href="#nvc_vhdl_testbench-srcs">srcs</a>, <a href="#nvc_vhdl_testbench-deps">deps</a>, <a href="#nvc_vhdl_testbench-entity">entity</a>, <a href="#nvc_vhdl_testbench-args">args</a>)
 </pre>
 
 
@@ -19,10 +19,10 @@ vhdl_testbench(<a href="#vhdl_testbench-name">name</a>, <a href="#vhdl_testbench
 
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
-| <a id="vhdl_testbench-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="vhdl_testbench-srcs"></a>srcs |  <p align="center"> - </p>   |  none |
-| <a id="vhdl_testbench-deps"></a>deps |  <p align="center"> - </p>   |  none |
-| <a id="vhdl_testbench-entity"></a>entity |  <p align="center"> - </p>   |  `None` |
-| <a id="vhdl_testbench-args"></a>args |  <p align="center"> - </p>   |  `[]` |
+| <a id="nvc_vhdl_testbench-name"></a>name |  <p align="center"> - </p>   |  none |
+| <a id="nvc_vhdl_testbench-srcs"></a>srcs |  <p align="center"> - </p>   |  none |
+| <a id="nvc_vhdl_testbench-deps"></a>deps |  <p align="center"> - </p>   |  none |
+| <a id="nvc_vhdl_testbench-entity"></a>entity |  <p align="center"> - </p>   |  `None` |
+| <a id="nvc_vhdl_testbench-args"></a>args |  <p align="center"> - </p>   |  `[]` |
 
 

@@ -1,11 +1,11 @@
 load(
     "//build/nvc:rules.bzl",
-    "vhdl_elaborate",
-    "vhdl_library",
-    "vhdl_run",
+    "nvc_vhdl_elaborate",
+    "nvc_vhdl_library",
+    "nvc_vhdl_run",
 )
 
-vhdl_library(
+nvc_vhdl_library(
     name = "work",
     srcs = [
         "test.vhdl",
@@ -13,12 +13,12 @@ vhdl_library(
     entities = ["hello_world"],
 )
 
-vhdl_elaborate(
+nvc_vhdl_elaborate(
     name = "hello_world",
     library = ":work",
 )
 
-vhdl_run(
+nvc_vhdl_run(
     name = "sim",
     entity = ":hello_world",
 )

@@ -3,9 +3,9 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@rules_verilator//verilator:defs.bzl", "verilator_cc_library")
 load("@rules_verilog//verilog:defs.bzl", vlog_library = "verilog_library")
-load("//internal:vhdl_library.bzl", "vhdl_library")
-load("//internal:vhdl_elaborate.bzl", "vhdl_elaborate")
-load("//internal:vhdl_test.bzl", "vhdl_test")
+load("//internal:nvc_vhdl_library.bzl", "nvc_vhdl_library")
+load("//internal:nvc_vhdl_elaborate.bzl", "nvc_vhdl_elaborate")
+load("//internal:nvc_vhdl_test.bzl", "nvc_vhdl_test")
 
 def _verilator_json_impl(ctx):
     # Use the verilator toolchain
@@ -144,7 +144,7 @@ def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}, se
     """
     Macro that encapsulates NVC and Verilator co-simulation bindings generation.
     Generates the VHDL proxy and C++ bindings for the given Verilog top module.
-    The resulting VHDL file can be used as a dependency in a `vhdl_library`.
+    The resulting VHDL file can be used as a dependency in a `nvc_vhdl_library`.
     
     Args:
         name: Name of the generated rules.
@@ -242,7 +242,7 @@ def nvc_verilator_cosim(name, srcs, top_module, path_prefix, parameters = {}, se
             actual = vhdl_arch_target,
         )
 
-    vhdl_library(
+    nvc_vhdl_library(
         name = name,
         srcs = vhdl_srcs,
         vpi_plugins = [":{}".format(cc_name)],

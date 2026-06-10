@@ -1,5 +1,5 @@
 load("@rules_nvc//internal:cosim.bzl", "nvc_verilator_cosim")
-load("@rules_nvc//nvc:rules.bzl", "vhdl_test")
+load("@rules_nvc//nvc:rules.bzl", "nvc_vhdl_test")
 
 nvc_verilator_cosim(
     name = "adder_bridge",
@@ -15,7 +15,7 @@ nvc_verilator_cosim(
     path_prefix = ":top_tb:counter_inst",
 )
 
-vhdl_test(
+nvc_vhdl_test(
     name = "demo_test",
     srcs = ["top_tb.vhdl"],
     deps = [

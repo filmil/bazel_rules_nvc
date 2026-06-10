@@ -1,6 +1,6 @@
-load("@rules_nvc//build/nvc:rules.bzl", "vhdl_elaborate", "vhdl_library", "vhdl_run", "vhdl_test")
+load("@rules_nvc//build/nvc:rules.bzl", "nvc_vhdl_elaborate", "nvc_vhdl_library", "nvc_vhdl_run", "nvc_vhdl_test")
 
-vhdl_library(
+nvc_vhdl_library(
     name = "sim",
     srcs = [
         "clkgen.vhdl",
@@ -8,7 +8,7 @@ vhdl_library(
     ],
 )
 
-vhdl_test(
+nvc_vhdl_test(
     name = "sim_test",
     srcs = [
         "clkgen_test.vhdl",

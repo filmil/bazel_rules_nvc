@@ -86,16 +86,17 @@ bzl_library(
     deps = [
         "//internal:extract_file",
         "//internal:macros",
+        "//internal:nvc_verilog_library",
+        "//internal:nvc_vhdl_elaborate",
+        "//internal:nvc_vhdl_library",
+        "//internal:nvc_vhdl_run",
+        "//internal:nvc_vhdl_test",
         "//internal:prebuilt_library",
         "//internal:produce_waveform",
         "//internal:providers",
+        "//internal:rules_vhdl_defs",
         "//internal:toolchain",
         "//internal:utils",
-        "//internal:verilog_library",
-        "//internal:vhdl_elaborate",
-        "//internal:vhdl_library",
-        "//internal:vhdl_run",
-        "//internal:vhdl_test",
     ],
 )
 

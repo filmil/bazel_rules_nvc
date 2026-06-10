@@ -70,3 +70,5 @@ register_toolchains(
     "@toolchains//:toolchainlinux_x86_64linux_x86_64",
     dev_dependency = True,
 )
+
+bazel_dep(name = "rules_vhdl", version = "0.1.2")

@@ -76,8 +76,8 @@ stardoc(
 )
 
 bzl_library(
-    name = "vhdl_elaborate",
-    srcs = ["vhdl_elaborate.bzl"],
+    name = "nvc_vhdl_elaborate",
+    srcs = ["nvc_vhdl_elaborate.bzl"],
     deps = [
         ":providers",
         ":toolchain",
@@ -86,15 +86,41 @@ bzl_library(
 )
 
 stardoc(
-    name = "md_vhdl_elaborate",
-    out = "gen.vhdl_elaborate.md",
-    input = "vhdl_elaborate.bzl",
-    deps = [":vhdl_elaborate"],
+    name = "md_nvc_vhdl_elaborate",
+    out = "gen.nvc_vhdl_elaborate.md",
+    input = "nvc_vhdl_elaborate.bzl",
+    deps = [":nvc_vhdl_elaborate"],
 )
 
 bzl_library(
-    name = "vhdl_library",
-    srcs = ["vhdl_library.bzl"],
+    name = "rules_vhdl_defs",
+    srcs = ["@rules_vhdl//vhdl:defs.bzl"],
+    deps = [
+        "@rules_vhdl//vhdl:defs_bzl",
+    ],
+)
+
+bzl_library(
+    name = "nvc_vhdl_library",
+    srcs = ["nvc_vhdl_library.bzl"],
+    deps = [
+        ":providers",
+        ":toolchain",
+        ":utils",
+        ":rules_vhdl_defs",
+    ],
+)
+
+stardoc(
+    name = "md_nvc_vhdl_library",
+    out = "gen.nvc_vhdl_library.md",
+    input = "nvc_vhdl_library.bzl",
+    deps = [":nvc_vhdl_library"],
+)
+
+bzl_library(
+    name = "nvc_vhdl_run",
+    srcs = ["nvc_vhdl_run.bzl"],
     deps = [
         ":providers",
         ":toolchain",
@@ -103,15 +129,31 @@ bzl_library(
 )
 
 stardoc(
-    name = "md_vhdl_library",
-    out = "gen.vhdl_library.md",
-    input = "vhdl_library.bzl",
-    deps = [":vhdl_library"],
+    name = "md_nvc_vhdl_run",
+    out = "gen.nvc_vhdl_run.md",
+    input = "nvc_vhdl_run.bzl",
+    deps = [":nvc_vhdl_run"],
 )
 
 bzl_library(
-    name = "vhdl_run",
-    srcs = ["vhdl_run.bzl"],
+    name = "nvc_vhdl_test",
+    srcs = ["nvc_vhdl_test.bzl"],
+    deps = [
+        ":nvc_vhdl_elaborate",
+        ":nvc_vhdl_library",
+    ],
+)
+
+stardoc(
+    name = "md_nvc_vhdl_test",
+    out = "gen.nvc_vhdl_test.md",
+    input = "nvc_vhdl_test.bzl",
+    deps = [":nvc_vhdl_test"],
+)
+
+bzl_library(
+    name = "nvc_verilog_library",
+    srcs = ["nvc_verilog_library.bzl"],
     deps = [
         ":providers",
         ":toolchain",
@@ -120,43 +162,10 @@ bzl_library(
 )
 
 stardoc(
-    name = "md_vhdl_run",
-    out = "gen.vhdl_run.md",
-    input = "vhdl_run.bzl",
-    deps = [":vhdl_run"],
-)
-
-bzl_library(
-    name = "vhdl_test",
-    srcs = ["vhdl_test.bzl"],
-    deps = [
-        ":vhdl_elaborate",
-        ":vhdl_library",
-    ],
-)
-
-stardoc(
-    name = "md_vhdl_test",
-    out = "gen.vhdl_test.md",
-    input = "vhdl_test.bzl",
-    deps = [":vhdl_test"],
-)
-
-bzl_library(
-    name = "verilog_library",
-    srcs = ["verilog_library.bzl"],
-    deps = [
-        ":providers",
-        ":toolchain",
-        ":utils",
-    ],
-)
-
-stardoc(
-    name = "md_verilog_library",
-    out = "gen.verilog_library.md",
-    input = "verilog_library.bzl",
-    deps = [":verilog_library"],
+    name = "md_nvc_verilog_library",
+    out = "gen.nvc_verilog_library.md",
+    input = "nvc_verilog_library.bzl",
+    deps = [":nvc_verilog_library"],
 )
 
 # Removed bzl_library for cosim because of external dependency issues.
@@ -200,11 +209,11 @@ write_source_files(
         "providers.md": ":md_providers",
         "toolchain.md": ":md_toolchain",
         "utils.md": ":md_utils",
-        "verilog_library.md": ":md_verilog_library",
-        "vhdl_elaborate.md": ":md_vhdl_elaborate",
-        "vhdl_library.md": ":md_vhdl_library",
-        "vhdl_run.md": ":md_vhdl_run",
-        "vhdl_test.md": ":md_vhdl_test",
+        "nvc_verilog_library.md": ":md_nvc_verilog_library",
+        "nvc_vhdl_elaborate.md": ":md_nvc_vhdl_elaborate",
+        "nvc_vhdl_library.md": ":md_nvc_vhdl_library",
+        "nvc_vhdl_run.md": ":md_nvc_vhdl_run",
+        "nvc_vhdl_test.md": ":md_nvc_vhdl_test",
     },
 )
 

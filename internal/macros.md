@@ -9,7 +9,7 @@
 <pre>
 load("@rules_nvc//internal:macros.bzl", "wave_view")
 
-wave_view(<a href="#wave_view-name">name</a>, <a href="#wave_view-vhdl_run">vhdl_run</a>, <a href="#wave_view-args">args</a>, <a href="#wave_view-deps">deps</a>, <a href="#wave_view-viewer">viewer</a>, <a href="#wave_view-testonly">testonly</a>, <a href="#wave_view-save_file">save_file</a>)
+wave_view(<a href="#wave_view-name">name</a>, <a href="#wave_view-nvc_vhdl_run">nvc_vhdl_run</a>, <a href="#wave_view-args">args</a>, <a href="#wave_view-deps">deps</a>, <a href="#wave_view-viewer">viewer</a>, <a href="#wave_view-testonly">testonly</a>, <a href="#wave_view-save_file">save_file</a>)
 </pre>
 
 Generates a sh_binary viewer.
@@ -17,7 +17,7 @@ Generates a sh_binary viewer.
 # Args
 
 - name: the target name.
-- vhdl_run: the target name for the `vhdl_run` target to
+- nvc_vhdl_run: the target name for the `nvc_vhdl_run` target to
   use the output from.
 - args: any additional arguments to add to invoke the viewer.
 - viewer: the viewer to invoke. The viewer must be compatible
@@ -30,7 +30,7 @@ Generates a sh_binary viewer.
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
 | <a id="wave_view-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="wave_view-vhdl_run"></a>vhdl_run |  <p align="center"> - </p>   |  none |
+| <a id="wave_view-nvc_vhdl_run"></a>nvc_vhdl_run |  <p align="center"> - </p>   |  none |
 | <a id="wave_view-args"></a>args |  <p align="center"> - </p>   |  `[]` |
 | <a id="wave_view-deps"></a>deps |  <p align="center"> - </p>   |  `[]` |
 | <a id="wave_view-viewer"></a>viewer |  <p align="center"> - </p>   |  `"gtkwave"` |

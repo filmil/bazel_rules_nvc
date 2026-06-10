@@ -1,7 +1,7 @@
 # LICENSE sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
 
 load("@rules_nvc//internal:cosim.bzl", "nvc_verilator_cosim")
-load("@rules_nvc//nvc:rules.bzl", "vhdl_test", "vhdl_library")
+load("@rules_nvc//nvc:rules.bzl", "nvc_vhdl_test", "nvc_vhdl_library")
 
 nvc_verilator_cosim(
     name = "cosim_bridge",
@@ -11,7 +11,7 @@ nvc_verilator_cosim(
     separate_entity_arch = True,
 )
 
-vhdl_test(
+nvc_vhdl_test(
     name = "cosim_test",
     srcs = ["top_tb.vhdl"],
     deps = [

@@ -1,14 +1,14 @@
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 
-def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None, save_file=None):
+def wave_view(name, nvc_vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None, save_file=None):
     """
     Generates a sh_binary viewer.
 
     # Args
 
     - name: the target name.
-    - vhdl_run: the target name for the `vhdl_run` target to
+    - nvc_vhdl_run: the target name for the `nvc_vhdl_run` target to
       use the output from.
     - args: any additional arguments to add to invoke the viewer.
     - viewer: the viewer to invoke. The viewer must be compatible
@@ -18,12 +18,12 @@ def wave_view(name, vhdl_run, args=[], deps=[], viewer="gtkwave", testonly=None,
     """
     _args = [
           "--viewer-binary={}".format(viewer),
-          "--wave-file=$(location {})".format(vhdl_run),
+          "--wave-file=$(location {})".format(nvc_vhdl_run),
           "--",
     ] + args
     _data = [
           "@gotopt2//:bin",
-          vhdl_run,
+          nvc_vhdl_run,
         ] + deps
     if save_file:
         _args += ["--save=$(location {})".format(save_file)]

@@ -22,7 +22,7 @@ Produces a waveform file (VCD) from a VHDL simulation run.
 | <a id="produce_waveform-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
 | <a id="produce_waveform-data"></a>data |  Data files required for the simulation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="produce_waveform-args"></a>args |  Additional command-line arguments to pass to the simulation.   | List of strings | optional |  `[]`  |
-| <a id="produce_waveform-simulation"></a>simulation |  The simulation target (`vhdl_run`) to execute.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="produce_waveform-simulation"></a>simulation |  The simulation target (`nvc_vhdl_run`) to execute.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
 | <a id="produce_waveform-use_fst"></a>use_fst |  A boolean indicating whether to expect an FST file instead of VCD file. Defaults to `False`.   | Boolean | optional |  `False`  |
 
 

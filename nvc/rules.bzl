@@ -7,12 +7,12 @@ load("//internal:toolchain.bzl",
     _nvc_toolchain = "nvc_toolchain")
 
 
-load("//internal:vhdl_library.bzl", _vhdl_library = "vhdl_library")
-load("//internal:vhdl_elaborate.bzl", _vhdl_elaborate = "vhdl_elaborate")
-load("//internal:vhdl_run.bzl", _vhdl_run = "vhdl_run")
+load("//internal:nvc_vhdl_library.bzl", _nvc_vhdl_library = "nvc_vhdl_library")
+load("//internal:nvc_vhdl_elaborate.bzl", _nvc_vhdl_elaborate = "nvc_vhdl_elaborate")
+load("//internal:nvc_vhdl_run.bzl", _nvc_vhdl_run = "nvc_vhdl_run")
 load("//internal:macros.bzl", _wave_view = "wave_view")
 load("//internal:produce_waveform.bzl", _produce_waveform = "produce_waveform")
-load("//internal:vhdl_test.bzl", _vhdl_test = "vhdl_test")
+load("//internal:nvc_vhdl_test.bzl", _nvc_vhdl_test = "nvc_vhdl_test")
 load("//internal:extract_file.bzl", _extract_file = "extract_file")
 
 
@@ -20,17 +20,17 @@ load("//internal:extract_file.bzl", _extract_file = "extract_file")
 
 nvc_toolchain = _nvc_toolchain
 
-vhdl_library = _vhdl_library
+nvc_vhdl_library = _nvc_vhdl_library
 
-vhdl_elaborate = _vhdl_elaborate
+nvc_vhdl_elaborate = _nvc_vhdl_elaborate
 
-vhdl_run = _vhdl_run
+nvc_vhdl_run = _nvc_vhdl_run
 
 produce_waveform = _produce_waveform
 
 extract_file = _extract_file
 
-vhdl_test = _vhdl_test
+nvc_vhdl_test = _nvc_vhdl_test
 
 # Macros
 
