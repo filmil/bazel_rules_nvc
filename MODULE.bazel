@@ -57,11 +57,16 @@ deb_extract = use_repo_rule("//internal:deb_extract.bzl", "deb_extract")
 
 deb_extract(
     name = "nvc_deb_24_04",
-    integrity = "sha256-rh08AlQ9rITN3nlITX4BisvMjZtvBoAnk7QU0aJwwxo=",
-    urls = ["https://github.com/nickg/nvc/releases/download/r1.20.1/nvc_1.20.1-1_amd64_ubuntu-24.04.deb"],
+    integrity = "sha256-0vxYPAtRtHhIhrUYDtftrT4C+DUa3YUobAgL/uepeG0=",
+    urls = ["https://github.com/nickg/nvc/releases/download/r1.21.0/nvc_1.21.0-1_amd64_ubuntu-24.04.deb"],
 )
 
 bazel_dep(name = "portable_cc_toolchain", version = "2025.12.16", dev_dependency = True)
+
 toolchain = use_extension("@portable_cc_toolchain//:extensions.bzl", "toolchain", dev_dependency = True)
 use_repo(toolchain, "toolchains")
-register_toolchains("@toolchains//:toolchainlinux_x86_64linux_x86_64", dev_dependency = True)
+
+register_toolchains(
+    "@toolchains//:toolchainlinux_x86_64linux_x86_64",
+    dev_dependency = True,
+)
