@@ -16,6 +16,27 @@ Bazel ecosystem.
 [baz]: https://bazel.build
 [nvc]: https://github.com/nickg/nvc
 
+## Usage
+
+## Custom registry setting
+
+The following must be added to your project-level `.bazelrc`. This enables the rule set to use my bazel registry.
+
+```
+common --registry=https://raw.githubusercontent.com/filmil/bazel-registry/main
+common --registry=https://bcr.bazel.build
+```
+
+Then, in your `MODULE.bazel` file, you can add:
+
+```
+bazel_dep(name = "rules_nvc", version = "<select version here>")
+```
+
+Where the version to select can be selected at: [https://github.com/filmil/bazel-registry/modules/rules_nvc][rr]
+
+[rr]: https://github.com/filmil/bazel-registry/tree/main/modules/rules_nvc
+
 ## Documentation
 
 An index of architectural reports and feature documentation can be found in the [Documentation Index](doc/README.md).
