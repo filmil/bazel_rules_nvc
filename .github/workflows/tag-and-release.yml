@@ -55,12 +55,6 @@ jobs:
           filename: "${{ env.REPO_NAME }}-${{ env.VERSION }}.zip"
           exclusions: '*.git* /*node_modules/* .editorconfig /bazel-*'
 
-      - name: "Prepare docs archive release artifact"
-        run: |
-          find bazel-bin/ -name "*.doc_extract.binaryproto" -print0 \
-          | tar -czvf ${{ env.REPO_NAME }}-${{ env.VERSION }}.docs.tar.gz \
-            --null -T - --transform 's/^bazel-bin\///g'
-
       - name: "Upload source archive"
         uses: ncipollo/release-action@v1
         env:
@@ -69,6 +63,16 @@ jobs:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           allowUpdates: true
           artifacts: "${{ env.REPO_NAME }}-${{ env.VERSION }}.zip"
+
+  publish:
+    needs: tag
+    uses: ./.github/workflows/publish.yml
+    with:
+      tag_name: ${{ needs.tag.outputs.tag_name }}
+    secrets:
+      BCR_PUBLISH_TOKEN: ${{ secrets.BCR_PUBLISH_TOKEN }}
+
+.zip"
 
   publish:
     needs: tag
