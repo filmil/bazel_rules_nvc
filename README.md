@@ -70,7 +70,11 @@ rules and macros provided by this repository.
 
 ## Hermeticity
 
-* Hermeticity in this repository is best effort.
-* `nvc` is built from source. This may last a *long* time.
-* At the moment I believe that the remaining non-hermetic dependency
-  is `llvm-config`.
+* The `nvc` binary and its VHDL standard libraries are consumed from the
+  [`nvc`](https://github.com/filmil/bazel-registry/tree/main/modules/nvc)
+  Bazel module, which builds NVC from source with all third-party
+  dependencies sourced from Bazel registries (no `llvm-config` or other
+  host tools). The LLVM code generator is disabled in favour of NVC's
+  built-in interpreter and x86-64 JIT back end.
+* `nvc` is built from source. The first build may take a *long* time, but
+  the result is cached like any other Bazel artifact.
