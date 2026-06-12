@@ -18,21 +18,12 @@ def _vhdl_elaborate(ctx):
     out_dir = ctx.actions.declare_directory("{}_out".format(library_name))
 
     artifacts = nvc_info.artifacts_dir.files.to_list()
-    std_lib_dir = None
-    for artifact in artifacts:
-        if artifact.path.endswith("usr/lib/x86_64-linux-gnu/nvc"):
-            std_lib_dir = artifact
-            break
-            
-    if not std_lib_dir:
-        for artifact in artifacts:
-             if artifact.path.endswith("usr/lib/x86_64-linux-gnu/nvc/std/STD.STANDARD"):
-                 std_lib_dir = artifact.dirname
-                 break
-                 
+    # Standard library tree (std/ieee/nvc/...) from the nvc module //:std.
+    std_lib_dir = artifacts[0]
+
     analyzer_dir = analyzer_x.dirname
     base_dir = analyzer_dir[:-4] if analyzer_dir.endswith("/bin") else analyzer_dir
-    nvc_lib_path = base_dir + "/lib/x86_64-linux-gnu/nvc"
+    nvc_lib_path = std_lib_dir.path
 
 
     all_libraries = []
@@ -72,7 +63,7 @@ def _vhdl_elaborate(ctx):
             "--nvc-binary-path={}".format(analyzer),
             "--library-name={}".format(library_name),
             "--library-paths={}".format(" ".join(flag_libraries + ["-L", nvc_lib_path])),
-            "--stdlib-dir={}".format(nvc_lib_path[:-4]), # /nvc is appended in wrapper
+            "--stdlib-dir={}".format(nvc_lib_path),
             "--entity={}".format(ctx.attr.name),
             "--library-dir-in-path={}".format(work_library_file.path),
             "--library-dir-out-path={}".format(out_dir.path),

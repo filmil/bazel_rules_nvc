@@ -1,20 +1,28 @@
 package(default_visibility = ["//visibility:public"])
 
+# Local patch applied to the `nvc` module via single_version_override in
+# //MODULE.bazel (see that file for provenance).
+exports_files(["issue1537_lower.patch"])
+
+# The bootstrapped VHDL standard library tree (std, ieee, nvc, ... for each
+# supported VHDL standard). Point NVC's -L / NVC_LIBPATH at this directory.
 filegroup(
     name = "nvc_repo",
-    srcs = ["@nvc_deb_24_04//:all_files"],
+    srcs = ["@nvc//:std"],
     visibility = ["//visibility:public"],
 )
 
+# The NVC compiler/simulator binary, built from source by the `nvc` module.
 filegroup(
     name = "compiler",
-    srcs = ["@nvc_deb_24_04//:usr/bin/nvc"],
+    srcs = ["@nvc//:nvc"],
     visibility = ["//visibility:public"],
 )
 
+# The `nvc` module is hermetic and statically links its third-party
+# dependencies, so no extra runtime shared libraries are needed.
 filegroup(
     name = "deps",
-    srcs = ["@deps_24_04//:files"],
+    srcs = [],
     visibility = ["//visibility:public"],
 )
-

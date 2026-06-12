@@ -180,7 +180,7 @@ done
 
 eval ${_ld_so:+"$_ld_so"} "${gotopt2_nvc_binary_path}" \
   --std="${gotopt2_vhdl_standard}" \
-  -L "${gotopt2_stdlib_dir}/nvc" \
+  -L "${gotopt2_stdlib_dir}" \
   ${gotopt2_library_paths} \
   --work="${gotopt2_library_name}:${_nvc_lib_path}" \
   ${_load_flags} \

@@ -22,7 +22,11 @@ common \
 
 build --experimental_ui_max_stdouterr_bytes=10485760
 
-# Attempt to configure CGO and Gazelle properly with portable_cc_toolchain
+# NVC's C sources use GNU extensions (typeof, statement expressions); force GNU
+# C for both the target and exec/tool configuration (nvc is built as a tool).
+build --conlyopt=-std=gnu17 --host_conlyopt=-std=gnu17
+
+# Attempt to configure CGO and Gazelle properly
 build --define=gotags="netgo"
 build --copt=-D_GNU_SOURCE
 build --copt=-D_BSD_SOURCE --copt=-D_DEFAULT_SOURCE --cxxopt=-D_BSD_SOURCE --cxxopt=-D_DEFAULT_SOURCE --host_copt=-D_GNU_SOURCE --host_copt=-D_DEFAULT_SOURCE --host_copt=-D_BSD_SOURCE --host_cxxopt=-D_GNU_SOURCE --host_cxxopt=-D_DEFAULT_SOURCE --host_cxxopt=-D_BSD_SOURCE

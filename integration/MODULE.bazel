@@ -16,9 +16,16 @@ local_path_override(
     path = "../",
 )
 
-bazel_dep(name = "portable_cc_toolchain", version = "2025.12.16")
+# Hermetic C/C++ toolchain matching the rules_nvc dev build: a pinned LLVM from
+# the BCR. Modern clang/lld build the nvc compiler (a tool dependency of the
+# VHDL rules) from source cleanly.
+bazel_dep(name = "toolchains_llvm", version = "1.7.0")
 
-toolchain = use_extension("@portable_cc_toolchain//:extensions.bzl", "toolchain")
-use_repo(toolchain, "toolchains")
+llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
+llvm.toolchain(
+    name = "llvm_toolchain",
+    llvm_version = "17.0.6",
+)
+use_repo(llvm, "llvm_toolchain")
 
-register_toolchains("@toolchains//:toolchainlinux_x86_64linux_x86_64")
+register_toolchains("@llvm_toolchain//:all")

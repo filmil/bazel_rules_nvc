@@ -19,7 +19,7 @@ def _impl(ctx):
     )
 
     artifacts = nvc_info.artifacts_dir.files.to_list()
-    std_lib_dir = artifacts[1] # hopefully stable...
+    std_lib_dir = artifacts[0]
     
     analyzer_dir = analyzer_x.dirname
     base_dir = analyzer_dir[:-4] if analyzer_dir.endswith("/bin") else analyzer_dir
@@ -69,7 +69,7 @@ def _impl(ctx):
         arguments = [
           analyzer,
           "--std={}".format(ctx.attr.standard),
-          "-L", "{}/nvc".format(std_lib_dir.path),
+          "-L", std_lib_dir.path,
         ] + flag_libraries + [
           "--work={}:{}/{}".format(
             library_name,

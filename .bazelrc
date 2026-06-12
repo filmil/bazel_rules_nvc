@@ -25,6 +25,11 @@ build --copt=-D_GNU_SOURCE
 build --copt=-D_BSD_SOURCE --copt=-D_DEFAULT_SOURCE --cxxopt=-D_BSD_SOURCE --cxxopt=-D_DEFAULT_SOURCE
 build --host_copt=-D_GNU_SOURCE --host_copt=-D_DEFAULT_SOURCE --host_copt=-D_BSD_SOURCE --host_cxxopt=-D_GNU_SOURCE --host_cxxopt=-D_DEFAULT_SOURCE --host_cxxopt=-D_BSD_SOURCE
 
+# NVC's C sources use GNU extensions (typeof, statement expressions). Force GNU
+# C for both the target and the exec/tool configuration (nvc is built as a
+# tool) so it compiles regardless of the toolchain's default C standard.
+build --conlyopt=-std=gnu17 --host_conlyopt=-std=gnu17
+
 build --action_env=BAZEL_LINKLIBS="-l:libstdc++.a" --action_env=BAZEL_CXXOPTS="-fPIC" --action_env=BAZEL_COPTS="-fPIC"
 
 # Attempt to configure CGO and Gazelle properly with portable_cc_toolchain
