@@ -5,7 +5,7 @@ things is.
 
 ## Core Rules
 
-- **Bazel 9.0.1 Compatibility**: This project uses Bazel 9.0.1. Ensure all
+- **Bazel 9.1.1 Compatibility**: This project uses Bazel 9.1.1. Ensure all
   changes are compatible with this version.
 - **Go Commands**: Do not run `go` directly. Always use `bazel run
   @rules_go//go -- <args>`.
