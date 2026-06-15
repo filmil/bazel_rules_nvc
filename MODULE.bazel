@@ -24,7 +24,7 @@ single_version_override(
 )
 
 bazel_dep(name = "platforms", version = "1.1.0")
-bazel_dep(name = "protobuf", version = "35.0")
+bazel_dep(name = "protobuf", version = "35.1")
 
 # If not mentioned here, build will fail on github actions. :/
 bazel_dep(name = "rules_android", version = "0.7.3")
@@ -32,7 +32,7 @@ bazel_dep(name = "rules_cc", version = "0.2.19")
 bazel_dep(name = "rules_go", version = "0.61.1")
 bazel_dep(name = "rules_shell", version = "0.8.0")
 bazel_dep(name = "rules_verilator", version = "1.1.0")
-bazel_dep(name = "rules_verilog", version = "1.1.1")
+bazel_dep(name = "rules_verilog", version = "1.2.0")
 bazel_dep(name = "stardoc", version = "0.8.1")
 
 register_toolchains("//build/nvc:nvc_linux_toolchain")
@@ -42,7 +42,7 @@ register_toolchains("//build/nvc:nvc_linux_toolchain")
 # build nvc from source cleanly: lld accepts --dynamic-list, the standard
 # library is recent enough for memfd_create/gettid, and clang's compiler-rt
 # provides __cpu_model for the SIMD code paths.
-bazel_dep(name = "toolchains_llvm", version = "1.7.0", dev_dependency = True)
+bazel_dep(name = "toolchains_llvm", version = "1.8.0", dev_dependency = True)
 
 llvm = use_extension(
     "@toolchains_llvm//toolchain/extensions:llvm.bzl",
