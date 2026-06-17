@@ -12,7 +12,7 @@ bazel_dep(name = "gotopt2", version = "2.7.1")
 # The NVC VHDL compiler and simulator, built from source as a hermetic Bazel
 # module (no LLVM, all third-party deps from the BCR). Provides @nvc//:nvc (the
 # compiler binary) and @nvc//:std (the bootstrapped VHDL standard libraries).
-bazel_dep(name = "nvc", version = "1.22.0.bcr.0")
+bazel_dep(name = "nvc", version = "1.21.0")
 
 # Carry the fix for nickg/nvc issue #1537 until it lands upstream and in the
 # registry. Derived from https://github.com/filmil/nvc/pull/1 (src/lower.c
