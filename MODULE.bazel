@@ -12,6 +12,15 @@ bazel_dep(name = "gotopt2", version = "2.7.1")
 # The NVC VHDL compiler and simulator, built from source as a hermetic Bazel
 # module (no LLVM, all third-party deps from the BCR). Provides @nvc//:nvc (the
 # compiler binary) and @nvc//:std (the bootstrapped VHDL standard libraries).
+#
+# WARNING: This version (1.22.0.bcr.0) is sourced from the CUSTOM registry
+# (filmil/bazel-registry), NOT from BCR. The BCR only has 1.21.0, which has a
+# structurally different stdlib layout incompatible with rules_nvc:
+#   - 1.22.0.bcr.0 (required): single `stdlib/` tree with std/, ieee/, nvc/ etc.
+#   - 1.21.0 (BCR, DO NOT USE): per-library dirs under `vhdl_libs/<name>/<lib>/`
+# The vhdl_library rule in //internal:vhdl_library passes @nvc//:std directly
+# as the -L path; 1.21.0's layout puts the library one level too deep and
+# causes "Fatal: required library STD not found". Do not downgrade to BCR versions.
 bazel_dep(name = "nvc", version = "1.22.0.bcr.0")
 
 # Carry the fix for nickg/nvc issue #1537 until it lands upstream and in the
