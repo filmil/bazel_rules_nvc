@@ -147,7 +147,7 @@ _vhdl_internal_test = rule(
 )
 
 def vhdl_test(name, srcs, deps,
-    standard=_VHDL_STANDARD_DEFAULT, args=[], entity=None, entities=[]):
+    standard=_VHDL_STANDARD_DEFAULT, args=[], entity=None, entities=[], tags=[]):
     """
     Defines a VHDL test.
 
@@ -162,6 +162,7 @@ def vhdl_test(name, srcs, deps,
         args: A list of additional command-line arguments to pass to the NVC simulator.
         entity: A single entity to test.
         entities: A list of entities to test. If both `entity` and `entities` are provided, all are tested.
+        tags: A list of tags to apply to the generated test target (e.g., ["manual"]).
     """
     entity_list = []
     if entity:
@@ -189,5 +190,6 @@ def vhdl_test(name, srcs, deps,
             entity = ":{}".format(e),
             args = args,
             standard = standard,
+            tags = tags,
         )
 
