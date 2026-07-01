@@ -51,9 +51,19 @@ def _vhdl_elaborate(ctx):
         for p in vpi_plugins:
             vpi_flags.append("--load=" + p.path)
 
+    # Top-level generics set at elaboration (-gNAME=VALUE, placed after the top
+    # unit name).  Values undergo $(location)/$(rootpath) expansion over `data`,
+    # so a generic can point at a build artifact -- e.g. a memory init file that
+    # the testbench reads in a signal initializer at elaboration time.
+    data_files = ctx.files.data
+    generic_args = [
+        "-g{}={}".format(k, ctx.expand_location(v, targets = ctx.attr.data))
+        for k, v in ctx.attr.generics.items()
+    ]
+
     ctx.actions.run(
         outputs = [out_dir],
-        inputs = depset(direct = [vhdl_provider.library_dir] + ([std_lib_dir] if hasattr(std_lib_dir, "path") else []) + artifacts + nvc_deps + deps_paths + vpi_plugins).to_list(),
+        inputs = depset(direct = [vhdl_provider.library_dir] + ([std_lib_dir] if hasattr(std_lib_dir, "path") else []) + artifacts + nvc_deps + deps_paths + vpi_plugins + data_files).to_list(),
         executable = ctx.executable._script.path,
         env = {
             "NVC_LD_LIBRARY_PATH": get_nvc_ld_library_path(nvc_info, base_dir, ctx.configuration.default_shell_env),
@@ -68,7 +78,7 @@ def _vhdl_elaborate(ctx):
             "--library-dir-in-path={}".format(work_library_file.path),
             "--library-dir-out-path={}".format(out_dir.path),
             "--",
-        ] + vpi_flags,
+        ] + vpi_flags + generic_args,
         tools = [analyzer_x, ctx.executable._script] + artifacts,
         # Only seems to work from bazel 6.0.0 on.
         #toolchain = _NVC_TOOLCHAIN_TYPE,
@@ -106,6 +116,19 @@ vhdl_elaborate = rule(
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
             doc = "The VHDL standard to use for elaboration (e.g., '2019').",
+        ),
+        "generics": attr.string_dict(
+            default = {},
+            doc = "Top-level VHDL generics to set at elaboration, as a " +
+                  "name -> value map (emitted as -gNAME=VALUE after the top " +
+                  "unit).  Values undergo $(location)/$(rootpath) expansion " +
+                  "over `data`.",
+        ),
+        "data": attr.label_list(
+            allow_files = True,
+            default = [],
+            doc = "Files made available to the elaboration action, e.g. memory " +
+                  "init files referenced by a generic value.",
         ),
     },
     toolchains = [

@@ -147,7 +147,8 @@ _vhdl_internal_test = rule(
 )
 
 def vhdl_test(name, srcs, deps,
-    standard=_VHDL_STANDARD_DEFAULT, args=[], entity=None, entities=[], tags=[]):
+    standard=_VHDL_STANDARD_DEFAULT, args=[], generics={}, data=[],
+    entity=None, entities=[], tags=[]):
     """
     Defines a VHDL test.
 
@@ -160,6 +161,12 @@ def vhdl_test(name, srcs, deps,
         deps: A list of `vhdl_library` targets that this test depends on.
         standard: The VHDL standard to use (e.g., "2008", "2019"). Defaults to "2019".
         args: A list of additional command-line arguments to pass to the NVC simulator.
+        generics: Top-level VHDL generics to set at elaboration, as a name -> value
+            map (emitted as -gNAME=VALUE). Values undergo $(location)/$(rootpath)
+            expansion over `data`, so a generic can reference a build artifact
+            (e.g. a memory init file the testbench reads at elaboration time).
+        data: Files made available to the elaboration action (e.g. the memory init
+            files referenced by `generics`).
         entity: A single entity to test.
         entities: A list of entities to test. If both `entity` and `entities` are provided, all are tested.
         tags: A list of tags to apply to the generated test target (e.g., ["manual"]).
@@ -184,6 +191,8 @@ def vhdl_test(name, srcs, deps,
             name = e,
             library = ":{}".format(vhdl_library_name),
             standard = standard,
+            generics = generics,
+            data = data,
         )
         _vhdl_internal_test(
             name = "{name}_{entity}_test".format(name=name,entity=entity),
