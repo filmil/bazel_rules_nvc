@@ -45,7 +45,7 @@ produce_waveform = rule(
     attrs = {
         "simulation": attr.label(
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             doc = "The simulation target (`vhdl_run`) to execute.",
         ),
         "data": attr.label_list(

@@ -29,7 +29,7 @@ nvc_toolchain = rule(
   attrs = {
     "analyzer": attr.label(
         executable = True,
-        cfg = "host",
+        cfg = "exec",
         doc = "The NVC executable wrapper script.",
     ),
     "artifacts_dir": attr.label(
