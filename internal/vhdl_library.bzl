@@ -71,7 +71,7 @@ def _vhdl_library(ctx):
             library_name,
           ),
           "-a",
-        ] + [f.path for f in srcs],
+        ] + ctx.attr.analysis_opts + [f.path for f in srcs],
         tools = [analyzer_x] + artifacts,
         # Only seems to work from bazel 6.0.0 on.
         #toolchain = _NVC_TOOLCHAIN_TYPE,
@@ -104,6 +104,11 @@ vhdl_library = rule(
         ),
         "entities": attr.string_list(
             doc = "A list of VHDL entities provided by this library.",
+        ),
+        "analysis_opts": attr.string_list(
+            doc = "Extra options passed to `nvc -a`, e.g. `[\"--relaxed\"]` " +
+                  "for code bases that need relaxed LRM rules (GRLIB, " +
+                  "vendor libraries).",
         ),
         "standard": attr.string(
             default = _VHDL_STANDARD_DEFAULT,
