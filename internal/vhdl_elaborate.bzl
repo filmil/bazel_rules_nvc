@@ -110,7 +110,7 @@ vhdl_elaborate = rule(
         "_script": attr.label(
             default = _NVC_WRAPPER,
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             doc = "Wrapper script to run NVC.",
         ),
         "standard": attr.string(

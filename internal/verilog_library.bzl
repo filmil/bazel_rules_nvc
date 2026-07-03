@@ -129,7 +129,7 @@ verilog_library = rule(
         "_direct_wrapper": attr.label(
             default = _NVC_DIRECT_WRAPPER,
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
     },
     toolchains = [
