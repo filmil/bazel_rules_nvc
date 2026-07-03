@@ -1,0 +1,29 @@
+load(
+    "@rules_nvc//build/nvc:rules.bzl",
+    "vhdl_elaborate",
+    "vhdl_library",
+    "vhdl_run",
+)
+
+# Demonstrates `analysis_opts`: this file only analyzes with `--relaxed`
+# under VHDL-2008 (it declares a shared variable of a non-protected type).
+vhdl_library(
+    name = "work",
+    srcs = [
+        "relaxed.vhdl",
+    ],
+    analysis_opts = ["--relaxed"],
+    entities = ["relaxed_top"],
+    standard = "2008",
+)
+
+vhdl_elaborate(
+    name = "relaxed_top",
+    library = ":work",
+    standard = "2008",
+)
+
+vhdl_run(
+    name = "sim",
+    entity = ":relaxed_top",
+)
