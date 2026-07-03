@@ -44,6 +44,8 @@ def _impl(ctx):
         all_libraries += vhdl_provider.libraries
         deps_hdrs_depset += [vhdl_provider.hdrs]
         for name, path in vhdl_provider.libraries:
+            if name in seen:
+                continue
             flag_libraries += ["-L", "{path}".format(path=path.path)]
             seen += [name]
         for include_dir in vhdl_provider.includes:

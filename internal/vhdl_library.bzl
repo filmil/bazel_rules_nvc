@@ -46,6 +46,8 @@ def _vhdl_library(ctx):
         if hasattr(vhdl_provider, "vpi_plugins"):
             vpi_plugins.append(vhdl_provider.vpi_plugins)
         for name, path in vhdl_provider.libraries:
+            if name in seen:
+                continue
             flag_libraries += ["-L", "{path}".format(path=path.path)]
             seen += [name]
 
