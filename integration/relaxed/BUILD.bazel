@@ -23,7 +23,14 @@ vhdl_elaborate(
     standard = "2008",
 )
 
+# standard must match the library/elaborate standard, otherwise `nvc -r`
+# aborts with a STD.STANDARD version conflict.
+# use_fst: relaxed_top has no traced signals (only a shared variable), so
+# nvc's VCD path (dump to a temporary FST, then convert) has nothing to open
+# and fails; FST is nvc's native format and dumps directly.
 vhdl_run(
     name = "sim",
     entity = ":relaxed_top",
+    standard = "2008",
+    use_fst = True,
 )
