@@ -9,7 +9,7 @@
 <pre>
 load("@rules_nvc//internal:vhdl_test.bzl", "vhdl_test")
 
-vhdl_test(<a href="#vhdl_test-name">name</a>, <a href="#vhdl_test-srcs">srcs</a>, <a href="#vhdl_test-deps">deps</a>, <a href="#vhdl_test-standard">standard</a>, <a href="#vhdl_test-args">args</a>, <a href="#vhdl_test-generics">generics</a>, <a href="#vhdl_test-data">data</a>, <a href="#vhdl_test-entity">entity</a>, <a href="#vhdl_test-entities">entities</a>, <a href="#vhdl_test-tags">tags</a>)
+vhdl_test(<a href="#vhdl_test-name">name</a>, <a href="#vhdl_test-srcs">srcs</a>, <a href="#vhdl_test-deps">deps</a>, <a href="#vhdl_test-standard">standard</a>, <a href="#vhdl_test-args">args</a>, <a href="#vhdl_test-generics">generics</a>, <a href="#vhdl_test-data">data</a>, <a href="#vhdl_test-entity">entity</a>, <a href="#vhdl_test-entities">entities</a>, <a href="#vhdl_test-tags">tags</a>, <a href="#vhdl_test-global_args">global_args</a>)
 </pre>
 
 Defines a VHDL test.
@@ -33,5 +33,6 @@ execution steps into a single logical target.
 | <a id="vhdl_test-entity"></a>entity |  A single entity to test.   |  `None` |
 | <a id="vhdl_test-entities"></a>entities |  A list of entities to test. If both `entity` and `entities` are provided, all are tested.   |  `[]` |
 | <a id="vhdl_test-tags"></a>tags |  A list of tags to apply to the generated test target (e.g., ["manual"]).   |  `[]` |
+| <a id="vhdl_test-global_args"></a>global_args |  nvc's global options, placed before the command, for both the elaboration and the test run: for example `["-H", "64m"]` for a 64 MiB heap, where nvc's default is 16 MiB. `args` go after the command, where nvc does not accept global options.   |  `[]` |
 
 

@@ -1,6 +1,6 @@
 load("//build/nvc:rules.bzl", "vhdl_run", "vhdl_elaborate", "vhdl_library")
 
-def vhdl_testbench(name, srcs, deps, entity=None, args=[]):
+def vhdl_testbench(name, srcs, deps, entity=None, args=[], global_args=[]):
     vhdl_library_name = "{}_lib".format(name)
     vhdl_library(
         name = vhdl_library_name,
@@ -12,10 +12,12 @@ def vhdl_testbench(name, srcs, deps, entity=None, args=[]):
         e = entity
     vhdl_elaborate(
         name = e,
-        library = ":{}".format(vhdl_library_name)
+        library = ":{}".format(vhdl_library_name),
+        global_args = global_args,
     )
     vhdl_run(
         name = name,
         entity = ":{}".format(e),
         args = args,
+        global_args = global_args,
     )

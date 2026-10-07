@@ -109,6 +109,7 @@ def _vhdl_test(ctx):
             "{{WAVE_FILE}}": "{}.fst".format(ctx.attr.name),
             "{{VPI_FLAGS}}": vpi_flags,
             "{{EXTRA_ARGS}}": extra_args,
+            "{{GLOBAL_ARGS}}": " ".join(ctx.attr.global_args),
         },
     )
     return [DefaultInfo(runfiles=runfiles)]
@@ -135,6 +136,13 @@ _vhdl_internal_test = rule(
             default = _VHDL_STANDARD_DEFAULT,
             doc = "The VHDL standard to use (e.g., '2008', '2019').",
         ),
+        "global_args": attr.string_list(
+            default = [],
+            doc = "nvc's global options, placed before the command: for example " +
+                  "`[\"-H\", \"64m\"]` for a 64 MiB heap, where nvc's default is " +
+                  "16 MiB. `args` go after the command, where nvc does not " +
+                  "accept global options.",
+        ),
         "_template": attr.label(
             default = Label("//build/nvc:unittest.tpl.sh"),
             allow_single_file = True,
@@ -148,7 +156,7 @@ _vhdl_internal_test = rule(
 
 def vhdl_test(name, srcs, deps,
     standard=_VHDL_STANDARD_DEFAULT, args=[], generics={}, data=[],
-    entity=None, entities=[], tags=[]):
+    entity=None, entities=[], tags=[], global_args=[]):
     """
     Defines a VHDL test.
 
@@ -170,6 +178,10 @@ def vhdl_test(name, srcs, deps,
         entity: A single entity to test.
         entities: A list of entities to test. If both `entity` and `entities` are provided, all are tested.
         tags: A list of tags to apply to the generated test target (e.g., ["manual"]).
+        global_args: nvc's global options, placed before the command, for both
+            the elaboration and the test run: for example `["-H", "64m"]` for a
+            64 MiB heap, where nvc's default is 16 MiB. `args` go after the
+            command, where nvc does not accept global options.
     """
     entity_list = []
     if entity:
@@ -193,6 +205,7 @@ def vhdl_test(name, srcs, deps,
             standard = standard,
             generics = generics,
             data = data,
+            global_args = global_args,
         )
         _vhdl_internal_test(
             name = "{name}_{entity}_test".format(name=name,entity=entity),
@@ -200,5 +213,6 @@ def vhdl_test(name, srcs, deps,
             args = args,
             standard = standard,
             tags = tags,
+            global_args = global_args,
         )
 

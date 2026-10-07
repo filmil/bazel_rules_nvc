@@ -1,0 +1,11 @@
+load("@rules_nvc//build/nvc:rules.bzl", "vhdl_test")
+
+# A testbench that needs more than nvc's default heap of 16 MiB, so that
+# global_args reaches nvc before its command (filmil/bazel_rules_nvc#108).
+vhdl_test(
+    name = "heap_test",
+    srcs = ["big_heap_tb.vhdl"],
+    deps = [],
+    entity = "big_heap_tb",
+    global_args = ["-H", "64m"],
+)

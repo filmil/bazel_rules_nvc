@@ -78,6 +78,7 @@ def _vhdl_run(ctx):
             "--entity={}".format(elaborate_provider.entity),
             "--library-dir-in-path={}".format(work_library_file.path),
             "--library-dir-out-path={}".format(work_library_file.path),
+            "--global-args={}".format(" ".join(ctx.attr.global_args)),
             "--",
         ] + vpi_flags + ctx.attr.args + [
             "--wave={}".format(wave_file.path),
@@ -128,6 +129,13 @@ vhdl_run = rule(
         ),
         "args": attr.string_list(
             doc = "A list of added command line args to use",
+        ),
+        "global_args": attr.string_list(
+            default = [],
+            doc = "nvc's global options, placed before the command: for example " +
+                  "`[\"-H\", \"64m\"]` for a 64 MiB heap, where nvc's default is " +
+                  "16 MiB. `args` go after the command, where nvc does not " +
+                  "accept global options.",
         ),
     },
     toolchains = [

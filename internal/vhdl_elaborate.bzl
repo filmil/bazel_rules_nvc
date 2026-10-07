@@ -77,6 +77,7 @@ def _vhdl_elaborate(ctx):
             "--entity={}".format(ctx.attr.name),
             "--library-dir-in-path={}".format(work_library_file.path),
             "--library-dir-out-path={}".format(out_dir.path),
+            "--global-args={}".format(" ".join(ctx.attr.global_args)),
             "--",
         ] + vpi_flags + generic_args,
         tools = [analyzer_x, ctx.executable._script] + artifacts,
@@ -123,6 +124,13 @@ vhdl_elaborate = rule(
                   "name -> value map (emitted as -gNAME=VALUE after the top " +
                   "unit).  Values undergo $(location)/$(rootpath) expansion " +
                   "over `data`.",
+        ),
+        "global_args": attr.string_list(
+            default = [],
+            doc = "nvc's global options, placed before the command: for example " +
+                  "`[\"-H\", \"64m\"]` for a 64 MiB heap, where nvc's default is " +
+                  "16 MiB. `args` go after the command, where nvc does not " +
+                  "accept global options.",
         ),
         "data": attr.label_list(
             allow_files = True,

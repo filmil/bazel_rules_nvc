@@ -9,7 +9,7 @@
 <pre>
 load("@rules_nvc//:macros.bzl", "vhdl_testbench")
 
-vhdl_testbench(<a href="#vhdl_testbench-name">name</a>, <a href="#vhdl_testbench-srcs">srcs</a>, <a href="#vhdl_testbench-deps">deps</a>, <a href="#vhdl_testbench-entity">entity</a>, <a href="#vhdl_testbench-args">args</a>)
+vhdl_testbench(<a href="#vhdl_testbench-name">name</a>, <a href="#vhdl_testbench-srcs">srcs</a>, <a href="#vhdl_testbench-deps">deps</a>, <a href="#vhdl_testbench-entity">entity</a>, <a href="#vhdl_testbench-args">args</a>, <a href="#vhdl_testbench-global_args">global_args</a>)
 </pre>
 
 
@@ -24,5 +24,6 @@ vhdl_testbench(<a href="#vhdl_testbench-name">name</a>, <a href="#vhdl_testbench
 | <a id="vhdl_testbench-deps"></a>deps |  <p align="center"> - </p>   |  none |
 | <a id="vhdl_testbench-entity"></a>entity |  <p align="center"> - </p>   |  `None` |
 | <a id="vhdl_testbench-args"></a>args |  <p align="center"> - </p>   |  `[]` |
+| <a id="vhdl_testbench-global_args"></a>global_args |  <p align="center"> - </p>   |  `[]` |
 
 

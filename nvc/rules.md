@@ -78,7 +78,7 @@ Produces a waveform file (VCD) from a VHDL simulation run.
 <pre>
 load("@rules_nvc//nvc:rules.bzl", "vhdl_elaborate")
 
-vhdl_elaborate(<a href="#vhdl_elaborate-name">name</a>, <a href="#vhdl_elaborate-data">data</a>, <a href="#vhdl_elaborate-generics">generics</a>, <a href="#vhdl_elaborate-library">library</a>, <a href="#vhdl_elaborate-standard">standard</a>)
+vhdl_elaborate(<a href="#vhdl_elaborate-name">name</a>, <a href="#vhdl_elaborate-data">data</a>, <a href="#vhdl_elaborate-generics">generics</a>, <a href="#vhdl_elaborate-global_args">global_args</a>, <a href="#vhdl_elaborate-library">library</a>, <a href="#vhdl_elaborate-standard">standard</a>)
 </pre>
 
 Elaborates a VHDL design using NVC.
@@ -91,6 +91,7 @@ Elaborates a VHDL design using NVC.
 | <a id="vhdl_elaborate-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
 | <a id="vhdl_elaborate-data"></a>data |  Files made available to the elaboration action, e.g. memory init files referenced by a generic value.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="vhdl_elaborate-generics"></a>generics |  Top-level VHDL generics to set at elaboration, as a name -> value map (emitted as -gNAME=VALUE after the top unit).  Values undergo $(location)/$(rootpath) expansion over `data`.   | <a href="https://bazel.build/rules/lib/core/dict">Dictionary: String -> String</a> | optional |  `{}`  |
+| <a id="vhdl_elaborate-global_args"></a>global_args |  nvc's global options, placed before the command: for example `["-H", "64m"]` for a 64 MiB heap, where nvc's default is 16 MiB. `args` go after the command, where nvc does not accept global options.   | List of strings | optional |  `[]`  |
 | <a id="vhdl_elaborate-library"></a>library |  The `vhdl_library` target to elaborate.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
 | <a id="vhdl_elaborate-standard"></a>standard |  The VHDL standard to use for elaboration (e.g., '2019').   | String | optional |  `"2019"`  |
 
@@ -129,7 +130,7 @@ Compiles VHDL source files into a library using NVC.
 <pre>
 load("@rules_nvc//nvc:rules.bzl", "vhdl_run")
 
-vhdl_run(<a href="#vhdl_run-name">name</a>, <a href="#vhdl_run-deps">deps</a>, <a href="#vhdl_run-args">args</a>, <a href="#vhdl_run-entity">entity</a>, <a href="#vhdl_run-standard">standard</a>, <a href="#vhdl_run-use_fst">use_fst</a>, <a href="#vhdl_run-use_vcd">use_vcd</a>)
+vhdl_run(<a href="#vhdl_run-name">name</a>, <a href="#vhdl_run-deps">deps</a>, <a href="#vhdl_run-args">args</a>, <a href="#vhdl_run-entity">entity</a>, <a href="#vhdl_run-global_args">global_args</a>, <a href="#vhdl_run-standard">standard</a>, <a href="#vhdl_run-use_fst">use_fst</a>, <a href="#vhdl_run-use_vcd">use_vcd</a>)
 </pre>
 
 Simulates an elaborated VHDL design using NVC.
@@ -143,6 +144,7 @@ Simulates an elaborated VHDL design using NVC.
 | <a id="vhdl_run-deps"></a>deps |  A list of other `vhdl_library` targets that this simulation depends on.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="vhdl_run-args"></a>args |  A list of added command line args to use   | List of strings | optional |  `[]`  |
 | <a id="vhdl_run-entity"></a>entity |  The elaborated VHDL entity to simulate. This should be a `vhdl_elaborate` target.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
+| <a id="vhdl_run-global_args"></a>global_args |  nvc's global options, placed before the command: for example `["-H", "64m"]` for a 64 MiB heap, where nvc's default is 16 MiB. `args` go after the command, where nvc does not accept global options.   | List of strings | optional |  `[]`  |
 | <a id="vhdl_run-standard"></a>standard |  The VHDL standard to use for simulation. Defaults to '2019'.   | String | optional |  `"2019"`  |
 | <a id="vhdl_run-use_fst"></a>use_fst |  A boolean indicating whether to generate a FST file for waveform viewing. Defaults to `False`. Takes precedence over `use_vcd`.   | Boolean | optional |  `False`  |
 | <a id="vhdl_run-use_vcd"></a>use_vcd |  A boolean indicating whether to generate a VCD (Value Change Dump) file for waveform viewing. Defaults to `True`.   | Boolean | optional |  `True`  |
@@ -155,7 +157,7 @@ Simulates an elaborated VHDL design using NVC.
 <pre>
 load("@rules_nvc//nvc:rules.bzl", "vhdl_test")
 
-vhdl_test(<a href="#vhdl_test-name">name</a>, <a href="#vhdl_test-srcs">srcs</a>, <a href="#vhdl_test-deps">deps</a>, <a href="#vhdl_test-standard">standard</a>, <a href="#vhdl_test-args">args</a>, <a href="#vhdl_test-generics">generics</a>, <a href="#vhdl_test-data">data</a>, <a href="#vhdl_test-entity">entity</a>, <a href="#vhdl_test-entities">entities</a>, <a href="#vhdl_test-tags">tags</a>)
+vhdl_test(<a href="#vhdl_test-name">name</a>, <a href="#vhdl_test-srcs">srcs</a>, <a href="#vhdl_test-deps">deps</a>, <a href="#vhdl_test-standard">standard</a>, <a href="#vhdl_test-args">args</a>, <a href="#vhdl_test-generics">generics</a>, <a href="#vhdl_test-data">data</a>, <a href="#vhdl_test-entity">entity</a>, <a href="#vhdl_test-entities">entities</a>, <a href="#vhdl_test-tags">tags</a>, <a href="#vhdl_test-global_args">global_args</a>)
 </pre>
 
 Defines a VHDL test.
@@ -179,6 +181,7 @@ execution steps into a single logical target.
 | <a id="vhdl_test-entity"></a>entity |  A single entity to test.   |  `None` |
 | <a id="vhdl_test-entities"></a>entities |  A list of entities to test. If both `entity` and `entities` are provided, all are tested.   |  `[]` |
 | <a id="vhdl_test-tags"></a>tags |  A list of tags to apply to the generated test target (e.g., ["manual"]).   |  `[]` |
+| <a id="vhdl_test-global_args"></a>global_args |  nvc's global options, placed before the command, for both the elaboration and the test run: for example `["-H", "64m"]` for a 64 MiB heap, where nvc's default is 16 MiB. `args` go after the command, where nvc does not accept global options.   |  `[]` |
 
 
 <a id="wave_view"></a>

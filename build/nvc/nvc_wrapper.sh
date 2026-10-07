@@ -76,6 +76,10 @@ flags:
 - name: "library-dir-out-path"
   type: string
   help: "The path to the library directory"
+- name: "global-args"
+  type: string
+  default: ""
+  help: "nvc's global options, space-separated, placed before the command (e.g. -H 64m)"
 - name: "wave-format"
   type: string
   default: ""
@@ -178,7 +182,10 @@ done
 #echo "NVC_LD_LIBRARY_PATH is $NVC_LD_LIBRARY_PATH" >&2
 #echo "LD_LIBRARY_PATH is $LD_LIBRARY_PATH" >&2
 
+# nvc's global options, such as -H (the heap size), are accepted only
+# before the command; the arguments after `--` follow the command.
 eval ${_ld_so:+"$_ld_so"} "${gotopt2_nvc_binary_path}" \
+  ${gotopt2_global_args} \
   --std="${gotopt2_vhdl_standard}" \
   -L "${gotopt2_stdlib_dir}" \
   ${gotopt2_library_paths} \
