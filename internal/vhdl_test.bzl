@@ -156,7 +156,8 @@ _vhdl_internal_test = rule(
 
 def vhdl_test(name, srcs, deps,
     standard=_VHDL_STANDARD_DEFAULT, args=[], generics={}, data=[],
-    entity=None, entities=[], tags=[], global_args=[]):
+    entity=None, entities=[], tags=[], global_args=[], size=None,
+    timeout=None):
     """
     Defines a VHDL test.
 
@@ -182,6 +183,11 @@ def vhdl_test(name, srcs, deps,
             the elaboration and the test run: for example `["-H", "64m"]` for a
             64 MiB heap, where nvc's default is 16 MiB. `args` go after the
             command, where nvc does not accept global options.
+        size: The Bazel test size of each generated test target ("small",
+            "medium", "large" or "enormous"). Defaults to Bazel's "medium".
+        timeout: The Bazel test timeout of each generated test target
+            ("short", "moderate", "long" or "eternal"). Defaults to the one
+            that `size` implies.
     """
     entity_list = []
     if entity:
@@ -214,5 +220,7 @@ def vhdl_test(name, srcs, deps,
             standard = standard,
             tags = tags,
             global_args = global_args,
+            size = size,
+            timeout = timeout,
         )
 

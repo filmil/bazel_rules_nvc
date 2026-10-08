@@ -8,4 +8,8 @@ vhdl_test(
     deps = [],
     entity = "big_heap_tb",
     global_args = ["-H", "64m"],
+    # size and timeout reach the test target (filmil/bazel_rules_nvc#110):
+    # `bazel query --output=build` shows them on heap_test_big_heap_tb_test.
+    size = "small",
+    timeout = "moderate",
 )
