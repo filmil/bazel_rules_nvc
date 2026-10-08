@@ -157,7 +157,8 @@ Simulates an elaborated VHDL design using NVC.
 <pre>
 load("@rules_nvc//nvc:rules.bzl", "vhdl_test")
 
-vhdl_test(<a href="#vhdl_test-name">name</a>, <a href="#vhdl_test-srcs">srcs</a>, <a href="#vhdl_test-deps">deps</a>, <a href="#vhdl_test-standard">standard</a>, <a href="#vhdl_test-args">args</a>, <a href="#vhdl_test-generics">generics</a>, <a href="#vhdl_test-data">data</a>, <a href="#vhdl_test-entity">entity</a>, <a href="#vhdl_test-entities">entities</a>, <a href="#vhdl_test-tags">tags</a>, <a href="#vhdl_test-global_args">global_args</a>)
+vhdl_test(<a href="#vhdl_test-name">name</a>, <a href="#vhdl_test-srcs">srcs</a>, <a href="#vhdl_test-deps">deps</a>, <a href="#vhdl_test-standard">standard</a>, <a href="#vhdl_test-args">args</a>, <a href="#vhdl_test-generics">generics</a>, <a href="#vhdl_test-data">data</a>, <a href="#vhdl_test-entity">entity</a>, <a href="#vhdl_test-entities">entities</a>, <a href="#vhdl_test-tags">tags</a>, <a href="#vhdl_test-global_args">global_args</a>,
+          <a href="#vhdl_test-size">size</a>, <a href="#vhdl_test-timeout">timeout</a>)
 </pre>
 
 Defines a VHDL test.
@@ -182,6 +183,8 @@ execution steps into a single logical target.
 | <a id="vhdl_test-entities"></a>entities |  A list of entities to test. If both `entity` and `entities` are provided, all are tested.   |  `[]` |
 | <a id="vhdl_test-tags"></a>tags |  A list of tags to apply to the generated test target (e.g., ["manual"]).   |  `[]` |
 | <a id="vhdl_test-global_args"></a>global_args |  nvc's global options, placed before the command, for both the elaboration and the test run: for example `["-H", "64m"]` for a 64 MiB heap, where nvc's default is 16 MiB. `args` go after the command, where nvc does not accept global options.   |  `[]` |
+| <a id="vhdl_test-size"></a>size |  The Bazel test size of each generated test target ("small", "medium", "large" or "enormous"). Defaults to Bazel's "medium".   |  `None` |
+| <a id="vhdl_test-timeout"></a>timeout |  The Bazel test timeout of each generated test target ("short", "moderate", "long" or "eternal"). Defaults to the one that `size` implies.   |  `None` |
 
 
 <a id="wave_view"></a>
