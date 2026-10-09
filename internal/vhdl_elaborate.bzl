@@ -41,7 +41,7 @@ def _vhdl_elaborate(ctx):
 
     runfiles = ctx.runfiles(files=deps_paths + [out_dir])
 
-    runfiles.merge_all([ctx.attr.library[DefaultInfo].default_runfiles])
+    runfiles = runfiles.merge_all([ctx.attr.library[DefaultInfo].default_runfiles])
 
     work_library_file = get_single_file_from(ctx.attr.library)
     vpi_plugins = []

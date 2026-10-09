@@ -60,7 +60,7 @@ def _vhdl_test(ctx):
     vpi_flags = ""
     if vpi_plugins:
         vpi_flags = "--load={}".format(",".join([p.short_path for p in vpi_plugins]))
-    
+
     # Add user arguments
     extra_args = " ".join(ctx.attr.args)
 
@@ -68,11 +68,13 @@ def _vhdl_test(ctx):
     inputs = deps_paths + [vhdl_provider.library_dir] + ([std_lib_dir] if hasattr(std_lib_dir, "path") else []) + artifacts + vpi_plugins
     i_runfiles = ctx.runfiles(files = inputs)
 
-    tools = [analyzer_x, ctx.executable._script, ] + artifacts
+    # The toolchain's binary and its dependencies run in the test, so they
+    # are runfiles.
+    tools = [analyzer_x, ctx.executable._script, ] + artifacts + list(nvc_info.deps)
     t_runfiles = ctx.runfiles(files = tools)
 
-    runfiles.merge_all([t_runfiles, i_runfiles, ctx.attr._script[DefaultInfo].default_runfiles])
-    
+    runfiles = runfiles.merge_all([t_runfiles, i_runfiles, ctx.attr._script[DefaultInfo].default_runfiles])
+
     # Calculate the runfiles prefix path
     # If the workspace is not _main (e.g. we are an external repo), we need to prefix the paths
     nvc_lib_path_for_wrapper = nvc_lib_path

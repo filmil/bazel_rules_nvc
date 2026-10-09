@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# An NVC toolchain declared in another module than rules_nvc, the way a
+# module that ships a prebuilt NVC declares one. Analyzing the `toolchain`
+# target checks that rules_nvc's toolchain type is visible from outside.
+# Its NVC is the one rules_nvc builds, so that this needs no download.
+
+load("@rules_nvc//build/nvc:rules.bzl", "nvc_toolchain", "vhdl_test")
+
+nvc_toolchain(
+    name = "custom_nvc",
+    analyzer = "@rules_nvc//third_party/nvc:compiler",
+    artifacts_dir = "@rules_nvc//third_party/nvc:nvc_repo",
+)
+
+toolchain(
+    name = "custom_toolchain",
+    toolchain = ":custom_nvc",
+    toolchain_type = "@rules_nvc//build/nvc:toolchain_type",
+)
+
+# To run it under the toolchain above:
+#
+#   bazel test //custom_toolchain/... \
+#       --extra_toolchains=//custom_toolchain:custom_toolchain
+vhdl_test(
+    name = "custom",
+    srcs = ["custom_toolchain_tb.vhdl"],
+    deps = [],
+    entity = "custom_toolchain_tb",
+)
