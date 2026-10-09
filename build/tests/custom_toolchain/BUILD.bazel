@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# An NVC toolchain defined outside `//build/nvc`, the way another module
+# defines one, for example from a prebuilt NVC. Its binary is a copy of the
+# NVC that rules_nvc builds, at a path of its own, so that a test can tell
+# which binary a target carries.
+
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
+load("//build/nvc:rules.bzl", "nvc_toolchain", "vhdl_test")
+load(":runfiles_test.bzl", "runfiles_test")
+
+native_binary(
+    name = "nvc_copy",
+    src = "//third_party/nvc:compiler",
+    out = "custom/bin/nvc",
+)
+
+nvc_toolchain(
+    name = "custom_nvc",
+    analyzer = ":nvc_copy",
+    artifacts_dir = "//third_party/nvc:nvc_repo",
+)
+
+toolchain(
+    name = "custom_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = ":custom_nvc",
+    toolchain_type = "//build/nvc:toolchain_type",
+)
+
+# Runs under whichever NVC toolchain is selected. To run it under the one
+# above:
+#
+#   bazel test //build/tests/custom_toolchain:all \
+#       --extra_toolchains=//build/tests/custom_toolchain:custom_toolchain
+vhdl_test(
+    name = "custom",
+    srcs = ["custom_toolchain_tb.vhdl"],
+    deps = [],
+    entity = "custom_toolchain_tb",
+)
+
+runfiles_test(
+    name = "carries_the_toolchain_binary_test",
+    binary_suffix = "custom/bin/nvc",
+    target_under_test = ":custom_custom_toolchain_tb_test",
+)

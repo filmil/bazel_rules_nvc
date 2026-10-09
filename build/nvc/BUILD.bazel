@@ -5,7 +5,12 @@ load("@rules_shell//shell:sh_library.bzl", "sh_library")
 load("@stardoc//stardoc:stardoc.bzl", "stardoc")
 load("//build/nvc:rules.bzl", "nvc_toolchain")
 
-toolchain_type(name = "toolchain_type")
+# Public, so that another module can provide an NVC toolchain, such as one
+# from a prebuilt binary.
+toolchain_type(
+    name = "toolchain_type",
+    visibility = ["//visibility:public"],
+)
 
 nvc_toolchain(
     name = "nvc_linux",
@@ -37,9 +42,9 @@ sh_binary(
 sh_binary(
     name = "nvc_wrapper",
     srcs = ["nvc_wrapper.sh"],
+    # The NVC binary is not data: each rule passes the toolchain's binary,
+    # so that the toolchain decides which NVC runs.
     data = [
-        "//third_party/nvc:compiler",
-        "//third_party/nvc:deps",
         "@gotopt2//:bin",
     ],
     visibility = ["//visibility:public"],

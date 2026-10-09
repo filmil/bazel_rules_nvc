@@ -32,5 +32,9 @@ jobs:
         run: "bazel test //..."
       - name: Build NVC
         run: "bazel build //build/tests/nvc-toolchain/..."
+      - name: Test under a toolchain defined outside rules_nvc
+        run: "bazel test //build/tests/custom_toolchain/... --extra_toolchains=//build/tests/custom_toolchain:custom_toolchain"
       - name: Integration build and test
         run: "cd integration && bazel build //... && bazel test //..."
+      - name: Integration test under a toolchain from another module
+        run: "cd integration && bazel test //custom_toolchain/... --extra_toolchains=//custom_toolchain:custom_toolchain"

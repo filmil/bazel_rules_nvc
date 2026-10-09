@@ -9,3 +9,4 @@ This directory contains comprehensive reports and architectural documentation fo
 * [NVC and Verilator Co-Simulation Bridge Report](cosim_bridge_architecture.md)
 * [Co-Simulation Usage Example](cosim_usage_example.md)
 * [Simulation vs. Synthesis Flow](simulation_vs_synthesis.md)
+* [Bringing Your Own NVC Toolchain](custom_toolchain.md)
